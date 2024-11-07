@@ -2,20 +2,26 @@
 
 {% block title %}Connection{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/connection.css') }}">
+{% endblock %}
+
 {% block body %}
     <div class="example-wrapper">
-        <h1>connection</h1>
-        <div>
-            <form>
-                <label for="fname">Nom d'utilisateur:</label><br>
-                <input type="text" id="fname" name="fname" value="John">
-                <br>
-                <label for="lname">mot de passe:</label><br>
-                <input type="text" id="lname" name="lname" value="Doe">
-                <br>
-                <br>
-                <button type="submit">
-            </form>
+        <h1>Connection</h1>
+        <div class="form">
+            {{ form_start(form) }}
+            {{ form_label(form.identifiant, 'Identifiant :') }}<br>
+            {{ form_widget(form.identifiant) }}
+            <br>
+            {{ form_label(form.motdepasse, 'Mot de passe :') }}<br>
+            {{ form_widget(form.motdepasse) }}
+            <br>
+            {{ form_row(form.bouton, {
+                'label': 'Se connecter'
+            }) }}
+
+            {{ form_end(form) }}
         </div>
     </div>
 {% endblock %}
