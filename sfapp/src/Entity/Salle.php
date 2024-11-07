@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\SalleRepository;
 use Doctrine\ORM\Mapping as ORM;
+use templates\Repository\SalleRepository;
 
 #[ORM\Entity(repositoryClass: SalleRepository::class)]
 class Salle
@@ -12,9 +12,6 @@ class Salle
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
-
-    #[ORM\Column]
-    private ?int $Id = null;
 
     #[ORM\Column(length: 255)]
     private ?string $NumSalle = null;
