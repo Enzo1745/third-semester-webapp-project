@@ -2,50 +2,44 @@
 
 namespace App\DataFixtures;
 
-use App\Repository\Model\SaState;
-use Doctrine\Bundle\FixturesBundle\Fixture;
-use Doctrine\Persistence\ObjectManager;
 use App\Entity\Salle;
 use App\Entity\Sa;
+use App\Repository\Model\EtatSA;
+use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Persistence\ObjectManager;
 
-/**
- * @brief Class containing all the default data for the database
- */
 class AppFixtures extends Fixture
 {
-    /**
-     * @brief Load all the default data in the database
-     * @param ObjectManager $manager
-     * @return void
-     */
     public function load(ObjectManager $manager): void
     {
-        $salle1 = new Salle();
-        $salle1->setNomSalle('D204');
-
-        $salle2 = new Salle();
-        $salle2->setNomSalle('D205');
-
+        // $product = new Product();
+        // $manager->persist($product);
 
         $sa1 = new Sa();
-        $sa1->setEtat(SaState::Functional);
-        $sa1->setSalle($salle1);
+        $sa1->setEtat(EtatSA::Dispo);
+        $manager->persist($sa1);
 
         $sa2 = new Sa();
-        $sa2->setEtat(SaState::Functional);
-        $sa2->setSalle($salle2);
+        $sa2->setEtat(EtatSA::Dispo);
+        $manager->persist($sa2);
+
+        $salle1 = new Salle();
+        $salle1->setNomSalle("D204");
+        $manager->persist($salle1);
 
         $sa3 = new Sa();
-        $sa3->setEtat(SaState::Available);
-
-        // Link the data created with our manager
-        $manager->persist($salle1);
-        $manager->persist($sa1);
-        $manager->persist($salle2);
-        $manager->persist($sa2);
+        $sa3->setEtat(EtatSA::Fonctionnel);
+        $sa3->setSalle($salle1);
         $manager->persist($sa3);
 
-        // Write the linked data in our database
+        $salle2 = new Salle();
+        $salle2->setNomSalle("D205");
+        $manager->persist($salle2);
+
+        $salle3 = new Salle();
+        $salle3->setNomSalle("D206");
+        $manager->persist($salle3);
+
         $manager->flush();
     }
 }

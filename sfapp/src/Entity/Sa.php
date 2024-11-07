@@ -2,7 +2,7 @@
 
 namespace App\Entity;
 
-use App\Repository\Model\SaState;
+use App\Repository\Model\EtatSA;
 use App\Repository\SaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -14,8 +14,8 @@ class Sa
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(enumType: SaState::class)]
-    private ?SaState $etat = null;
+    #[ORM\Column(enumType: EtatSA::class)]
+    private ?EtatSA $etat = null;
 
     #[ORM\OneToOne(inversedBy: 'sa', cascade: ['persist', 'remove'])]
     private ?Salle $salle = null;
@@ -25,12 +25,12 @@ class Sa
         return $this->id;
     }
 
-    public function getEtat(): ?SaState
+    public function getEtat(): ?EtatSA
     {
         return $this->etat;
     }
 
-    public function setEtat(SaState $etat): static
+    public function setEtat(EtatSA $etat): static
     {
         $this->etat = $etat;
 
@@ -48,6 +48,4 @@ class Sa
 
         return $this;
     }
-
-
 }

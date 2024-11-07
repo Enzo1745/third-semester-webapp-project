@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\RoomRepository;
+use App\Repository\SalleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: RoomRepository::class)]
+#[ORM\Entity(repositoryClass: SalleRepository::class)]
 class Salle
 {
     #[ORM\Id]
@@ -13,7 +13,7 @@ class Salle
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'nomSalle',length: 255)]
+    #[ORM\Column(length: 255)]
     private ?string $nomSalle = null;
 
     #[ORM\OneToOne(mappedBy: 'salle', cascade: ['persist', 'remove'])]
@@ -56,10 +56,5 @@ class Salle
         $this->sa = $sa;
 
         return $this;
-    }
-
-    public function __toString(): string
-    {
-        return $this->nomSalle ?? 'Salle non définie';
     }
 }
