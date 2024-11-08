@@ -40,6 +40,10 @@ class AppFixtures extends Fixture
         $salle3->setNomSalle("D206");
         $manager->persist($salle3);
 
+        $salle4 = new Salle();
+        $salle4->setNomSalle("D304");
+        $manager->persist($salle4);
+
         $manager->flush();
     }
 }

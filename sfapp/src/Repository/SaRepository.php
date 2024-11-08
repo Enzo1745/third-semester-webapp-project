@@ -40,4 +40,15 @@ class SaRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function countBySaState(): ?int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT COUNT(s.id) FROM sa s WHERE s.etat = :etat';
+
+        $resultSet = $conn->executeQuery($sql, ['etat' => 'Disponible']);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchOne();
+    }
 }
