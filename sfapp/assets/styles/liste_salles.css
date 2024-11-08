@@ -1,0 +1,18 @@
+body{
+    font-family: Arial, "Comic Sans MS";
+}
+header{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.container{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border: 3px solid #0d0d0d;
+}
+.container div:nth-child(n){
+    border: 3px solid #0d0d0d;
+    height: 50px;
+    text-align: center;
+}
