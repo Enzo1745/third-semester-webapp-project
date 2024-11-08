@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-class ConnectionController extends AbstractController
+class ConnexionController extends AbstractController
 {
-    #[Route('/connection', name: 'app_connection')]
+    #[Route('/connexion', name: 'app_connection')]
     public function index(Request $request): Response
     {
         $form = $this->createForm(ConnectionType::class);
@@ -20,14 +20,14 @@ class ConnectionController extends AbstractController
 
             return $this->redirectToRoute('app_connection_sucess');
         }
-        return $this->render('connection/index.html.twig', [
+        return $this->render('connexion/index.html.twig', [
             'form' => $form->createView(),
         ]);
 }
 
-    #[Route('/connection/done', name: 'app_connection_sucess')]
+    #[Route('/connexion/done', name: 'app_connection_sucess')]
     public function connectionReussie(): Response
     {
-        return $this->render('connection/succes.html.twig');
+        return $this->render('connexion/succes.html.twig');
     }
 }
