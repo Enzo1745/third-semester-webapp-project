@@ -26,6 +26,7 @@ class GestionSaType extends AbstractType
                         ->where('sa.salle IS NULL');  // Filtre sur les sa qui n'ont pas de salle
                 },
             ])
+
             ->add('save', SubmitType::class, [
                 'label' => 'Associer',
             ]);

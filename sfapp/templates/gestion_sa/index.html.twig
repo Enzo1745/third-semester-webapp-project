@@ -6,6 +6,17 @@
 
 <div class="addDiv">
     <h1>Gestion des systèmes d'acquisition</h1>
-    {{ form(form) }}
+
+    <div class="addForm">
+        <p>Nombre de SA disponibles : {{ nbSaDispo }}</p>
+        <br>
+        {% if form is not null %}
+            {{ form(form) }}
+        {% else %}
+            <p>Aucun SA disponible.</p>
+        {% endif %}
+        <br>
+    </div>
+
 </div>
 {% endblock %}
