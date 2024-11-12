@@ -14,14 +14,14 @@ class SalleController extends AbstractController
             ]);
     }
 
-    #[Route('/salles', name: 'app_salles')]
+    #[Route('/charge/salles', name: 'app_salles')]
     public function salles(): Response
     {
         return $this->render('salle/salles.html.twig', [
             ]);
     }
 
-    #[Route('/salles/liste', name: 'app_salle_liste')]
+    #[Route('/charge/salles/liste', name: 'app_salle_liste')]
     public function liste(): Response
     {
         return $this->render('salle/liste_salles.html.twig', [
