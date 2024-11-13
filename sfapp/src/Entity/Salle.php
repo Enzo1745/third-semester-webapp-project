@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\SalleRepository;
+use App\Repository\RoomRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SalleRepository::class)]
+#[ORM\Entity(repositoryClass: RoomRepository::class)]
 class Salle
 {
     #[ORM\Id]

@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\Sa;
 use App\Entity\Salle;
-use App\Repository\SalleRepository;
+use App\Repository\RoomRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -12,7 +12,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use function Sodium\add;
 
-class GestionSaType extends AbstractType
+class SaManagementType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -20,7 +20,7 @@ class GestionSaType extends AbstractType
             ->add('salle', EntityType::class, [
                 'class' => Salle::class,
                 'choice_label' => 'nom_salle',
-                'query_builder' => function (SalleRepository $er) {
+                'query_builder' => function (RoomRepository $er) {
                     return $er->createQueryBuilder('s')
                         ->leftJoin('App\Entity\Sa', 'sa', 'WITH', 'sa.salle = s.id')  // Jointure avec la table sa
                         ->where('sa.salle IS NULL ');  // Filtre sur les sa qui n'ont pas de salle
