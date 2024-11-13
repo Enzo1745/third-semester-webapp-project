@@ -1,6 +1,6 @@
 <?php
 
-namespace templates\Repository;
+namespace App\Repository;
 
 use App\Entity\Salle;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -14,6 +14,15 @@ class SalleRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Salle::class);
+    }
+
+    public function findByNumSalle(string $NumSalle): ?Salle
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.NumSalle = :NumSalle')
+            ->setParameter('NumSalle', $NumSalle)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     //    /**

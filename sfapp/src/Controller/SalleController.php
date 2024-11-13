@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Repository\SalleRepository;
 
 class SalleController extends AbstractController
 {
@@ -28,11 +29,13 @@ class SalleController extends AbstractController
         ]);
     }
 
-    #[Route('/charge/salles/liste/{id}', name: 'app_salle_info')]
-    public function salle_info(int $id): Response
+    #[Route('/charge/salles/liste/{NumSalle}', name: 'app_salle_info')]
+    public function salle_info(string $NumSalle, SalleRepository $salleRepository): Response
     {
+        $salle = $salleRepository->findByNumSalle($NumSalle);
+
         return $this->render('salle/salle_info.html.twig', [
-            'id' => $id
+            'salle' => $salle
         ]);
     }
 }
