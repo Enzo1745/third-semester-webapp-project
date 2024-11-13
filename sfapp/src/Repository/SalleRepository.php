@@ -40,4 +40,19 @@ class SalleRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function countBySaAvailable(): ?int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT COUNT(*)
+                FROM salle
+                LEFT JOIN sa ON salle.id = sa.salle_id
+                WHERE sa.salle_id IS NULL;
+        ';
+
+        $resultSet = $conn->executeQuery($sql);
+
+        // returns an array of arrays (i.e. a raw data set)
+        return $resultSet->fetchOne();
+    }
 }

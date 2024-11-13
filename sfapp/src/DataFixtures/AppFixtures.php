@@ -12,9 +12,6 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // $product = new Product();
-        // $manager->persist($product);
-
         $sa1 = new Sa();
         $sa1->setEtat(EtatSA::Dispo);
         $manager->persist($sa1);
@@ -40,10 +37,14 @@ class AppFixtures extends Fixture
         $salle3->setNomSalle("D206");
         $manager->persist($salle3);
 
-        $salle4 = new Salle();
+        $sa4 = new Sa();
+        $sa4->setEtat(EtatSA::Dispo);
+        $manager->persist($sa4);
+
+        /*$salle4 = new Salle();
         $salle4->setNomSalle("D304");
         $manager->persist($salle4);
-
+        */
         $manager->flush();
     }
 }
