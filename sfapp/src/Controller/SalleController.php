@@ -27,11 +27,12 @@ class SalleController extends AbstractController
         return $this->render('salle/liste_salles.html.twig', [
         ]);
     }
-//
-//    #[Route('/salles/liste/{$id}', name: 'app_salle_liste')]
-//    public function salle_info(): Response
-//    {
-//        return $this->render('salle/salle_info.html.twig', [
-//        ]);
-//    }
+
+    #[Route('/charge/salles/liste/{id}', name: 'app_salle_info')]
+    public function salle_info(int $id): Response
+    {
+        return $this->render('salle/salle_info.html.twig', [
+            'id' => $id
+        ]);
+    }
 }

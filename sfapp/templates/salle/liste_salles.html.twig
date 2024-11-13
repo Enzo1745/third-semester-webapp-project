@@ -10,16 +10,15 @@
 
     <header>
         <h1>Liste des salles</h1>
-        <a href="/salles">Retour</a>
+        <a href="/charge/salles">Retour</a>
     </header>
-
 
     <div class="container">
         <div>Salles</div>
         <div>Details</div>
 
         <div>Exemple1</div>
-        <div><a href="/salles/1">Voir détails</a></div>
+        <div><a href="{{ path('app_salle_info', { 'id': 1 }) }}">Voir détails</a></div>
 
 {#        {{ for salle in salles }}#}
 {#            <div>{{ salle.name }}</div>#}
