@@ -27,10 +27,10 @@ class ConnexionTest extends WebTestCase
         // Soumettre le formulaire
         $client->submit($form);
 
-        // Vérifier que le message d'erreur est bien pour le champ identifiant
+        // Vérifier que le message d'erreur s'affiche pour l'identifiant
         $this->assertSelectorTextContains('.alert-danger-ID', 'Le champ Identifiant est obligatoire');
 
-        // Vérifier que le message d'erreur pour motdepasse n'est pas affiché pour identifiant
+        // Vérifier que le message d'erreur s'affiche pour le mot de passe
         $this->assertSelectorTextContains('.alert-danger-MDP', 'Le champ Mot de passe est obligatoire');
     }
     public function testFormSubmittedWithValidData(): void

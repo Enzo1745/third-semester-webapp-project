@@ -12,6 +12,7 @@ class ConnectionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        // formulaire de connexion
         $builder
             ->add('identifiant')
             ->add('motdepasse')
