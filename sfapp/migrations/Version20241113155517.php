@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20241113145304 extends AbstractMigration
+final class Version20241113155517 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -21,15 +21,17 @@ final class Version20241113145304 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('CREATE TABLE sa (id INT AUTO_INCREMENT NOT NULL, salle_id INT DEFAULT NULL, etat VARCHAR(255) NOT NULL, temperature INT DEFAULT NULL, humidite INT DEFAULT NULL, co2 INT DEFAULT NULL, UNIQUE INDEX UNIQ_7F7E6904DC304035 (salle_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
-        $this->addSql('CREATE TABLE salle (id INT AUTO_INCREMENT NOT NULL, num_salle VARCHAR(255) NOT NULL, id_sa INT DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
+        $this->addSql('CREATE TABLE salle (id INT AUTO_INCREMENT NOT NULL, id_sa INT DEFAULT NULL, num_salle VARCHAR(255) NOT NULL, UNIQUE INDEX UNIQ_4E977E5CBF039003 (id_sa), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('CREATE TABLE utilisateur (id INT AUTO_INCREMENT NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci` ENGINE = InnoDB');
         $this->addSql('ALTER TABLE sa ADD CONSTRAINT FK_7F7E6904DC304035 FOREIGN KEY (salle_id) REFERENCES salle (id)');
+        $this->addSql('ALTER TABLE salle ADD CONSTRAINT FK_4E977E5CBF039003 FOREIGN KEY (id_sa) REFERENCES sa (id)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE sa DROP FOREIGN KEY FK_7F7E6904DC304035');
+        $this->addSql('ALTER TABLE salle DROP FOREIGN KEY FK_4E977E5CBF039003');
         $this->addSql('DROP TABLE sa');
         $this->addSql('DROP TABLE salle');
         $this->addSql('DROP TABLE utilisateur');
