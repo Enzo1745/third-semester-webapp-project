@@ -17,10 +17,15 @@
         <div class="firstRow">Salles</div>
         <div class="firstRow">Details</div>
 
-        {% for salle in salles %}
-            <div>{{ salle.NumSalle }}</div>
-            <div><a href="{{ path('app_salle_info', { 'NumSalle': salle.NumSalle }) }}">Voir détails</a></div>
-        {% endfor %}
+
+        {% if salles is empty %}
+            <p>Aucune salle n'est disponible.</p>
+        {% else %}
+            {% for salle in salles %}
+                <div class="salles-item">{{ salle.NumSalle }}</div>
+                <div><a href="{{ path('app_salle_info', { 'NumSalle': salle.NumSalle }) }}">Voir détails</a></div>
+            {% endfor %}
+        {% endif %}
     </div>
 
 {% endblock %}
