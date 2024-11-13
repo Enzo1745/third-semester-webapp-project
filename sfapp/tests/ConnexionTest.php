@@ -14,43 +14,25 @@ class ConnexionTest extends WebTestCase
         // Accéder à la page de connexion
         $crawler = $client->request('GET', '/connexion');
 
-        // Soumettre le formulaire avec l'identifiant vide et un mot de passe valide
-        $form = $crawler->selectButton('Se connecter')->form([
-            'connection[identifiant]' => '',  // Identifiant vide
-            'connection[motdepasse]' => 'password123',  // Mot de passe valide
-        ]);
-
-        $client->submit($form);
-
-        // Vérifier que la page de connexion est affichée
+        // Vérifier si la page de connexion est récupérée
         $this->assertResponseIsSuccessful();
 
-        // Vérifier qu'un message d'erreur est affiché pour le champ identifiant
-        $this->assertSelectorTextContains('.form-error', 'L\'identifiant ne peut pas être vide.');
-    }
+        // Récupérer le formulaire
+        $form = $crawler->selectButton('Se connecter')->form();
 
-    public function testMotdepasseFieldIsRequired(): void
-    {
-        $client = static::createClient();
+        // Soumettre un formulaire avec des champs vides
+        $form['connection[identifiant]'] = '';
+        $form['connection[motdepasse]'] = '';
 
-        // Accéder à la page de connexion
-        $crawler = $client->request('GET', '/connexion');
-
-        // Soumettre le formulaire avec un identifiant valide et un mot de passe vide
-        $form = $crawler->selectButton('Se connecter')->form([
-            'connection[identifiant]' => 'user@example.com',  // Identifiant valide
-            'connection[motdepasse]' => '',  // Mot de passe vide
-        ]);
-
+        // Soumettre le formulaire
         $client->submit($form);
 
-        // Vérifier que la page de connexion est affichée
-        $this->assertResponseIsSuccessful();
+        // Vérifier que le message d'erreur est bien pour le champ identifiant
+        $this->assertSelectorTextContains('.alert-danger-ID', 'Le champ Identifiant est obligatoire');
 
-        // Vérifier qu'un message d'erreur est affiché pour le champ mot de passe
-        $this->assertSelectorTextContains('.form-error', 'Le mot de passe ne peut pas être vide.');
+        // Vérifier que le message d'erreur pour motdepasse n'est pas affiché pour identifiant
+        $this->assertSelectorTextContains('.alert-danger-MDP', 'Le champ Mot de passe est obligatoire');
     }
-
     public function testFormSubmittedWithValidData(): void
     {
         $client = static::createClient();
@@ -71,6 +53,7 @@ class ConnexionTest extends WebTestCase
 
         // Suivre la redirection et vérifier que la page de succès s'affiche
         $client->followRedirect();
-        $this->assertSelectorTextContains('h1', 'Connexion réussie');
+        // Vérifier que l'URL actuelle est bien /connexion/done
+        $this->assertSame('/connexion/done', $client->getRequest()->getRequestUri());
     }
 }

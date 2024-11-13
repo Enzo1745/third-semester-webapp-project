@@ -10,7 +10,7 @@
     <div class="connection">
         <h1 class="title">Connection</h1>
         <div class="form">
-            {{ form_start(form) }}
+            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
             {{ form_label(form.identifiant, 'Identifiant :') }}<br>
             {{ form_widget(form.identifiant) }}
             <br>
@@ -20,8 +20,15 @@
             {{ form_row(form.bouton, {
                 'label': 'Se connecter'
             }) }}
-
             {{ form_end(form) }}
+
+            {# Affichage des messages flash d'erreur #}
+            {% for message in app.flashes('errorID') %}
+                <div class="alert-danger-ID">{{ message }}</div>
+            {% endfor %}
+            {% for message in app.flashes('errorMDP') %}
+                <div class="alert-danger-MDP">{{ message }}</div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}

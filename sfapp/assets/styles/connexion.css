@@ -50,3 +50,27 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: #ffed4a;
 }
+
+.alert.alert-danger {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.alert-danger {
+    background-color: #ffe6e6;
+    border: 2px solid #ff4d4d;
+    color: #cc0000;
+}
