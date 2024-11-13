@@ -1,0 +1,82 @@
+body {
+    min-height: 95vh;
+    min-width: 95vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: xx-large;
+}
+
+.connection{
+    display: flex;
+    flex-flow: column;
+    background-color: lightgray;
+    border-radius: 30px;
+}
+
+.title{
+    margin: 1vh;
+}
+
+.form{
+    display: flex;
+    justify-content: center;
+    flex-flow: column;
+    border-radius: 30px;
+    margin-bottom: 1vh;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid #ffe900;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+button[type="submit"] {
+    margin-top: 1vh;
+    background-color: #ffd700;
+    color: #000;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #ffed4a;
+}
+
+.alert.alert-danger {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+.alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 600px;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.alert-danger-ID {
+    background-color: #ffe6e6;
+    border: 2px solid #ff4d4d;
+    color: #cc0000
+}
+.alert-danger-MDP{
+    background-color: #ffe6e6;
+    border: 2px solid #ff4d4d;
+    color: #cc0000;
+}

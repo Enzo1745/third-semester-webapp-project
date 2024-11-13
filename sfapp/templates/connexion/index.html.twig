@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connection{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/connexion.css') }}">
+{% endblock %}
+
+{% block body %}
+    <!-- connection page -->
+
+    <div class="connexion">
+        <h1 class="title">Connexion</h1>
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        <div class="form">
+            {{ form_label(form.username, 'Identifiant :') }}
+            <br>
+            {{ form_widget(form.username) }}
+            <br>
+        </div>
+        <div>
+            {% for message in app.flashes('errorUser') %}
+                <div class="alert-danger-User">{{ message }}</div>
+            {% endfor %}
+            <br>
+        </div>
+        <div class="form">
+            {{ form_label(form.password, 'Mot de passe :') }}
+            {{ form_widget(form.password) }}
+            <br>
+        </div>
+        <div>
+            {% for message in app.flashes('errorPWD') %}
+                <div class="alert-danger-PWD">{{ message }}</div>
+            {% endfor %}
+        </div>
+        <div class="form">
+            <br>
+            {{ form_row(form.button, {
+                'label': 'Se connecter'
+            }) }}
+        </div>
+        {{ form_end(form) }}
+    </div>
+{% endblock %}
