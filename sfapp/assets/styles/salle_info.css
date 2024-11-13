@@ -1,0 +1,63 @@
+.salle-container {
+    background-color: #f2c94c;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.retour-btn {
+    background-color: #e0e0e0;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.salle-num {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+}
+
+.salle-details {
+    border: 2px solid #000000;
+    padding: 20px;
+    background-color: #f2c94c;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.detail-block {
+    text-align: center;
+}
+
+.label {
+    background-color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 50%;
+    font-weight: bold;
+}
+
+.value {
+    padding: 10px 20px;
+    border-radius: 50%;
+    margin-top: 10px;
+}
+
+.temp {
+    background-color: #6fcf97;
+}
+
+.humidity {
+    background-color: #f2e466;
+}
+
+.co2 {
+    background-color: #eb5757;
+}
