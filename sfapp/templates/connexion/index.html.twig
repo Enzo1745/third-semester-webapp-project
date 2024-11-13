@@ -7,30 +7,39 @@
 {% endblock %}
 
 {% block body %}
-    <!-- page de la connexion -->
+    <!-- connection page -->
 
-    <div class="connection">
-        <h1 class="title">Connection</h1>
+    <div class="connexion">
+        <h1 class="title">Connexion</h1>
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
         <div class="form">
-            {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-            {{ form_label(form.identifiant, 'Identifiant :') }}<br>
-            {{ form_widget(form.identifiant) }}
+            {{ form_label(form.username, 'Identifiant :') }}
             <br>
-            {{ form_label(form.motdepasse, 'Mot de passe :') }}<br>
-            {{ form_widget(form.motdepasse) }}
+            {{ form_widget(form.username) }}
             <br>
-            {{ form_row(form.bouton, {
-                'label': 'Se connecter'
-            }) }}
-            {{ form_end(form) }}
-
-            {# Affichage des messages flash d'erreur #}
-            {% for message in app.flashes('errorID') %}
-                <div class="alert-danger-ID">{{ message }}</div>
+        </div>
+        <div>
+            {% for message in app.flashes('errorUser') %}
+                <div class="alert-danger-User">{{ message }}</div>
             {% endfor %}
-            {% for message in app.flashes('errorMDP') %}
-                <div class="alert-danger-MDP">{{ message }}</div>
+            <br>
+        </div>
+        <div class="form">
+            {{ form_label(form.password, 'Mot de passe :') }}
+            {{ form_widget(form.password) }}
+            <br>
+        </div>
+        <div>
+            {% for message in app.flashes('errorPWD') %}
+                <div class="alert-danger-PWD">{{ message }}</div>
             {% endfor %}
         </div>
+        <div class="form">
+            <br>
+            {{ form_row(form.button, {
+                'label': 'Se connecter'
+            }) }}
+        </div>
+        {{ form_end(form) }}
     </div>
 {% endblock %}

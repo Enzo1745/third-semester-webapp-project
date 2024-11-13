@@ -11,44 +11,44 @@ use Symfony\Component\Routing\Attribute\Route;
 class ConnexionController extends AbstractController
 {
 
-    //gestion de la page de connexion
-    #[Route('/connexion', name: 'app_connection')]
+    // Connection page controller
+    #[Route('/connexion', name: 'app_connexion')]
     public function index(Request $request): Response
     {
-        // Creation du formulaire de connexion
+        // Creation the connection form
         $form = $this->createForm(ConnectionType::class);
         $form->handleRequest($request);
 
-        // obtention du contenu des sections identifiant et mod de passe du formulaire
-        $identifiant = $form->get('identifiant')->getData();
-        $password = $form->get('motdepasse')->getData();
+        // getting the content int the ID and password fields
+        $username = $form->get('username')->getData();
+        $password = $form->get('password')->getData();
 
-        // Code dans le cas ou l'utilisateur essaye de se connecter
+        // script when the user tries to connect
         if ($form->isSubmitted()) {
-            // Affichage des errreurs si les champs identifiants ou mit de passe sont vides
-            if (empty($identifiant)) {
-                $this->addFlash('errorID', 'Le champ Identifiant est obligatoire');
+            // showing errors whent there are empty fields
+            if (empty($username)) {
+                $this->addFlash('errorUser', 'Le champ Identifiant est obligatoire');
             }
 
             if (empty($password)) {
-                $this->addFlash('errorMDP', 'Le champ Mot de passe est obligatoire');
+                $this->addFlash('errorPWD', 'Le champ Mot de passe est obligatoire');
             }
 
-            // redirection vers la page de succès si le formulaire est valide et si les champs identifiants et mot de passe sont remplis
-            if ($form->isValid() && !empty($identifiant) && !empty($password)) {
+            // redirection to the temporary succes page when the form is valid and when the Id and pwd fields are not empty
+            if ($form->isValid() && !empty($username) && !empty($password)) {
                 return $this->redirectToRoute('app_connection_sucess');
             }
         }
 
-        // Retourner le formulaire avec les erreurs affichées s'il y en a
+        // Retrun to the connetion form whith the errors when the connection fails
         return $this->render('connexion/index.html.twig', [
             'form' => $form->createView(),
         ]);
     }
 
 
-    // gestion de la page de succes
-    #[Route('/connexion/done', name: 'app_connection_sucess')]
+    // temporary succes page controller
+    #[Route('/connexion/succes', name: 'app_connection_sucess')]
     public function connectionReussie(): Response
     {
         return $this->render('connexion/succes.html.twig');

@@ -7,53 +7,56 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ConnexionTest extends WebTestCase
 {
+    // check if an errors appears to the user if there is no Username or password in the connection form
     public function testIdentifiantFieldIsRequired(): void
     {
         $client = static::createClient();
 
-        // Accéder à la page de connexion
+        // Access the connection page
         $crawler = $client->request('GET', '/connexion');
 
-        // Vérifier si la page de connexion est récupérée
+        // check if we are into the connection page
         $this->assertResponseIsSuccessful();
 
-        // Récupérer le formulaire
+        // get the connection form
         $form = $crawler->selectButton('Se connecter')->form();
 
-        // Soumettre un formulaire avec des champs vides
-        $form['connection[identifiant]'] = '';
-        $form['connection[motdepasse]'] = '';
+        // submit an empty form
+        $form['connection[username]'] = '';
+        $form['connection[password]'] = '';
 
-        // Soumettre le formulaire
+        // submit the empty form
         $client->submit($form);
 
-        // Vérifier que le message d'erreur s'affiche pour l'identifiant
-        $this->assertSelectorTextContains('.alert-danger-ID', 'Le champ Identifiant est obligatoire');
+        // check if the error message apears for the empty ID
+        $this->assertSelectorTextContains('.alert-danger-User', 'Le champ Identifiant est obligatoire');
 
-        // Vérifier que le message d'erreur s'affiche pour le mot de passe
-        $this->assertSelectorTextContains('.alert-danger-MDP', 'Le champ Mot de passe est obligatoire');
+        // check if the error message apears for the empty Password
+        $this->assertSelectorTextContains('.alert-danger-PWD', 'Le champ Mot de passe est obligatoire');
     }
+
+    // Check if the form redirects to the succes page if the form is correctly submitted
     public function testFormSubmittedWithValidData(): void
     {
         $client = static::createClient();
 
-        // Accéder à la page de connexion
+        // Access the connection page
         $crawler = $client->request('GET', '/connexion');
 
-        // Soumettre le formulaire avec des données valides
+        // Submit the form with valid data
         $form = $crawler->selectButton('Se connecter')->form([
-            'connection[identifiant]' => 'user@example.com',
-            'connection[motdepasse]' => 'password123',
+            'connection[username]' => 'usernameexample',
+            'connection[password]' => 'password123',
         ]);
 
         $client->submit($form);
 
-        // Vérifier que le formulaire redirige vers la page de succès
-        $this->assertResponseRedirects('/connexion/done');
+        // check if the form redirecs to the succes page
+        $this->assertResponseRedirects('/connexion/succes');
 
-        // Suivre la redirection et vérifier que la page de succès s'affiche
+        // Follows the redirection and check of the page apears
         $client->followRedirect();
-        // Vérifier que l'URL actuelle est bien /connexion/done
-        $this->assertSame('/connexion/done', $client->getRequest()->getRequestUri());
+        // check if the URL is /connexion/done
+        $this->assertSame('/connexion/succes', $client->getRequest()->getRequestUri());
     }
 }

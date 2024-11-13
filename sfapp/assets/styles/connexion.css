@@ -21,6 +21,7 @@ body {
 .form{
     display: flex;
     justify-content: center;
+    flex-flow: column;
     border-radius: 30px;
     margin-bottom: 1vh;
 }
@@ -69,7 +70,12 @@ button[type="submit"]:hover {
 }
 
 
-.alert-danger {
+.alert-danger-ID {
+    background-color: #ffe6e6;
+    border: 2px solid #ff4d4d;
+    color: #cc0000
+}
+.alert-danger-MDP{
     background-color: #ffe6e6;
     border: 2px solid #ff4d4d;
     color: #cc0000;

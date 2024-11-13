@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+
+// the user table
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
-class Utilisateur
+class User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,10 +16,10 @@ class Utilisateur
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nomUtilisateur = null;
+    private ?string $username = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $motDePasse = null;
+    private ?string $password = null;
 
     #[ORM\Column(length: 255)]
     private ?string $role = null;
@@ -27,26 +29,26 @@ class Utilisateur
         return $this->id;
     }
 
-    public function getNomUtilisateur(): ?string
+    public function getUsername(): ?string
     {
-        return $this->nomUtilisateur;
+        return $this->username;
     }
 
-    public function setNomUtilisateur(string $nomUtilisateur): static
+    public function setUsername(string $username): static
     {
-        $this->nomUtilisateur = $nomUtilisateur;
+        $this->username = $username;
 
         return $this;
     }
 
     public function getMotDePasse(): ?string
     {
-        return $this->motDePasse;
+        return $this->password;
     }
 
-    public function setMotDePasse(string $motDePasse): static
+    public function setPassword(string $password): static
     {
-        $this->motDePasse = $motDePasse;
+        $this->password = $password;
 
         return $this;
     }
