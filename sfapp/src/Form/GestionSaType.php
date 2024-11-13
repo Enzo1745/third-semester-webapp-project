@@ -36,6 +36,7 @@ class GestionSaType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Sa::class,
+            'salle' => null,
         ]);
     }
 }

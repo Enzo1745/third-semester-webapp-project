@@ -30,14 +30,7 @@ class GestionSaController extends AbstractController
                 'error_message' => "Aucun SA disponible."
             ]);
         }
-        elseif ($nbSalle < 1)
-        {
-            return $this->render('gestion_sa/index.html.twig', [
-                'form' => null,
-                'nbSaDispo' => $nbSa,
-                'error_message' => "Aucune salle disponible."
-            ]);
-        }
+
 
         // Si le nombre de SA disponibles est supérieur à 0, on continue normalement pour afficher le formulaire
         $sa = $saRepo->findOneBy(['etat' => EtatSA::Dispo]);
@@ -56,6 +49,15 @@ class GestionSaController extends AbstractController
 
         $nbSa = $saRepo->countBySaState();
 
+        $nbSalle = $salleRepo->countBySaAvailable();
+
+        if ($nbSalle < 1) {
+            return $this->render('gestion_sa/index.html.twig', [
+                'form' => null,
+                'nbSaDispo' => $nbSa,
+                'error_message' => "Aucune salle disponible.",
+            ]);
+        }
         return $this->render('gestion_sa/index.html.twig', [
             'form' => $form->createView(),
             'nbSaDispo' => $nbSa,
