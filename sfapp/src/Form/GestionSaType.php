@@ -23,7 +23,7 @@ class GestionSaType extends AbstractType
                 'query_builder' => function (SalleRepository $er) {
                     return $er->createQueryBuilder('s')
                         ->leftJoin('App\Entity\Sa', 'sa', 'WITH', 'sa.salle = s.id')  // Jointure avec la table sa
-                        ->where('sa.salle IS NULL');  // Filtre sur les sa qui n'ont pas de salle
+                        ->where('sa.salle IS NULL ');  // Filtre sur les sa qui n'ont pas de salle
                 },
             ])
 

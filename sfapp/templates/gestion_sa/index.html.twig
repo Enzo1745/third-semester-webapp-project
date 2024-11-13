@@ -13,7 +13,9 @@
         {% if form is not null %}
             {{ form(form) }}
         {% else %}
-            <p>Aucun SA disponible.</p>
+            {% if error_message is not null %}
+                {{ error_message }}
+            {% endif %}
         {% endif %}
         <br>
     </div>
