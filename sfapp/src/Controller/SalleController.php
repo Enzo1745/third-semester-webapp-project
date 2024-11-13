@@ -23,14 +23,17 @@ class SalleController extends AbstractController
     }
 
     #[Route('/charge/salles/liste', name: 'app_salle_liste')]
-    public function liste(): Response
+    public function listerSalles(SalleRepository $salleRepository): Response
     {
+        $salles = $salleRepository->findAllOrderedByNumSalle();
+
         return $this->render('salle/liste_salles.html.twig', [
+            'salles' => $salles
         ]);
     }
 
     #[Route('/charge/salles/liste/{NumSalle}', name: 'app_salle_info')]
-    public function salle_info(string $NumSalle, SalleRepository $salleRepository): Response
+    public function trouverInfosSalles(string $NumSalle, SalleRepository $salleRepository): Response
     {
         $salle = $salleRepository->findByNumSalle($NumSalle);
 

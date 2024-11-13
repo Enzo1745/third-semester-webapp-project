@@ -14,16 +14,13 @@
     </header>
 
     <div class="container">
-        <div>Salles</div>
-        <div>Details</div>
+        <div class="firstRow">Salles</div>
+        <div class="firstRow">Details</div>
 
-        <div>Exemple1</div>
-        <div><a href="{{ path('app_salle_info', { 'NumSalle': 'D204' }) }}">Voir détails</a></div>
-
-{#        {{ for salle in salles }}#}
-{#            <div>{{ salle.name }}</div>#}
-{#            <a href="{{ Route }}">Voir plus</a>#}
-{#        {{ endfor }}#}
+        {% for salle in salles %}
+            <div>{{ salle.NumSalle }}</div>
+            <div><a href="{{ path('app_salle_info', { 'NumSalle': salle.NumSalle }) }}">Voir détails</a></div>
+        {% endfor %}
     </div>
 
 {% endblock %}

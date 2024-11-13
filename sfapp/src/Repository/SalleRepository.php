@@ -16,6 +16,14 @@ class SalleRepository extends ServiceEntityRepository
         parent::__construct($registry, Salle::class);
     }
 
+    public function findAllOrderedByNumSalle(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->orderBy('s.NumSalle', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     public function findByNumSalle(string $NumSalle): ?Salle
     {
         return $this->createQueryBuilder('s')
