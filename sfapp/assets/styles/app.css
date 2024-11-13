@@ -1,6 +1,5 @@
 body{
-    background: rgb(223,254,255);
-    background: radial-gradient(circle, rgba(223,254,255,1) 0%, rgba(193,245,255,1) 100%);
+    background: #373c42;
     height: 100vh;
     font-family: Arial, "Comic Sans MS";
     color: #0d0d0d;

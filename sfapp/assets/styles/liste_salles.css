@@ -4,6 +4,7 @@ header{
     align-items: center;
 }
 .container{
+    background-color: #e9ecef;
     margin: 20px 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);

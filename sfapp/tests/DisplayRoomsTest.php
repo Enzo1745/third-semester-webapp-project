@@ -14,6 +14,4 @@ class DisplayRoomsTest extends WebTestCase
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Hello World');
     }
-
-
 }
