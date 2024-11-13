@@ -11,7 +11,9 @@
         <p>Nombre de SA disponibles : {{ nbSaDispo }}</p>
         <br>
         {% if form is not null %}
-            {{ form(form) }}
+            <form name="form_name" method="post">
+                {{ form(form) }}
+            </form>
         {% else %}
             {% if error_message is not null %}
                 {{ error_message }}
