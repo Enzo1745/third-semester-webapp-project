@@ -20,6 +20,15 @@ class Sa
     #[ORM\OneToOne(inversedBy: 'sa', cascade: ['persist', 'remove'])]
     private ?Salle $salle = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?int $Temperature = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $Humidite = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $CO2 = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +54,42 @@ class Sa
     public function setSalle(?Salle $salle): static
     {
         $this->salle = $salle;
+
+        return $this;
+    }
+
+    public function getTemperature(): ?int
+    {
+        return $this->Temperature;
+    }
+
+    public function setTemperature(int $Temperature): static
+    {
+        $this->Temperature = $Temperature;
+
+        return $this;
+    }
+
+    public function getHumidite(): ?int
+    {
+        return $this->Humidite;
+    }
+
+    public function setHumidite(int $Humidite): static
+    {
+        $this->Humidite = $Humidite;
+
+        return $this;
+    }
+
+    public function getCO2(): ?int
+    {
+        return $this->CO2;
+    }
+
+    public function setCO2(int $CO2): static
+    {
+        $this->CO2 = $CO2;
 
         return $this;
     }

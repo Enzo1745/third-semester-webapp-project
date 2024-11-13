@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Repository\SalleRepository;
+use App\Repository\SaRepository;
 
 class SalleController extends AbstractController
 {
@@ -33,12 +34,14 @@ class SalleController extends AbstractController
     }
 
     #[Route('/charge/salles/liste/{NumSalle}', name: 'app_salle_info')]
-    public function trouverInfosSalles(string $NumSalle, SalleRepository $salleRepository): Response
+    public function trouverInfosSalles(string $NumSalle, SalleRepository $salleRepository, SaRepository $saRepository): Response
     {
         $salle = $salleRepository->findByNumSalle($NumSalle);
+        $sa = $salle->getIdSA();
 
         return $this->render('salle/salle_info.html.twig', [
-            'salle' => $salle
+            'salle' => $salle,
+            'sa' => $sa
         ]);
     }
 }

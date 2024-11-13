@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use templates\Repository\SalleRepository;
+use App\Repository\SalleRepository;
 
 #[ORM\Entity(repositoryClass: SalleRepository::class)]
 class Salle
@@ -16,8 +16,9 @@ class Salle
     #[ORM\Column(length: 255)]
     private ?string $NumSalle = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $IdSA = null;
+    #[ORM\OneToOne(targetEntity: Sa::class, inversedBy: 'salle')]
+    #[ORM\JoinColumn(name: 'id_sa', referencedColumnName: 'id', nullable: true)]
+    private ?Sa $IdSA = null;
 
     public function getId(): ?int
     {
@@ -43,12 +44,12 @@ class Salle
         return $this;
     }
 
-    public function getIdSA(): ?int
+    public function getIdSA(): ?Sa
     {
         return $this->IdSA;
     }
 
-    public function setIdSA(?int $IdSA): static
+    public function setIdSA(?Sa $IdSA): static
     {
         $this->IdSA = $IdSA;
 

@@ -2,8 +2,30 @@
 
 {% block title %}Détails de la salle{% endblock %}
 
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/salle_info.css') }}">
+{% endblock %}
+
 {% block body %}
+    <div class="salle-container">
+        <div class="header">
+            <button class="retour-btn" onclick="history.back()">Retour</button>
+            <div class="salle-num">{{ salle.numSalle }}</div>
+        </div>
 
-    <h1>Vous êtes dans la salle numéro {{ salle.numSalle }}, son id est {{ salle.id }}</h1>
-
+        <div class="salle-details">
+            <div class="detail-block">
+                <div class="label">T°</div>
+                <div class="value temp">{{ sa.temperature }}°</div>
+            </div>
+            <div class="detail-block">
+                <div class="label">H°</div>
+                <div class="value humidity">{{ sa.humidite }}%</div>
+            </div>
+            <div class="detail-block">
+                <div class="label">Co²</div>
+                <div class="value co2">{{ sa.CO2 }}</div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

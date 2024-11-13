@@ -17,3 +17,7 @@ header{
 .firstRow{
     font-weight: bold;
 }
+.noData{
+    font-style: italic;
+    text-decoration: underline;
+}

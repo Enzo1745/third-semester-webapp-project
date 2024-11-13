@@ -18,8 +18,13 @@
         <div class="firstRow">Details</div>
 
         {% for salle in salles %}
-            <div>{{ salle.NumSalle }}</div>
-            <div><a href="{{ path('app_salle_info', { 'NumSalle': salle.NumSalle }) }}">Voir détails</a></div>
+            {% if salle.IdSA is not null %}
+                <div>{{ salle.NumSalle }}</div>
+                <div><a href="{{ path('app_salle_info', { 'NumSalle': salle.NumSalle }) }}">Voir détails</a></div>
+            {% else %}
+                <div>{{ salle.NumSalle }}</div>
+                <div class="noData">Aucune donnée</div>
+            {% endif %}
         {% endfor %}
     </div>
 
