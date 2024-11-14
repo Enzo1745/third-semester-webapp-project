@@ -70,4 +70,19 @@ class RoomController extends AbstractController
             'room' => $room
         ]);
     }
+
+    #[Route('/charge/salles/supprimer/{id}', name: 'app_room_delete')]
+    public function delete(Room $room, EntityManagerInterface $entityManager): Response
+    {
+        // Supprime la salle
+        $entityManager->remove($room);
+        $entityManager->flush();
+
+        // Ajoute un message flash de succès
+        $this->addFlash('success', 'La salle a été supprimée avec succès.');
+
+        // Redirige vers la liste des salles
+        return $this->redirectToRoute('app_room_list');
+    }
+
 }

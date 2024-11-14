@@ -10,22 +10,27 @@
 
     <header>
         <h1>Liste des salles</h1>
-        <a href="/charge/salles">Retour</a>
+        <a href="/charge/salles"><button>Retour</button></a>
     </header>
 
     <div class="container">
         <div class="firstRow">Salles</div>
-        <div class="firstRow">Details</div>
+        <div class="firstRow">Détails</div>
+        <div class="firstRow">Supprimer</div>
 
-        {# Displays an error text if there is no room #}
         {% if rooms is empty %}
             <p>Aucune salle n'est disponible.</p>
-
-        {# Else, display all rooms with a hyperlink to their respective details #}
         {% else %}
             {% for room in rooms %}
                 <div class="rooms-item">{{ room.roomNumber }}</div>
-                <div><a href="{{ path('app_room_info', { 'roomNumber': room.roomNumber }) }}">View details</a></div>
+                <div><a href="{{ path('app_room_info', { 'roomNumber': room.roomNumber }) }}"><button>Détails Salle</button></a></div>
+                <div>
+                    <a href="{{ path('app_room_delete', { 'id': room.id }) }}"
+                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette salle ?');">
+                        <button>Supprimer</button>
+
+                    </a>
+                </div>
             {% endfor %}
         {% endif %}
     </div>
