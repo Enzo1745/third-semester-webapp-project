@@ -16,7 +16,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SaManagementController extends AbstractController
 {
-    #[Route('charge/gestion_sa', name: 'app_gestion_sa')]
+    #[Route('charge/gestion_sa/associer', name: 'app_gestion_sa')]
     public function index(Request $request, EntityManagerInterface $manager, SaRepository $saRepo, RoomRepository $salleRepo): Response
     {
         $nbSa = $saRepo->countBySaState();
