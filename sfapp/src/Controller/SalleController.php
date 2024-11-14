@@ -27,14 +27,18 @@ class SalleController extends AbstractController
     #[Route('/charge/salles/liste', name: 'app_salle_liste')]
     public function listerSalles(SalleRepository $salleRepository, Request $request): Response
     {
-        $salles = $salleRepository->findAllOrderedByNumSalle();
 
-        $form = $this->createForm( SerchSalleSaType::class, $salles);
+
+        $form = $this->createForm( SerchSalleSaType::class);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            // Filter results based on form data
+        //getting the active filter
+        $choice = $form->get('filtre')->getData();
+        if ($choice == 'SallesAvecSa') {
             $salles = $salleRepository->findAllWithIdSA();
+        }
+        else{
+            $salles = $salleRepository->findAllOrderedByNumSalle();
         }
 
         return $this->render('salle/liste_salles.html.twig', [

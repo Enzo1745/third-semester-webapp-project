@@ -33,6 +33,15 @@ class SalleRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findAllWithIdSA(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.IdSA IS NOT NULL')
+            ->orderBy('s.NumSalle', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Salle[] Returns an array of Salle objects
     //     */
