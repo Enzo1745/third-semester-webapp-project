@@ -25,7 +25,7 @@
         {% else %}
             {% for room in rooms %}
                 <div class="rooms-item">{{ room.roomNumber }}</div>
-                <div><a href="{{ path('app_room_info', { 'roomNumber': room.roomNumber }) }}">View details</a></div>
+                <div><a href="{{ path('app_room_info', { 'roomNumber': room.roomNumber }) }}">Voir détails</a></div>
             {% endfor %}
         {% endif %}
     </div>
