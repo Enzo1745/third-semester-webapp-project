@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des salles{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/liste_salles.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    <header>
+        <h1>Liste des salles</h1>
+        <a href="/charge/salles">Retour</a>
+    </header>
+
+    <div class="container">
+        <div class="firstRow">Salles</div>
+        <div class="firstRow">Details</div>
+
+        {# Displays an error text if there is no room #}
+        {% if rooms is empty %}
+            <p>Aucune salle n'est disponible.</p>
+
+        {# Else, display all rooms with a hyperlink to their respective details #}
+        {% else %}
+            {% for room in rooms %}
+                <div class="rooms-item">{{ room.roomNumber }}</div>
+                <div><a href="{{ path('app_room_info', { 'roomNumber': room.roomNumber }) }}">Voir détails</a></div>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+{% endblock %}
