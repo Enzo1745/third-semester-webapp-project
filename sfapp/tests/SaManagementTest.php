@@ -47,7 +47,7 @@ class SaManagementTest extends WebTestCase
         // **Effectuer le test**
 
         // Faire la requête GET
-        $crawler = $this->client->request('GET', '/charge/gestion_sa');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
         // Vérifier que la réponse est réussie
         $this->assertResponseIsSuccessful();
@@ -83,7 +83,7 @@ class SaManagementTest extends WebTestCase
         // **Effectuer le test**
 
         // Faire la requête GET
-        $crawler = $this->client->request('GET', '/charge/gestion_sa');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
         // Vérifier que la réponse est réussie
         $this->assertResponseIsSuccessful();
@@ -114,7 +114,7 @@ class SaManagementTest extends WebTestCase
         // **Effectuer le test**
 
         // Faire la requête GET
-        $crawler = $this->client->request('GET', '/charge/gestion_sa');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
         // Vérifier que la réponse est réussie
         $this->assertResponseIsSuccessful();
@@ -143,7 +143,7 @@ class SaManagementTest extends WebTestCase
         $entityManager->flush();
 
         // Afficher le formulaire et soumettre les données
-        $crawler = $client->request('GET', '/charge/gestion_sa');
+        $crawler = $client->request('GET', '/charge/gestion_sa/associer');
         $form = $crawler->selectButton('Associer')->form([
             'sa_management[salle]' => $salle->getId(),
         ]);
