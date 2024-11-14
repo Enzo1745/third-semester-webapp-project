@@ -13,6 +13,7 @@
             "src/Repository/.gitignore"
         ]
     },
+<<<<<<< HEAD
     "doctrine/doctrine-fixtures-bundle": {
         "version": "3.6",
         "recipe": {
@@ -25,6 +26,8 @@
             "src/DataFixtures/AppFixtures.php"
         ]
     },
+=======
+>>>>>>> US_4-AfficherListeSalles
     "doctrine/doctrine-migrations-bundle": {
         "version": "3.3",
         "recipe": {
@@ -39,7 +42,11 @@
         ]
     },
     "phpunit/phpunit": {
+<<<<<<< HEAD
         "version": "11.4",
+=======
+        "version": "9.6",
+>>>>>>> US_4-AfficherListeSalles
         "recipe": {
             "repo": "github.com/symfony/recipes",
             "branch": "main",
@@ -160,6 +167,7 @@
             "templates/base.html.twig"
         ]
     },
+<<<<<<< HEAD
     "symfony/validator": {
         "version": "6.4",
         "recipe": {
@@ -172,6 +180,8 @@
             "config/packages/validator.yaml"
         ]
     },
+=======
+>>>>>>> US_4-AfficherListeSalles
     "twig/extra-bundle": {
         "version": "v3.13.0"
     }

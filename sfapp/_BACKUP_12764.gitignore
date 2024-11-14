@@ -14,7 +14,23 @@
 /assets/vendor/
 ###< symfony/asset-mapper ###
 
-###> phpunit/phpunit ###
+<<<<<<< HEAD
 ###> phpunit/phpunit ###
 /phpunit.xml
 .phpunit.result.cache
+###< phpunit/phpunit ###
+
+=======
+>>>>>>> US_4-AfficherListeSalles
+###> symfony/phpunit-bridge ###
+.phpunit.result.cache
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+<<<<<<< HEAD
+=======
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
+>>>>>>> US_4-AfficherListeSalles
