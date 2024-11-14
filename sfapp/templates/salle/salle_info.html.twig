@@ -13,19 +13,25 @@
             <div class="salle-num">{{ salle.numSalle }}</div>
         </div>
 
-        <div class="salle-details">
-            <div class="detail-block">
-                <div class="label">T°</div>
-                <div class="value temp">{{ sa.temperature }}°</div>
+        {% if sa.temperature is null and sa.humidite is null and sa.CO2 is null %}
+            <div class="salle-details">
+                <div>Aucunes données</div>
             </div>
-            <div class="detail-block">
-                <div class="label">H°</div>
-                <div class="value humidity">{{ sa.humidite }}%</div>
+        {% else %}
+            <div class="salle-details">
+                <div class="detail-block">
+                    <div class="label">T°</div>
+                    <div class="value temp">{{ sa.temperature }}°</div>
+                </div>
+                <div class="detail-block">
+                    <div class="label">H°</div>
+                    <div class="value humidity">{{ sa.humidite }}%</div>
+                </div>
+                <div class="detail-block">
+                    <div class="label">Co²</div>
+                    <div class="value co2">{{ sa.CO2 }}</div>
+                </div>
             </div>
-            <div class="detail-block">
-                <div class="label">Co²</div>
-                <div class="value co2">{{ sa.CO2 }}</div>
-            </div>
-        </div>
+        {% endif %}
     </div>
 {% endblock %}

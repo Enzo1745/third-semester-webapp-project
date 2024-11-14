@@ -23,7 +23,7 @@
                 <div><a href="{{ path('app_salle_info', { 'NumSalle': salle.NumSalle }) }}">Voir détails</a></div>
             {% else %}
                 <div>{{ salle.NumSalle }}</div>
-                <div class="noData">Aucune donnée</div>
+                <div class="noData">Aucun SA associé</div>
             {% endif %}
         {% endfor %}
     </div>
