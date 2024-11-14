@@ -6,7 +6,7 @@
     <h1>Liste des systèmes d'acquisition</h1>
 
     <div class="newSA">
-        <a href="">Associer un nouveau système d'acqusition</a>
+        <button><a href="">Associer un nouveau système d'acqusition</a></button>
     </div>
     <div class="listSa">
         {% if saList is empty %}
@@ -25,9 +25,9 @@
                 <tbody>
                     {% for sa in saList %}
                         <tr>
-                            <td>{{ sa.id }}</td>
+                            <td class="idSa">{{ sa.id }}</td>
                             {% if sa.salle is not null %}
-                                <td>{{ sa.salle }}</td>
+                                <td class="roomName">{{ sa.salle }}</td>
                                 <td><a href="">Dissocier</a></td>
                             {% else %}
                                 <td>Aucune</td>
@@ -39,5 +39,9 @@
             </table>
         {% endif %}
 
+    </div>
+
+    <div class="return">
+        <button><a href="">Retour à la liste</a></button>
     </div>
 {% endblock %}
