@@ -13,7 +13,7 @@ class Salle
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(name: 'nomSalle',length: 255)]
     private ?string $nomSalle = null;
 
     #[ORM\OneToOne(mappedBy: 'salle', cascade: ['persist', 'remove'])]

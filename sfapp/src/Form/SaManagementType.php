@@ -19,14 +19,13 @@ class SaManagementType extends AbstractType
         $builder
             ->add('salle', EntityType::class, [
                 'class' => Salle::class,
-                'choice_label' => 'nom_salle',
+                'choice_label' => 'nomSalle', // Correction ici : utiliser 'nomSalle' au lieu de 'nom_salle'
                 'query_builder' => function (RoomRepository $er) {
                     return $er->createQueryBuilder('s')
-                        ->leftJoin('App\Entity\Sa', 'sa', 'WITH', 'sa.salle = s.id')  // Jointure avec la table sa
-                        ->where('sa.salle IS NULL ');  // Filtre sur les sa qui n'ont pas de salle
+                        ->leftJoin('App\Entity\Sa', 'sa', 'WITH', 'sa.salle = s.id')
+                        ->where('sa.salle IS NULL');
                 },
             ])
-
             ->add('save', SubmitType::class, [
                 'label' => 'Associer',
             ]);
