@@ -37,11 +37,11 @@ class RoomController extends AbstractController
                 ->findOneBy(['roomNumber' => $newRoom->getRoomNumber()]);
 
             if ($existingRoom) {
-                $this->addFlash('error', 'This room already exists!');
+                $this->addFlash('error', 'Cette salle existe déja');
             } else {
                 $entityManager->persist($newRoom);
                 $entityManager->flush();
-                $this->addFlash('success', 'The room has been successfully added!');
+                $this->addFlash('success', 'Ajout réussi de la salle');
             }
             return $this->redirectToRoute('app_room_management');
         }
@@ -71,7 +71,8 @@ class RoomController extends AbstractController
         ]);
     }
 
-    #[Route('/charge/salles/supprimer/{id}', name: 'app_room_delete')]
+
+    #[Route('/charge/salles/supprimer/{id}', name: 'app_room_delete', methods: ['POST'])]
     public function delete(Room $room, EntityManagerInterface $entityManager): Response
     {
         // Supprime la salle

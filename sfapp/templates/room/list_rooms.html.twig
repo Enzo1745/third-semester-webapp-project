@@ -23,13 +23,12 @@
         {% else %}
             {% for room in rooms %}
                 <div class="rooms-item">{{ room.roomNumber }}</div>
-                <div><a href="{{ path('app_room_info', { 'roomNumber': room.roomNumber }) }}"><button>Détails Salle</button></a></div>
+                <div><a href="{{ path('app_room_info', { 'roomNumber': room.roomNumber }) }}"><button>Voir détails</button></a></div>
                 <div>
-                    <a href="{{ path('app_room_delete', { 'id': room.id }) }}"
-                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette salle ?');">
-                        <button>Supprimer</button>
-
-                    </a>
+                    <form action="{{ path('app_room_delete', { 'id': room.id }) }}" method="post"
+                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette salle ?');">
+                        <button type="submit">Supprimer</button>
+                    </form>
                 </div>
             {% endfor %}
         {% endif %}
