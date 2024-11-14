@@ -17,9 +17,11 @@
         <div class="firstRow">Salles</div>
         <div class="firstRow">Details</div>
 
-
+        {# Displays an error text if there is no room #}
         {% if salles is empty %}
             <p>Aucune salle n'est disponible.</p>
+
+        {# Else, display all rooms with a hyperlink to their respective details #}
         {% else %}
             {% for salle in salles %}
                 <div class="salles-item">{{ salle.NumSalle }}</div>

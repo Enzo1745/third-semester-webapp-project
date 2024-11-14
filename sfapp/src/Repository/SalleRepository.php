@@ -18,6 +18,7 @@ class SalleRepository extends ServiceEntityRepository
 
     public function findAllOrderedByNumSalle(): array
     {
+        // Makes a Query that will find all rooms ordered by their name
         return $this->createQueryBuilder('s')
             ->orderBy('s.NumSalle', 'ASC')
             ->getQuery()
@@ -26,6 +27,7 @@ class SalleRepository extends ServiceEntityRepository
 
     public function findByNumSalle(string $NumSalle): ?Salle
     {
+        // This query searches for a room based on its name
         return $this->createQueryBuilder('s')
             ->andWhere('s.NumSalle = :NumSalle')
             ->setParameter('NumSalle', $NumSalle)
