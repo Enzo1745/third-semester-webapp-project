@@ -8,18 +8,9 @@
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
     <body>
-    {% for label, messages in app.flashes %}
-        {% for message in messages %}
-            <div class="flash-message flash-{{ label }}">
-                {{ message }}
-            </div>
-        {% endfor %}
-    {% endfor %}
-        {% block body %}
-        {% endblock %}
+        {% block body %}{% endblock %}
     </body>
 </html>
