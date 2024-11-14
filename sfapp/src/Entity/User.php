@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\RoomRepository;
 
-#[ORM\Entity(repositoryClass: RoomRepository::class)]
-class Room
+// the user table
+#[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
+class User
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -14,43 +15,50 @@ class Room
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $roomNumber = null;
+    private ?string $username = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $idAS = null;
+    #[ORM\Column(length: 255)]
+    private ?string $password = null;
+    #[ORM\Column(length: 255)]
+    private ?string $role = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $id): static
+    public function getUsername(): ?string
     {
-        $this->id = $id;
+        return $this->username;
+    }
+
+    public function setUsername(string $username): static
+    {
+        $this->username = $username;
 
         return $this;
     }
 
-    public function getRoomNumber(): ?string
+    public function getMotDePasse(): ?string
     {
-        return $this->roomNumber;
+        return $this->password;
     }
 
-    public function setRoomNumber(string $roomNumber): static
+    public function setPassword(string $password): static
     {
-        $this->roomNumber = $roomNumber;
+        $this->password = $password;
 
         return $this;
     }
 
-    public function getIdAS(): ?int
+    public function getRole(): ?string
     {
-        return $this->idAS;
+        return $this->role;
     }
 
-    public function setIdAS(?int $idAS): static
+    public function setRole(string $role): static
     {
-        $this->idAS = $idAS;
+        $this->role = $role;
 
         return $this;
     }

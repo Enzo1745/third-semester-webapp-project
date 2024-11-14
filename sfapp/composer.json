@@ -20,21 +20,14 @@
         "symfony/framework-bundle": "6.4.*",
         "symfony/runtime": "6.4.*",
         "symfony/twig-bundle": "6.4.*",
-<<<<<<< HEAD
         "symfony/validator": "6.4.*",
-=======
->>>>>>> US_4-AfficherListeSalles
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
-<<<<<<< HEAD
         "doctrine/doctrine-fixtures-bundle": "^3.6",
         "phpunit/phpunit": "^11.4",
-=======
-        "phpunit/phpunit": "^9.5",
->>>>>>> US_4-AfficherListeSalles
         "symfony/browser-kit": "6.4.*",
         "symfony/css-selector": "6.4.*",
         "symfony/maker-bundle": "^1.61",
