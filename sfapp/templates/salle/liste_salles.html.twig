@@ -13,6 +13,9 @@
         <a href="/charge/salles">Retour</a>
     </header>
 
+    <div>
+        {{ form(form) }}
+    </div>
     <div class="container">
         <div class="firstRow">Salles</div>
         <div class="firstRow">Details</div>
@@ -27,5 +30,18 @@
             {% endfor %}
         {% endif %}
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Sélectionner le champ du formulaire
+            const salleSelect = document.querySelector('#serch_salle_sa_type_salle');
+
+            // Ajouter un écouteur d'événement pour détecter les changements
+            salleSelect.addEventListener('change', function() {
+                // Soumettre le formulaire automatiquement lors du changement de sélection
+                document.getElementById('salle-form').submit();
+            });
+        });
+    </script>
 
 {% endblock %}
