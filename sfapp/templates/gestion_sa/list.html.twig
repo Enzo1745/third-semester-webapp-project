@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des systèmes d'acquisition{% endblock %}
+
+{% block body %}
+    <h1>Liste des systèmes d'acquisition</h1>
+
+    <div class="newSA">
+        <a href="">Associer un nouveau système d'acqusition</a>
+    </div>
+    <div class="listSa">
+        {% if saList is empty %}
+            <p>Aucun système d'acquisition n'est disponible.</p>
+
+        {% else %}
+            <table class="tab">
+                <thead>
+                    <tr>
+                        <th>Système d'acquisition</th>
+                        <th>Salle associée</th>
+                        <th>Option</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for sa in saList %}
+                        <tr>
+                            <td>{{ sa.id }}</td>
+                            {% if sa.salle is not null %}
+                                <td>{{ sa.salle }}</td>
+                                <td><a href="">Dissocier</a></td>
+                            {% else %}
+                                <td>Aucune</td>
+                                <td></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+
+    </div>
+{% endblock %}
