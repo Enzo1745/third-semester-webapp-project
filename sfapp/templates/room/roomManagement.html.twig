@@ -1,0 +1,26 @@
+
+
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Gestion des salles</h1>
+    {% block stylesheets %}
+        <link rel="stylesheet" href="sfapp/assets/styles/roomManagement.css">
+    {% endblock %}
+
+    {% for message in app.flashes('error') %}
+        <div class="alert alert-danger">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+
+    <h3>Ajouter une nouvelle salle</h3>
+    {{ form(formAddRoom) }}
+{% endblock %}
