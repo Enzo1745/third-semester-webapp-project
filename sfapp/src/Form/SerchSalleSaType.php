@@ -16,15 +16,16 @@ class SerchSalleSaType extends AbstractType
     {
         $builder
             ->add('filtre', ChoiceType::class, [
-                'choices' => [
+                'choices' => [ //filter list
                     'Aucun filtre' => 'Aucun',
                     'salles equipées d\'un SA' => 'SallesAvecSa',
+                    'salles avec aucun SA' => 'SalleSansSa',
                 ],
                 'expanded' => false,
                 'multiple' => false,
-                'data' => 'Aucun',
+                'data' => 'Aucun', //the default choice
                 'attr' => [
-                    'onchange' => 'this.form.submit()' // Soumission automatique lors du changement
+                    'onchange' => 'this.form.submit()' //Automatic submit when the Choice has changed
                 ],
                 'label' => 'Filtre : ',
             ])

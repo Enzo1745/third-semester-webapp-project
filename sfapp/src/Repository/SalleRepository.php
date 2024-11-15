@@ -33,10 +33,21 @@ class SalleRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    //the request that select only the rooms with an Aquisition system
     public function findAllWithIdSA(): array
     {
         return $this->createQueryBuilder('s')
             ->andWhere('s.IdSA IS NOT NULL')
+            ->orderBy('s.NumSalle', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    //the request that select only the rooms without an Aquisition system
+    public function findAllWithoutIdSA(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->andWhere('s.IdSA IS NULL')
             ->orderBy('s.NumSalle', 'ASC')
             ->getQuery()
             ->getResult();

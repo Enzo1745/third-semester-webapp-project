@@ -27,15 +27,18 @@ class SalleController extends AbstractController
     #[Route('/charge/salles/liste', name: 'app_salle_liste')]
     public function listerSalles(SalleRepository $salleRepository, Request $request): Response
     {
-
-
         $form = $this->createForm( SerchSalleSaType::class);
         $form->handleRequest($request);
 
         //getting the active filter
         $choice = $form->get('filtre')->getData();
+
+        // changing the content of the list depending on the selected filter
         if ($choice == 'SallesAvecSa') {
             $salles = $salleRepository->findAllWithIdSA();
+        }
+        else if ($choice == 'SalleSansSa') {
+            $salles = $salleRepository->findAllWithoutIdSA();
         }
         else{
             $salles = $salleRepository->findAllOrderedByNumSalle();
