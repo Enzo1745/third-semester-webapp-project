@@ -24,15 +24,19 @@ body {
     margin-bottom: 20px;
 }
 
-.retour-btn {
+.backButton {
     background-color: #151515;
     border: none;
     padding: 10px 20px;
     border-radius: 6px;
     cursor: pointer;
     font-weight: bold;
-    transition: background-color 0.3s;
+    text-decoration: none;
     color: #b5b5b5;
+}
+
+a:hover, a:active {
+    background-color: black;
 }
 
 .salle-num {
