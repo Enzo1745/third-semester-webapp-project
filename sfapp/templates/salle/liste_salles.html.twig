@@ -22,12 +22,12 @@
         <div class="firstRow">Details</div>
 
 
-        {% if salles is empty %}
+        {% if rooms is empty %}
             <p>Aucune salle n'est disponible.</p>
         {% else %}
-            {% for salle in salles %}
-                <div class="salles-item">{{ salle.NumSalle }}</div>
-                <div><a href="{{ path('app_salle_info', { 'NumSalle': salle.NumSalle }) }}">Voir détails</a></div>
+            {% for room in rooms %}
+                <div class="rooms-item">{{ room.roomNumber }}</div>
+                <div><a href="{{ path('app_salle_info', { 'RoomNumber': room.roomNumber }) }}">Voir détails</a></div>
             {% endfor %}
         {% endif %}
     </div>

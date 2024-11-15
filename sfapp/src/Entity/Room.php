@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use App\Repository\SalleRepository;
+use App\Repository\RoomRepository;
 
 
 
-#[ORM\Entity(repositoryClass: SalleRepository::class)]
-class Salle
+#[ORM\Entity(repositoryClass: RoomRepository::class)]
+class Room
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -16,10 +16,10 @@ class Salle
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $NumSalle = null;
+    private ?string $roomNumber = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $IdSA = null;
+    private ?int $idAS = null;
 
     public function getId(): ?int
     {
@@ -33,32 +33,32 @@ class Salle
         return $this;
     }
 
-    public function getNumSalle(): ?string
+    public function getRoomNumber(): ?string
     {
-        return $this->NumSalle;
+        return $this->roomNumber;
     }
 
-    public function setNumSalle(string $NumSalle): static
+    public function setRoomNumber(string $roomNumber): static
     {
-        $this->NumSalle = $NumSalle;
+        $this->roomNumber = $roomNumber;
 
         return $this;
     }
 
-    public function getIdSA(): ?int
+    public function getIdAS(): ?int
     {
-        return $this->IdSA;
+        return $this->idAS;
     }
 
-    public function setIdSA(?int $IdSA): static
+    public function setIdAS(?int $idAS): static
     {
-        $this->IdSA = $IdSA;
+        $this->idAS = $idAS;
 
         return $this;
     }
 
     public function __toString(): string
     {
-        return $this->NumSalle;
+        return $this->roomNumber;
     }
 }

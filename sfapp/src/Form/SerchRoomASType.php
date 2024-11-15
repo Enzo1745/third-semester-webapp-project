@@ -2,28 +2,28 @@
 
 namespace App\Form;
 
-use App\Entity\Salle;
-use App\Repository\SalleRepository;
+use App\Entity\Room;
+use App\Repository\RoomRepository;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SerchSalleSaType extends AbstractType
+class SerchRoomASType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('filtre', ChoiceType::class, [
+            ->add('filter', ChoiceType::class, [
                 'choices' => [ //filter list
-                    'Aucun filtre' => 'Aucun',
-                    'salles equipées d\'un SA' => 'SallesAvecSa',
-                    'salles avec aucun SA' => 'SalleSansSa',
+                    'Aucun filtre' => 'none',
+                    'salles equipées d\'un SA' => 'RoomsWithAS',
+                    'salles avec aucun SA' => 'RoomsWithoutAS',
                 ],
                 'expanded' => false,
                 'multiple' => false,
-                'data' => 'Aucun', //the default choice
+                'data' => 'none', //the default choice
                 'attr' => [
                     'onchange' => 'this.form.submit()' //Automatic submit when the Choice has changed
                 ],

@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
-use App\Entity\Salle;
+use App\Entity\Room;
 
 class DisplayRoomsTest extends WebTestCase
 {
@@ -29,8 +29,8 @@ class DisplayRoomsTest extends WebTestCase
     public function testDisplayListOfRoomsWithRooms(): void
     {
         // Créer une salle de test
-        $salle = new Salle();
-        $salle->setNumSalle('SalleTest');
+        $salle = new Room();
+        $salle->setRoomNumber('SalleTest');
         $this->entityManager->persist($salle);
         $this->entityManager->flush();
 

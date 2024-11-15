@@ -2,43 +2,44 @@
 
 namespace App\Repository;
 
-use App\Entity\Salle;
+use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Salle>
+ * @extends ServiceEntityRepository<Room>
  */
-class SalleRepository extends ServiceEntityRepository
+class RoomRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Salle::class);
+        parent::__construct($registry, Room::class);
     }
 
-    public function findAllOrderedByNumSalle(): array
+    public function findAllOrderedByRoomNumber(): array
     {
-        return $this->createQueryBuilder('s')
-            ->orderBy('s.NumSalle', 'ASC')
+        return $this->createQueryBuilder('r')
+            ->orderBy('r.roomNumber', 'ASC')
             ->getQuery()
             ->getResult();
     }
 
-    public function findByNumSalle(string $NumSalle): ?Salle
+    public function findByRoomNumber(string $roomNumber): ?Room
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.NumSalle = :NumSalle')
-            ->setParameter('NumSalle', $NumSalle)
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.roomNumber = :roomNumber')
+            ->setParameter('roomNumber', $roomNumber)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
+
     //the request that select only the rooms with an Aquisition system
     public function findAllWithIdSA(): array
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.IdSA IS NOT NULL')
-            ->orderBy('s.NumSalle', 'ASC')
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.idAS IS NOT NULL')
+            ->orderBy('r.roomNumber', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -46,15 +47,15 @@ class SalleRepository extends ServiceEntityRepository
     //the request that select only the rooms without an Aquisition system
     public function findAllWithoutIdSA(): array
     {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.IdSA IS NULL')
-            ->orderBy('s.NumSalle', 'ASC')
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.idAS IS NULL')
+            ->orderBy('r.roomNumber', 'ASC')
             ->getQuery()
             ->getResult();
     }
 
     //    /**
-    //     * @return Salle[] Returns an array of Salle objects
+    //     * @return Room[] Returns an array of Room objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -68,7 +69,7 @@ class SalleRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Salle
+    //    public function findOneBySomeField($value): ?Room
     //    {
     //        return $this->createQueryBuilder('s')
     //            ->andWhere('s.exampleField = :val')

@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Salle;
+use App\Entity\Room;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -11,17 +11,17 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         //room whithout an aquisition system
-        $salle = new Salle();
-        $salle->setNumSalle('SalleTest');
-        $manager->persist($salle);
+        $room = new Room();
+        $room->setRoomNumber('SalleTest');
+        $manager->persist($room);
         $manager->flush();
 
 
         //room whith an aquisition system
-        $salle2 = new Salle();
-        $salle2->setNumSalle('SalleTestAvecSa');
-        $salle2->setIdSA(1);
-        $manager->persist($salle2);
+        $room2 = new Room();
+        $room2->setRoomNumber('SalleTestAvecSa');
+        $room2->setIdAS(1);
+        $manager->persist($room2);
         $manager->flush();
 
     }
