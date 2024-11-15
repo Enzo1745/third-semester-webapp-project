@@ -40,4 +40,24 @@ class RoomRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /**
+     * @brief function to return the number of room without SA
+     * @return int|null
+     * @throws \Doctrine\DBAL\Exception
+     */
+    public function countBySaAvailable(): ?int
+    {
+        $conn = $this->getEntityManager()->getConnection();
+
+        $sql = 'SELECT COUNT(*)
+                FROM salle
+                LEFT JOIN sa ON salle.id = sa.salle_id
+                WHERE sa.salle_id IS NULL;
+        ';
+
+        $resultSet = $conn->executeQuery($sql);
+
+        return $resultSet->fetchOne();
+    }
 }
