@@ -24,15 +24,15 @@ class SaManagementController extends AbstractController
         $nbSalle = $salleRepo->countBySaAvailable();
 
         // We select an SA available
-        $sa = $saRepo->findOneBy(['etat' => SaState::Available]);
+        $sa = $saRepo->findOneBy(['state' => SaState::Available]);
 
         // Form creation
         $form = $this->createForm(SaManagementType::class, $sa);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($sa->getEtat() === SaState::Available and $sa->getSalle()) {
-                $sa->setEtat(SaState::Functional);
+            if ($sa->getState() === SaState::Available and $sa->getRoom()) {
+                $sa->setState(SaState::Functional);
                 $manager->persist($sa);
                 $manager->flush();
             }

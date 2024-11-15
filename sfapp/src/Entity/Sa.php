@@ -15,36 +15,36 @@ class Sa
     private ?int $id = null;
 
     #[ORM\Column(enumType: SaState::class)]
-    private ?SaState $etat = null;
+    private ?SaState $state = null;
 
     #[ORM\OneToOne(inversedBy: 'sa', cascade: ['persist', 'remove'])]
-    private ?Salle $salle = null;
+    private ?Room $room = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getEtat(): ?SaState
+    public function getState(): ?SaState
     {
-        return $this->etat;
+        return $this->state;
     }
 
-    public function setEtat(SaState $etat): static
+    public function setState(SaState $state): static
     {
-        $this->etat = $etat;
+        $this->state = $state;
 
         return $this;
     }
 
-    public function getSalle(): ?Salle
+    public function getRoom(): ?Room
     {
-        return $this->salle;
+        return $this->room;
     }
 
-    public function setSalle(?Salle $salle): static
+    public function setRoom(?Room $room): static
     {
-        $this->salle = $salle;
+        $this->room = $room;
 
         return $this;
     }

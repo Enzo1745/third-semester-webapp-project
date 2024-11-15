@@ -50,9 +50,9 @@ class SaRepository extends ServiceEntityRepository
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = 'SELECT COUNT(s.id) FROM sa s WHERE s.etat = :etat';
+        $sql = 'SELECT COUNT(s.id) FROM sa s WHERE s.state = :state';
 
-        $resultSet = $conn->executeQuery($sql, ['etat' => 'Disponible']);
+        $resultSet = $conn->executeQuery($sql, ['state' => 'Disponible']);
 
         return $resultSet->fetchOne();
     }
