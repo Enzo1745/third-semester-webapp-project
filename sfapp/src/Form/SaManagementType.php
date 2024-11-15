@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Sa;
-use App\Entity\Salle;
+use App\Entity\Room;
 use App\Repository\RoomRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -17,13 +17,14 @@ class SaManagementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('salle', EntityType::class, [
-                'class' => Salle::class,
-                'choice_label' => 'nomSalle',
+            ->add('room', EntityType::class, [
+                'class' => Room::class,
+                'label' => 'Salle',
+                'choice_label' => 'roomName',
                 'query_builder' => function (RoomRepository $er) { // Query to get room where no sa is associated
                     return $er->createQueryBuilder('s')
-                        ->leftJoin('App\Entity\Sa', 'sa', 'WITH', 'sa.salle = s.id')
-                        ->where('sa.salle IS NULL');
+                        ->leftJoin('App\Entity\Sa', 'sa', 'WITH', 'sa.room = s.id')
+                        ->where('sa.room IS NULL');
                 },
             ])
             ->add('save', SubmitType::class, [
@@ -35,7 +36,7 @@ class SaManagementType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Sa::class,
-            'salle' => null,
+            'room' => null,
         ]);
     }
 }

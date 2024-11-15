@@ -3,7 +3,7 @@
 namespace App\Tests;
 
 use App\Repository\Model\SaState;
-use App\Entity\Salle;
+use App\Entity\Room;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Sa;
@@ -30,13 +30,13 @@ class DisplaySaTest extends WebTestCase
 
     public function testDisplayListOfSaWithSa(): void
     {
-        $room = new Salle();
-        $room->setNomSalle("D204");
+        $room = new Room();
+        $room->setRoomName("D204");
         $this->entityManager->persist($room);
 
         $sa = new Sa();
-        $sa->setEtat(SaState::Available);
-        $sa->setSalle($room);
+        $sa->setState(SaState::Available);
+        $sa->setRoom($room);
         $this->entityManager->persist($sa);
 
         $this->entityManager->flush();
@@ -51,7 +51,7 @@ class DisplaySaTest extends WebTestCase
     public function testDisplayListOfSaWithoutSa(): void
     {
         $this->entityManager->createQuery('DELETE FROM App\Entity\Sa')->execute();
-        $this->entityManager->createQuery('DELETE FROM App\Entity\Salle')->execute();
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Room')->execute();
 
         $this->client->request('GET', '/charge/gestion_sa');
 

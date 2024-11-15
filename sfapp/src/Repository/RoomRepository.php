@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Salle;
+use App\Entity\Room;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Salle>
+ * @extends ServiceEntityRepository<Room>
  */
 class RoomRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Salle::class);
+        parent::__construct($registry, Room::class);
     }
 
     //    /**
-    //     * @return Salle[] Returns an array of Salle objects
+    //     * @return Room[] Returns an array of Room objects
     //     */
     //    public function findByExampleField($value): array
     //    {
@@ -31,7 +31,7 @@ class RoomRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Salle
+    //    public function findOneBySomeField($value): ?Room
     //    {
     //        return $this->createQueryBuilder('s')
     //            ->andWhere('s.exampleField = :val')
@@ -51,9 +51,9 @@ class RoomRepository extends ServiceEntityRepository
         $conn = $this->getEntityManager()->getConnection();
 
         $sql = 'SELECT COUNT(*)
-                FROM salle
-                LEFT JOIN sa ON salle.id = sa.salle_id
-                WHERE sa.salle_id IS NULL;
+                FROM room
+                LEFT JOIN sa ON room.id = sa.room_id
+                WHERE sa.room_id IS NULL;
         ';
 
         $resultSet = $conn->executeQuery($sql);

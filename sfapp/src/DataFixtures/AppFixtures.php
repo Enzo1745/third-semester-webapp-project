@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Salle;
+use App\Entity\Room;
 use App\Entity\Sa;
 use App\Repository\Model\SaState;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -13,37 +13,33 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $sa1 = new Sa();
-        $sa1->setEtat(SaState::Available);
+        $sa1->setState(SaState::Available);
         $manager->persist($sa1);
 
         $sa2 = new Sa();
-        $sa2->setEtat(SaState::Available);
+        $sa2->setState(SaState::Available);
         $manager->persist($sa2);
 
-        $salle1 = new Salle();
-        $salle1->setNomSalle("D204");
-        $manager->persist($salle1);
+        $room1 = new Room();
+        $room1->setRoomName("D204");
+        $manager->persist($room1);
 
         $sa3 = new Sa();
-        $sa3->setEtat(SaState::Functional);
-        $sa3->setSalle($salle1);
+        $sa3->setState(SaState::Functional);
+        $sa3->setRoom($room1);
         $manager->persist($sa3);
 
-        $salle2 = new Salle();
-        $salle2->setNomSalle("D205");
-        $manager->persist($salle2);
+        $room2 = new Room();
+        $room2->setRoomName("D205");
+        $manager->persist($room2);
 
-        $salle3 = new Salle();
-        $salle3->setNomSalle("D206");
-        $manager->persist($salle3);
+        $room3 = new Room();
+        $room3->setRoomName("D206");
+        $manager->persist($room3);
 
-        /*$sa4 = new Sa();
-        $sa4->setEtat(SaState::Available);
-        $manager->persist($sa4);*/
-
-        $salle4 = new Salle();
-        $salle4->setNomSalle("D304");
-        $manager->persist($salle4);
+        $room4 = new Room();
+        $room4->setRoomName("D304");
+        $manager->persist($room4);
 
         $manager->flush();
     }

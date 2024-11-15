@@ -6,17 +6,17 @@ use App\Repository\RoomRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
-class Salle
+class Room
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'nomSalle',length: 255)]
-    private ?string $nomSalle = null;
+    #[ORM\Column(name: 'roomName',length: 255)]
+    private ?string $roomName = null;
 
-    #[ORM\OneToOne(mappedBy: 'salle', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist', 'remove'])]
     private ?Sa $sa = null;
 
     public function getId(): ?int
@@ -24,14 +24,14 @@ class Salle
         return $this->id;
     }
 
-    public function getNomSalle(): ?string
+    public function getRoomName(): ?string
     {
-        return $this->nomSalle;
+        return $this->roomName;
     }
 
-    public function setNomSalle(string $nomSalle): static
+    public function setRoomName(string $roomName): static
     {
-        $this->nomSalle = $nomSalle;
+        $this->roomName = $roomName;
 
         return $this;
     }
@@ -45,12 +45,12 @@ class Salle
     {
         // unset the owning side of the relation if necessary
         if ($sa === null && $this->sa !== null) {
-            $this->sa->setSalle(null);
+            $this->sa->setRoom(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($sa !== null && $sa->getSalle() !== $this) {
-            $sa->setSalle($this);
+        if ($sa !== null && $sa->getRoom() !== $this) {
+            $sa->setRoom($this);
         }
 
         $this->sa = $sa;
@@ -60,6 +60,6 @@ class Salle
 
     public function __toString(): string
     {
-        return $this->nomSalle ?? 'Salle non définie';
+        return $this->roomName ?? 'Salle non définie';
     }
 }

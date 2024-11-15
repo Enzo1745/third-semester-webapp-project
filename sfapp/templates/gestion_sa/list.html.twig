@@ -26,8 +26,8 @@
                     {% for sa in saList %}
                         <tr>
                             <td class="idSa">{{ sa.id }}</td>
-                            {% if sa.salle is not null %}
-                                <td class="roomName">{{ sa.salle }}</td>
+                            {% if sa.room is not null %}
+                                <td class="roomName">{{ sa.room }}</td>
                                 <td><a href="">Dissocier</a></td>
                             {% else %}
                                 <td>Aucune</td>
