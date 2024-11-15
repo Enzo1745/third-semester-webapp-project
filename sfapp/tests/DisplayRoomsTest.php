@@ -9,6 +9,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DisplayRoomsTest extends WebTestCase
 {
+    /**
+     * Test case: Verifying the details of a salle associated with a SA that has data.
+     * This test checks if the temperature, humidity, and CO2 values are correctly displayed on the page.
+     */
     public function testSearchingDetailsOfAssociatedSAWithData(): void
     {
         $client = static::createClient();
@@ -31,10 +35,16 @@ class DisplayRoomsTest extends WebTestCase
         $crawler = $client->request('GET', '/charge/salles/liste/D101');
 
         $this->assertSelectorTextContains('.value.temp', '25°');
+
         $this->assertSelectorTextContains('.value.humidity', '60%');
+
         $this->assertSelectorTextContains('.value.co2', '1200');
     }
 
+    /**
+     * Test case: Verifying the details of a salle associated with a SA that has no data.
+     * This test checks if the "Aucunes données" message is displayed when the SA has no temperature, humidity, or CO2 values.
+     */
     public function testSearchingDetailsOfAssociatedSAWithNoData(): void
     {
         $client = static::createClient();
@@ -56,6 +66,10 @@ class DisplayRoomsTest extends WebTestCase
         $this->assertSelectorTextContains('.salle-details', 'Aucunes données');
     }
 
+    /**
+     * Test case: Verifying the details of a salle without any SA associated.
+     * This test checks if the "Aucun SA associé" message is displayed when the salle has no SA associated.
+     */
     public function testSearchingDetailsOfSalleWithoutSA(): void
     {
         $client = static::createClient();
@@ -71,5 +85,4 @@ class DisplayRoomsTest extends WebTestCase
 
         $this->assertSelectorTextContains('.noData', 'Aucun SA associé');
     }
-
 }
