@@ -51,13 +51,4 @@ class SaRepository extends ServiceEntityRepository
         // returns an array of arrays (i.e. a raw data set)
         return $resultSet->fetchOne();
     }
-
-    public function findBySalleId(int $salleId): ?Sa
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.salle = :salleId')  // Assure-toi que la relation entre Sa et Salle est correctement définie
-            ->setParameter('salleId', $salleId)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
 }
