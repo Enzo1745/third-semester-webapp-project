@@ -40,6 +40,12 @@ class SaRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /**
+     * @brief function to get the number of SA when their state is 'Disponible'
+     * @return int|null -> the number of SA available
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function countBySaState(): ?int
     {
         $conn = $this->getEntityManager()->getConnection();
@@ -48,7 +54,6 @@ class SaRepository extends ServiceEntityRepository
 
         $resultSet = $conn->executeQuery($sql, ['etat' => 'Disponible']);
 
-        // returns an array of arrays (i.e. a raw data set)
         return $resultSet->fetchOne();
     }
 }

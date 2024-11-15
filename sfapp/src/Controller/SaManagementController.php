@@ -19,14 +19,14 @@ class SaManagementController extends AbstractController
     #[Route('charge/gestion_sa/associer', name: 'app_gestion_sa')]
     public function index(Request $request, EntityManagerInterface $manager, SaRepository $saRepo, RoomRepository $salleRepo): Response
     {
+        // We get the number of availables SA and Rooms.
         $nbSa = $saRepo->countBySaState();
         $nbSalle = $salleRepo->countBySaAvailable();
 
-
-        // Si le nombre de SA disponibles est supérieur à 0, on continue normalement pour afficher le formulaire
+        // We select an SA available
         $sa = $saRepo->findOneBy(['etat' => SaState::Available]);
 
-        // Création du formulaire
+        // Form creation
         $form = $this->createForm(SaManagementType::class, $sa);
         $form->handleRequest($request);
 
@@ -35,14 +35,14 @@ class SaManagementController extends AbstractController
                 $sa->setEtat(SaState::Functional);
                 $manager->persist($sa);
                 $manager->flush();
-                $this->addFlash('success', 'Association réussie !');
             }
         }
 
+        // Update of the SA and Rooms number
         $nbSa = $saRepo->countBySaState();
-
         $nbSalle = $salleRepo->countBySaAvailable();
 
+        // If the number of room available is less than 1, the form isn't print on the web page and we return an error message.
         if ($nbSalle < 1) {
             return $this->render('gestion_sa/index.html.twig', [
                 'form' => null,
@@ -52,7 +52,7 @@ class SaManagementController extends AbstractController
             ]);
         }
 
-        // Si le nombre de SA disponibles est inférieur ou égal à 0, on bloque n'affiche pas le formulaire
+        // If the number of SA available is less than 1, the form isn't print on the web page and we return an error message.
         if ($nbSa < 1) {
             return $this->render('gestion_sa/index.html.twig', [
                 'form' => null,
@@ -61,6 +61,7 @@ class SaManagementController extends AbstractController
             ]);
         }
 
+        // The default response return the form, the number of sa and no error message.
         return $this->render('gestion_sa/index.html.twig', [
             'form' => $form->createView(),
             'nbSaDispo' => $nbSa,

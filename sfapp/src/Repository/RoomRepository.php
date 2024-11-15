@@ -40,6 +40,12 @@ class RoomRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /**
+     * @brief function to return the number of room without SA
+     * @return int|null
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function countBySaAvailable(): ?int
     {
         $conn = $this->getEntityManager()->getConnection();
@@ -52,7 +58,6 @@ class RoomRepository extends ServiceEntityRepository
 
         $resultSet = $conn->executeQuery($sql);
 
-        // returns an array of arrays (i.e. a raw data set)
         return $resultSet->fetchOne();
     }
 }

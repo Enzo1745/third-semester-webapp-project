@@ -19,8 +19,8 @@ class SaManagementType extends AbstractType
         $builder
             ->add('salle', EntityType::class, [
                 'class' => Salle::class,
-                'choice_label' => 'nomSalle', // Correction ici : utiliser 'nomSalle' au lieu de 'nom_salle'
-                'query_builder' => function (RoomRepository $er) {
+                'choice_label' => 'nomSalle',
+                'query_builder' => function (RoomRepository $er) { // Query to get room where no sa is associated
                     return $er->createQueryBuilder('s')
                         ->leftJoin('App\Entity\Sa', 'sa', 'WITH', 'sa.salle = s.id')
                         ->where('sa.salle IS NULL');
