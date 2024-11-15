@@ -2,11 +2,11 @@
 
 namespace App\Entity;
 
-use App\Repository\Model\EtatSA;
-use App\Repository\SaRepository;
+use App\Repository\Model\SAState;
+use App\Repository\AsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SaRepository::class)]
+#[ORM\Entity(repositoryClass: AsRepository::class)]
 class Sa
 {
     #[ORM\Id]
@@ -14,17 +14,17 @@ class Sa
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(enumType: EtatSA::class)]
-    private ?EtatSA $etat = null;
+    #[ORM\Column(enumType: SAState::class)]
+    private ?SAState $state = null;
 
     #[ORM\OneToOne(inversedBy: 'sa', cascade: ['persist', 'remove'])]
-    private ?Salle $salle = null;
+    private ?Room $room = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $Temperature = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $Humidite = null;
+    private ?int $Humidity = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $CO2 = null;
@@ -34,26 +34,26 @@ class Sa
         return $this->id;
     }
 
-    public function getEtat(): ?EtatSA
+    public function getState(): ?SAState
     {
-        return $this->etat;
+        return $this->state;
     }
 
-    public function setEtat(EtatSA $etat): static
+    public function setState(SAState $state): static
     {
-        $this->etat = $etat;
+        $this->state = $state;
 
         return $this;
     }
 
-    public function getSalle(): ?Salle
+    public function getRoom(): ?Room
     {
-        return $this->salle;
+        return $this->room;
     }
 
-    public function setSalle(?Salle $salle): static
+    public function setRoom(?Room $room): static
     {
-        $this->salle = $salle;
+        $this->room = $room;
 
         return $this;
     }
@@ -70,14 +70,14 @@ class Sa
         return $this;
     }
 
-    public function getHumidite(): ?int
+    public function getHumidity(): ?int
     {
-        return $this->Humidite;
+        return $this->Humidity;
     }
 
-    public function setHumidite(int $Humidite): static
+    public function setHumidity(int $Humidity): static
     {
-        $this->Humidite = $Humidite;
+        $this->Humidity = $Humidity;
 
         return $this;
     }

@@ -5,10 +5,10 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
-use App\Repository\SalleRepository;
-use App\Repository\SaRepository;
+use App\Repository\RoomRepository;
+use App\Repository\AsRepository;
 
-class SalleController extends AbstractController
+class RoomController extends AbstractController
 {
     /**
      * Route: /charge
@@ -27,7 +27,7 @@ class SalleController extends AbstractController
      * Description: Displays a list of all rooms.
      */
     #[Route('/charge/salles', name: 'app_salle_liste')]
-    public function listerSalles(SalleRepository $salleRepository): Response
+    public function listRooms(RoomRepository $salleRepository): Response
     {
         $salles = $salleRepository->findAllOrderedByNumSalle();
 
@@ -43,7 +43,7 @@ class SalleController extends AbstractController
      * Description: Displays detailed information about a specific room.
      */
     #[Route('/charge/salles/{NumSalle}', name: 'app_salle_info')]
-    public function trouverInfosSalles(string $NumSalle, SalleRepository $salleRepository, SaRepository $saRepository): Response
+    public function trouverInfosSalles(string $NumSalle, RoomRepository $salleRepository, AsRepository $saRepository): Response
     {
         $salle = $salleRepository->findByNumSalle($NumSalle);
         $sa = $salle->getIdSA();

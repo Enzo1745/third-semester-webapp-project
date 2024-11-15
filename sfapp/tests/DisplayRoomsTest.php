@@ -3,8 +3,8 @@
 namespace App\Tests;
 
 use App\Entity\Sa;
-use App\Entity\Salle;
-use App\Repository\Model\EtatSA;
+use App\Entity\Room;
+use App\Repository\Model\SAState;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DisplayRoomsTest extends WebTestCase
@@ -18,12 +18,12 @@ class DisplayRoomsTest extends WebTestCase
         $client = static::createClient();
 
         $sa = new Sa();
-        $sa->setEtat(EtatSA::Fonctionnel);
+        $sa->setEtat(SAState::Fonctionnel);
         $sa->setTemperature(25);
         $sa->setHumidite(60);
         $sa->setCO2(1200);
 
-        $salle = new Salle();
+        $salle = new Room();
         $salle->setNumSalle("D101");
         $salle->setIdSA($sa);
 
@@ -50,9 +50,9 @@ class DisplayRoomsTest extends WebTestCase
         $client = static::createClient();
 
         $sa = new Sa();
-        $sa->setEtat(EtatSA::Fonctionnel);
+        $sa->setEtat(SAState::Fonctionnel);
 
-        $salle = new Salle();
+        $salle = new Room();
         $salle->setNumSalle("D301");
         $salle->setIdSA($sa);
 
@@ -74,7 +74,7 @@ class DisplayRoomsTest extends WebTestCase
     {
         $client = static::createClient();
 
-        $salle = new Salle();
+        $salle = new Room();
         $salle->setNumSalle("D303");
 
         $entityManager = self::getContainer()->get('doctrine')->getManager();
