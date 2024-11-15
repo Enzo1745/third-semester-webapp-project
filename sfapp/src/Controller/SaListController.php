@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Sa;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\SaRepository;
-use App\Repository\RoomRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,6 +13,7 @@ use Symfony\Component\Routing\Attribute\Route;
  */
 class SaListController extends AbstractController
 {
+
     /**
      * @brief Function to return the list of sa in the web page
      * @param Request $request
