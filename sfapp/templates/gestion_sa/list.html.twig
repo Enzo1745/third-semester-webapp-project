@@ -28,7 +28,12 @@
                             <td class="idSa">{{ sa.id }}</td>
                             {% if sa.room is not null %}
                                 <td class="roomName">{{ sa.room }}</td>
-                                <td><a href="">Dissocier</a></td>
+
+                                <td>
+                                    <form method="post" action="{{ path('app_sa_dissociate', {id: sa.id}) }}">
+                                        <button type="submit">Dissocier</button>
+                                    </form>
+                                </td>
                             {% else %}
                                 <td>Aucune</td>
                                 <td></td>

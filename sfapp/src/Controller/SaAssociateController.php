@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-class SaManagementController extends AbstractController
+class SaAssociateController extends AbstractController
 {
     #[Route('charge/gestion_sa/associer', name: 'app_gestion_sa_associer')]
     public function index(Request $request, EntityManagerInterface $manager, SaRepository $saRepo, RoomRepository $salleRepo): Response
@@ -44,7 +44,7 @@ class SaManagementController extends AbstractController
 
         // If the number of room available is less than 1, the form isn't print on the web page and we return an error message.
         if ($nbSalle < 1) {
-            return $this->render('gestion_sa/index.html.twig', [
+            return $this->render('gestion_sa/associate.html.twig', [
                 'form' => null,
                 'nbSaDispo' => $nbSa,
                 'error_message' => "Aucune salle disponible.",
@@ -54,7 +54,7 @@ class SaManagementController extends AbstractController
 
         // If the number of SA available is less than 1, the form isn't print on the web page and we return an error message.
         if ($nbSa < 1) {
-            return $this->render('gestion_sa/index.html.twig', [
+            return $this->render('gestion_sa/associate.html.twig', [
                 'form' => null,
                 'nbSaDispo' => 0,
                 'error_message' => "Aucun SA disponible."
@@ -62,7 +62,7 @@ class SaManagementController extends AbstractController
         }
 
         // The default response return the form, the number of sa and no error message.
-        return $this->render('gestion_sa/index.html.twig', [
+        return $this->render('gestion_sa/associate.html.twig', [
             'form' => $form->createView(),
             'nbSaDispo' => $nbSa,
             'error_message' => null,
