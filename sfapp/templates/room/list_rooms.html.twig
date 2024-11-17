@@ -23,8 +23,8 @@
             <p>Aucune salle n'est disponible.</p>
         {% else %}
             {% for room in rooms %}
-                <div class="rooms-item">{{ room.roomNumber }}</div>
-                <div><a href="{{ path('app_room_info', { 'roomNumber': room.roomNumber }) }}"><button>Voir détails</button></a></div>
+                <div class="rooms-item">{{ room.roomName }}</div>
+                <div><a href="{{ path('app_room_info', { 'roomName': room.roomName }) }}"><button>Voir détails</button></a></div>
                 <div>
                     <form action="{{ path('app_room_delete', { 'id': room.id }) }}" method="post"
                           onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette salle ?');">

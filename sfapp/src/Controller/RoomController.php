@@ -51,7 +51,7 @@ class RoomController extends AbstractController
         if ($formAddRoom->isSubmitted() && $formAddRoom->isValid()) {
             // Check if a room with the same room number already exists
             $existingRoom = $entityManager->getRepository(Room::class)
-                ->findOneBy(['roomNumber' => $newRoom->getRoomNumber()]);
+                ->findOneBy(['roomName' => $newRoom->getRoomName()]);
 
             if ($existingRoom) {
                 // Add an error flash message
@@ -82,7 +82,7 @@ class RoomController extends AbstractController
     public function listRooms(RoomRepository $roomRepository): Response
     {
         // Fetch all rooms ordered by room number
-        $rooms = $roomRepository->findAllOrderedByRoomNumber();
+        $rooms = $roomRepository->findAllOrderedByRoomName();
 
         // Render the list of rooms
         return $this->render('room/list_rooms.html.twig', [
@@ -91,15 +91,15 @@ class RoomController extends AbstractController
     }
 
     /**
-     * Route: /charge/salles/liste/{roomNumber}
+     * Route: /charge/salles/liste/{roomName}
      * Name: app_room_info
      * Description: Displays detailed information about a specific room.
      */
-    #[Route('/charge/salles/liste/{roomNumber}', name: 'app_room_info')]
-    public function roomInfo(string $roomNumber, RoomRepository $roomRepository): Response
+    #[Route('/charge/salles/liste/{roomName}', name: 'app_room_info')]
+    public function roomInfo(string $roomName, RoomRepository $roomRepository): Response
     {
         // Find the room by its room number
-        $room = $roomRepository->findByRoomNumber($roomNumber);
+        $room = $roomRepository->findByRoomName($roomName);
 
         // Render the room information template
         return $this->render('room/room_info.html.twig', [

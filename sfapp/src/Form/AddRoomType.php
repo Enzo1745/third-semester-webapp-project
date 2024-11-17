@@ -13,8 +13,8 @@ class AddRoomType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('roomNumber', null, [
-                'label' => 'Room Number',
+            ->add('roomName', null, [
+                'label' => 'Room Name',
             ])
             ->add('add', SubmitType::class, [
                 'label' => 'Add',

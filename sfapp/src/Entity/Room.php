@@ -57,12 +57,8 @@ class Room
 
         return $this;
     }
-<<<<<<<< HEAD:sfapp/src/Entity/Salle.php
-========
-
     public function __toString(): string
     {
         return $this->roomName ?? 'Salle non définie';
     }
->>>>>>>> 83c246f ([Refactor](Modification selon les règles de nommage) : Nom des variables, entités et commentaires en anglais.):sfapp/src/Entity/Room.php
 }

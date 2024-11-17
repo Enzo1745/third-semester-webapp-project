@@ -16,30 +16,22 @@ class RoomRepository extends ServiceEntityRepository
         parent::__construct($registry, Room::class);
     }
 
-    //    /**
-    //     * @return Room[] Returns an array of Room objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function findAllOrderedByRoomName(): array
+    {
+        return $this->createQueryBuilder('r')
+            ->orderBy('r.roomName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Room
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findByRoomName(string $roomName): ?Room
+    {
+        return $this->createQueryBuilder('r')
+            ->andWhere('r.roomName = :roomName')
+            ->setParameter('roomName', $roomName)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
     /**
      * @brief function to return the number of room without SA
