@@ -18,9 +18,9 @@ class DisplayRoomsTest extends WebTestCase
         $client = static::createClient();
 
         $sa = new Sa();
-        $sa->setEtat(SAState::Fonctionnel);
+        $sa->setState(SAState::Functional);
         $sa->setTemperature(25);
-        $sa->setHumidite(60);
+        $sa->setHumidity(60);
         $sa->setCO2(1200);
 
         $salle = new Room();
@@ -32,7 +32,7 @@ class DisplayRoomsTest extends WebTestCase
         $entityManager->persist($sa);
         $entityManager->flush();
 
-        $crawler = $client->request('GET', '/charge/salles/liste/D101');
+        $crawler = $client->request('GET', '/charge/salles/D101');
 
         $this->assertSelectorTextContains('.value.temp', '25°');
 
@@ -50,7 +50,7 @@ class DisplayRoomsTest extends WebTestCase
         $client = static::createClient();
 
         $sa = new Sa();
-        $sa->setEtat(SAState::Fonctionnel);
+        $sa->setState(SAState::Functional);
 
         $salle = new Room();
         $salle->setNumSalle("D301");
@@ -61,7 +61,7 @@ class DisplayRoomsTest extends WebTestCase
         $entityManager->persist($sa);
         $entityManager->flush();
 
-        $crawler = $client->request('GET', '/charge/salles/liste/D301');
+        $crawler = $client->request('GET', '/charge/salles/D301');
 
         $this->assertSelectorTextContains('.salle-details', 'Aucunes données');
     }
@@ -81,7 +81,7 @@ class DisplayRoomsTest extends WebTestCase
         $entityManager->persist($salle);
         $entityManager->flush();
 
-        $crawler = $client->request('GET', '/charge/salles/liste');
+        $crawler = $client->request('GET', '/charge/salles');
 
         $this->assertSelectorTextContains('.noData', 'Aucun SA associé');
     }

@@ -13,20 +13,20 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $sa1 = new Sa();
-        $sa1->setEtat(SAState::Fonctionnel);
+        $sa1->setState(SAState::Functional);
         $sa1->setTemperature(25);
-        $sa1->setHumidite(90);
+        $sa1->setHumidity(90);
         $sa1->setCO2(1200);
         $manager->persist($sa1);
 
         $sa2 = new Sa();
-        $sa2->setEtat(SAState::Dispo);
+        $sa2->setState(SAState::Available);
         $manager->persist($sa2);
 
         $sa3 = new Sa();
-        $sa3->setEtat(SAState::Fonctionnel);
+        $sa3->setState(SAState::Functional);
         $sa3->setTemperature(22);
-        $sa3->setHumidite(70);
+        $sa3->setHumidity(70);
         $sa3->setCO2(1000);
         $manager->persist($sa3);
 
@@ -45,7 +45,7 @@ class AppFixtures extends Fixture
         $manager->persist($salle3);
 
         $sa4 = new Sa();
-        $sa4->setEtat(SAState::Dispo);
+        $sa4->setState(SAState::Available);
         $manager->persist($sa4);
 
         /*$salle4 = new Room();

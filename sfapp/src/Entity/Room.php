@@ -16,7 +16,7 @@ class Room
     #[ORM\Column(length: 255)]
     private ?string $NumSalle = null;
 
-    #[ORM\OneToOne(targetEntity: Sa::class, inversedBy: 'salle')]
+    #[ORM\OneToOne(targetEntity: Sa::class, inversedBy: 'room')]
     #[ORM\JoinColumn(name: 'id_sa', referencedColumnName: 'id', nullable: true)]
     private ?Sa $IdSA = null;
 
