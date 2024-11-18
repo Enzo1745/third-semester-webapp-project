@@ -14,10 +14,10 @@ class AddRoomType extends AbstractType
     {
         $builder
             ->add('roomName', null, [
-                'label' => 'Room Name',
+                'label' => 'Numero de salle',
             ])
             ->add('add', SubmitType::class, [
-                'label' => 'Add',
+                'label' => 'Ajouter',
             ]);
     }
 

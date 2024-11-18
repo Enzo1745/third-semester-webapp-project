@@ -10,9 +10,14 @@
 
     <header>
         <h1>Liste des salles</h1>
-        <a href="/charge/salles"><button>Retour</button></a>
         <a href="/charge/salles/ajouter"><button>Ajouter une salle</button></a>
+        <a href="/charge/gestion_sa"><button>Associer/Dissocier SA</button></a>
     </header>
+
+    <div>
+        {{ form(form) }}
+    </div>
+
 
     <div class="container">
         <div class="firstRow">Salles</div>

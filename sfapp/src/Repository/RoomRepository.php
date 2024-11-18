@@ -56,7 +56,7 @@ class RoomRepository extends ServiceEntityRepository
     public function findAllOrderedByRoomNumber(): array
     {
         return $this->createQueryBuilder('r')
-            ->orderBy('r.roomNumber', 'ASC')
+            ->orderBy('r.roomName', 'ASC')
             ->getQuery()
             ->getResult();
     }
@@ -64,29 +64,28 @@ class RoomRepository extends ServiceEntityRepository
     public function findByRoomNumber(string $roomNumber): ?Room
     {
         return $this->createQueryBuilder('r')
-            ->andWhere('r.roomNumber = :roomNumber')
+            ->andWhere('r.roomName = :roomNumber')
             ->setParameter('roomNumber', $roomNumber)
             ->getQuery()
             ->getOneOrNullResult();
     }
 
-
     //the request that select only the rooms with an Aquisition system
-    public function findAllWithIdSA(): array
+    public function findAllWithIdSa(): array
     {
         return $this->createQueryBuilder('r')
-            ->andWhere('r.idAS IS NOT NULL')
-            ->orderBy('r.roomNumber', 'ASC')
+            ->andWhere('r.idSa IS NOT NULL')
+            ->orderBy('r.roomName', 'ASC')
             ->getQuery()
             ->getResult();
     }
 
     //the request that select only the rooms without an Aquisition system
-    public function findAllWithoutIdSA(): array
+    public function findAllWithoutIdSa(): array
     {
         return $this->createQueryBuilder('r')
-            ->andWhere('r.idAS IS NULL')
-            ->orderBy('r.roomNumber', 'ASC')
+            ->andWhere('r.idSa IS NULL')
+            ->orderBy('r.roomName', 'ASC')
             ->getQuery()
             ->getResult();
     }

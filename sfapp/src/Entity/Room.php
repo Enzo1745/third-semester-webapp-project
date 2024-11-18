@@ -13,8 +13,11 @@ class Room
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'roomName',length: 255)]
+    #[ORM\Column(name: 'roomName', length: 255)]
     private ?string $roomName = null;
+
+    #[ORM\Column(name: 'idSa', nullable: true)]
+    private ?int $idSa = null;
 
     #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist', 'remove'])]
     private ?Sa $sa = null;
@@ -32,7 +35,17 @@ class Room
     public function setRoomName(string $roomName): static
     {
         $this->roomName = $roomName;
+        return $this;
+    }
 
+    public function getIdSa(): ?int
+    {
+        return $this->idSa;
+    }
+
+    public function setIdSa(?int $idSa): static
+    {
+        $this->idSa = $idSa;
         return $this;
     }
 
@@ -54,7 +67,6 @@ class Room
         }
 
         $this->sa = $sa;
-
         return $this;
     }
 

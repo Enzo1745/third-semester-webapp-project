@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Room;
 use App\Form\AddRoomType;
+use App\Form\SerchRoomASType;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +22,7 @@ class RoomController extends AbstractController
     #[Route('/charge', name: 'app_charge')]
     public function index(): Response
     {
-        return $this->render('index.html.twig', []);
+        return $this->redirectToRoute('app_room_list');
     }
 
     /**
@@ -32,7 +33,7 @@ class RoomController extends AbstractController
     #[Route('/charge/salles', name: 'app_room')]
     public function rooms(): Response
     {
-        return $this->render('room/rooms.html.twig', []);
+        return $this->redirectToRoute('app_room_list');
     }
 
     /**
@@ -55,13 +56,13 @@ class RoomController extends AbstractController
 
             if ($existingRoom) {
                 // Add an error flash message
-                $this->addFlash('error', 'This room already exists.');
+                $this->addFlash('error', 'Cette salle existe déja');
             } else {
                 // Save the new room to the database
                 $entityManager->persist($newRoom);
                 $entityManager->flush();
                 // Add a success flash message
-                $this->addFlash('success', 'Room successfully added.');
+                $this->addFlash('success', 'Salle ajouté avec succes');
             }
             // Redirect back to the room management page
             return $this->redirectToRoute('app_room_management');
@@ -79,13 +80,32 @@ class RoomController extends AbstractController
      * Description: Displays a list of all rooms.
      */
     #[Route('/charge/salles/liste', name: 'app_room_list')]
-    public function listRooms(RoomRepository $roomRepository): Response
+    public function listRooms(RoomRepository $roomRepository,Request $request): Response
     {
         // Fetch all rooms ordered by room number
-        $rooms = $roomRepository->findAllOrderedByRoomName();
+
+        $form = $this->createForm( SerchRoomASType::class);
+        $form->handleRequest($request);
+
+        //getting the active filter
+        $choice = $form->get('filter')->getData();
+
+        // changing the content of the list depending on the selected filter
+        if ($choice == 'RoomsWithAS') {
+            $rooms = $roomRepository->findAllWithIdSA();
+        }
+        else if ($choice == 'RoomsWithoutAS') {
+            $rooms = $roomRepository->findAllWithoutIdSA();
+        }
+        else{
+            $rooms = $roomRepository->findAllOrderedByRoomNumber();
+        }
+
+
 
         // Render the list of rooms
         return $this->render('room/list_rooms.html.twig', [
+            'form' => $form->createView(),
             'rooms' => $rooms
         ]);
     }
@@ -121,7 +141,7 @@ class RoomController extends AbstractController
         $entityManager->flush();
 
         // Add a success flash message
-        $this->addFlash('success', 'The room has been successfully deleted.');
+        $this->addFlash('success', 'Salle correctement supprime');
 
         // Redirect to the list of rooms
         return $this->redirectToRoute('app_room_list');

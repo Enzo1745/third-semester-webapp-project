@@ -7,6 +7,15 @@
         {% block stylesheets %}
         {% endblock %}
 
+        {# Flash messages #}
+        {% for label, messages in app.flashes %}
+            <div class="flash-{{ label }}">
+                {% for message in messages %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endfor %}
+
         {% block javascripts %}
         {% endblock %}
     </head>

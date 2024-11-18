@@ -36,7 +36,7 @@ class ConnexionController extends AbstractController
 
             // redirection to the temporary succes page when the form is valid and when the Id and pwd fields are not empty
             if ($form->isValid() && !empty($username) && !empty($password)) {
-                return $this->redirectToRoute('app_connection_sucess');
+                return $this->redirectToRoute('app_room_list');
             }
         }
 
@@ -46,11 +46,4 @@ class ConnexionController extends AbstractController
         ]);
     }
 
-
-    // temporary succes page controller
-    #[Route('/connexion/succes', name: 'app_connection_sucess')]
-    public function connectionReussie(): Response
-    {
-        return $this->render('connexion/succes.html.twig');
-    }
 }
