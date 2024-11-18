@@ -9,7 +9,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 
-class SaManagementTest extends WebTestCase
+class AssociateSaTest extends WebTestCase
 {
     private $client;
     private $entityManager;
@@ -137,7 +137,7 @@ class SaManagementTest extends WebTestCase
         $this->assertSame($room->getId(), $sa->getRoom()->getId());
 
         // Check that the sa's state is now 'Functional'
-        $this->assertSame(SaState::Functional, $sa->getEtat());
+        $this->assertSame(SaState::Functional, $sa->getState());
 
         // Check if the number of available SA is decreased
         $nbSaAvailable = $entityManager->getRepository(Sa::class)->count(['state' => SaState::Available]);
