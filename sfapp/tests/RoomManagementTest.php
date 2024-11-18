@@ -24,27 +24,27 @@ class RoomManagementTest extends WebTestCase
     {
         $client = static::createClient();
 
-        // going to add room page
+        // Going to add room page
         $crawler = $client->request('GET', '/charge/salles/ajouter');
 
-        // valid form
-        $form = $crawler->selectButton('Add')->form([
-            'add_room[roomNumber]' => '201',
+        // Valid form
+        $form = $crawler->selectButton('Ajouter')->form([
+            'add_room[roomName]' => '201', // Use 'roomName' instead of 'roomNumber'
         ]);
 
         $client->submit($form);
 
-        // check redirection after added a room
+        // Check redirection after adding a room
         $this->assertResponseRedirects('/charge/salles/ajouter');
         $client->followRedirect();
 
-        // check that room added to bd
+        // Check that room added to database
         $roomRepository = static::getContainer()->get(RoomRepository::class);
-        $room = $roomRepository->findOneBy(['roomNumber' => '201']);
+        $room = $roomRepository->findOneBy(['roomName' => '201']);
 
         $this->assertNotNull($room);
 
-        // clear database
+        // Clear database
         /** @var EntityManagerInterface $entityManager */
         $entityManager = static::getContainer()->get(EntityManagerInterface::class);
         $entityManager->remove($room);
@@ -60,7 +60,7 @@ class RoomManagementTest extends WebTestCase
 
         // add room to test
         $room = new Room();
-        $room->setRoomNumber('202');
+        $room->setRoomName('202');
 
         /** @var EntityManagerInterface $entityManager */
         $entityManager = static::getContainer()->get(EntityManagerInterface::class);

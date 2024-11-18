@@ -2,6 +2,7 @@
 
 namespace App\Tests;
 
+use App\Entity\Sa;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Room;
@@ -30,21 +31,31 @@ class DisplayRoomsTest extends WebTestCase
     {
         // Créer une salle de test
         $salle = new Room();
-        $salle->setRoomNumber('SalleTest');
+        $salle->setRoomName('SalleTest');
         $this->entityManager->persist($salle);
         $this->entityManager->flush();
 
         $this->client->request('GET', '/charge/salles/liste');
 
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('.salles-item');
-        $this->assertSelectorTextContains('.salles-item', 'SalleTest');
+        $this->assertSelectorExists('.rooms-item');
+        $this->assertSelectorTextContains('.rooms-item', 'Salle Test');
     }
 
     public function testDisplayListOfRoomsWithoutRooms(): void
     {
-        // Nettoyer la base de données
-        $this->entityManager->createQuery('DELETE FROM App\Entity\Salle')->execute();
+        // Dissociate or delete all Sa entities associated with rooms
+        $saRepository = $this->entityManager->getRepository(Sa::class);
+        $saEntities = $saRepository->findAll();
+
+        foreach ($saEntities as $sa) {
+            $sa->setRoom(null); // Dissociate the room
+            $this->entityManager->persist($sa);
+        }
+        $this->entityManager->flush();
+
+        // Now delete all Room entities
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Room')->execute();
 
         $this->client->request('GET', '/charge/salles/liste');
 
