@@ -2,10 +2,8 @@
 
 namespace App\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\RoomRepository;
-
-
+use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 class Room
@@ -15,50 +13,53 @@ class Room
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $roomNumber = null;
+    #[ORM\Column(name: 'roomName',length: 255)]
+    private ?string $roomName = null;
 
-    #[ORM\Column(nullable: true)]
-    private ?int $idAS = null;
+    #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist', 'remove'])]
+    private ?Sa $sa = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function setId(int $Id): static
+    public function getRoomName(): ?string
     {
-        $this->Id = $Id;
+        return $this->roomName;
+    }
+
+    public function setRoomName(string $roomName): static
+    {
+        $this->roomName = $roomName;
 
         return $this;
     }
 
-    public function getRoomNumber(): ?string
+    public function getSa(): ?Sa
     {
-        return $this->roomNumber;
+        return $this->sa;
     }
 
-    public function setRoomNumber(string $roomNumber): static
+    public function setSa(?Sa $sa): static
     {
-        $this->roomNumber = $roomNumber;
+        // unset the owning side of the relation if necessary
+        if ($sa === null && $this->sa !== null) {
+            $this->sa->setRoom(null);
+        }
 
-        return $this;
-    }
+        // set the owning side of the relation if necessary
+        if ($sa !== null && $sa->getRoom() !== $this) {
+            $sa->setRoom($this);
+        }
 
-    public function getIdAS(): ?int
-    {
-        return $this->idAS;
-    }
-
-    public function setIdAS(?int $idAS): static
-    {
-        $this->idAS = $idAS;
+        $this->sa = $sa;
 
         return $this;
     }
 
     public function __toString(): string
     {
-        return $this->roomNumber;
+        return $this->roomName ?? 'Salle non définie';
     }
 }

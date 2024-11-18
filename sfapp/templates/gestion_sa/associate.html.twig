@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des SA{% endblock %}
+
+{% block body %}
+
+<div class="addDiv">
+    <h1>Gestion des systèmes d'acquisition</h1>
+
+    <div class="addForm">
+        <p>Nombre de SA disponibles : {{ nbSaDispo }}</p>
+        <br>
+        {% if form is not null %}
+            <form name="form_name" method="post">
+                {{ form(form) }}
+            </form>
+        {% else %}
+            {% if error_message is not null %}
+                {{ error_message }}
+            {% endif %}
+        {% endif %}
+        <br>
+    </div>
+
+    <div class="return">
+        <button><a href="../gestion_sa">Retour à la liste des SA</a></button>
+    </div>
+
+</div>
+{% endblock %}
