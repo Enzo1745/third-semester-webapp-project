@@ -2,8 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\RoomRepository;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\RoomRepository;
+
+
 
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 class Room
@@ -13,52 +15,50 @@ class Room
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: 'roomName',length: 255)]
-    private ?string $roomName = null;
+    #[ORM\Column(length: 255)]
+    private ?string $roomNumber = null;
 
-    #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist', 'remove'])]
-    private ?Sa $sa = null;
+    #[ORM\Column(nullable: true)]
+    private ?int $idAS = null;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getRoomName(): ?string
+    public function setId(int $Id): static
     {
-        return $this->roomName;
-    }
-
-    public function setRoomName(string $roomName): static
-    {
-        $this->roomName = $roomName;
+        $this->Id = $Id;
 
         return $this;
     }
 
-    public function getSa(): ?Sa
+    public function getRoomNumber(): ?string
     {
-        return $this->sa;
+        return $this->roomNumber;
     }
 
-    public function setSa(?Sa $sa): static
+    public function setRoomNumber(string $roomNumber): static
     {
-        // unset the owning side of the relation if necessary
-        if ($sa === null && $this->sa !== null) {
-            $this->sa->setRoom(null);
-        }
-
-        // set the owning side of the relation if necessary
-        if ($sa !== null && $sa->getRoom() !== $this) {
-            $sa->setRoom($this);
-        }
-
-        $this->sa = $sa;
+        $this->roomNumber = $roomNumber;
 
         return $this;
     }
+
+    public function getIdAS(): ?int
+    {
+        return $this->idAS;
+    }
+
+    public function setIdAS(?int $idAS): static
+    {
+        $this->idAS = $idAS;
+
+        return $this;
+    }
+
     public function __toString(): string
     {
-        return $this->roomName ?? 'Salle non définie';
+        return $this->roomNumber;
     }
 }
