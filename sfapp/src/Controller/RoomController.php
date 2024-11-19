@@ -124,8 +124,8 @@ class RoomController extends AbstractController
 
         $room = $roomRepository->findByRoomName($roomName);
 
+
         if ($room && $room->getIdSA()) {
-            // Récupérer l'objet complet Sa à partir de l'EntityManager
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
         } else {
             $sa = null;

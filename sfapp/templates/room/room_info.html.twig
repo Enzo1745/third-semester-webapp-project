@@ -13,7 +13,7 @@
             <div class="salle-num">{{ room.roomName }}</div>
         </div>
 
-        {% if sa.temperature is null or sa.humidity is null or sa.CO2 is null %}
+        {% if sa is null %}
             <div class="salle-details">
                 Aucune donnée.
             </div>
@@ -21,15 +21,15 @@
             <div class="salle-details">
                 <div class="detail-block">
                     <div class="label">T°</div>
-                    <div class="value temp">{{ sa.temperature }}°</div>
+                    <div class="value temp">{{ sa.temperature ?? 'N/A' }}°</div>
                 </div>
                 <div class="detail-block">
                     <div class="label">H°</div>
-                    <div class="value humidity">{{ sa.humidity }}%</div>
+                    <div class="value humidity">{{ sa.humidity ?? 'N/A' }}%</div>
                 </div>
                 <div class="detail-block">
                     <div class="label">Co²</div>
-                    <div class="value co2">{{ sa.CO2 }}</div>
+                    <div class="value co2">{{ sa.CO2 ?? 'N/A' }}</div>
                 </div>
             </div>
         {% endif %}
