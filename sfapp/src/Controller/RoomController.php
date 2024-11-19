@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Room;
+use App\Entity\Sa;
 use App\Form\AddRoomType;
 use App\Form\SerchRoomASType;
-use App\Repository\Model\SaState;
+use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -117,14 +118,23 @@ class RoomController extends AbstractController
      * Description: Displays detailed information about a specific room.
      */
     #[Route('/charge/salles/liste/{roomName}', name: 'app_room_info')]
-    public function roomInfo(string $roomName, RoomRepository $roomRepository): Response
+    public function roomInfo(string $roomName, RoomRepository $roomRepository, EntityManagerInterface $entityManager): Response
     {
-        // Find the room by its room number
+        // Find the room by its room numbe
+
         $room = $roomRepository->findByRoomName($roomName);
+
+        if ($room && $room->getIdSA()) {
+            // Récupérer l'objet complet Sa à partir de l'EntityManager
+            $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
+        } else {
+            $sa = null;
+        }
 
         // Render the room information template
         return $this->render('room/room_info.html.twig', [
-            'room' => $room
+            'room' => $room,
+             'sa' => $sa
         ]);
     }
 
@@ -141,7 +151,7 @@ class RoomController extends AbstractController
         //dossociate sa and room
         if ($sa = $room->getSa()) {
             $sa->setRoom(null);
-            $sa->setState(SaState::Available);
+            $sa->setState(SAState::Available);
             $entityManager->persist($sa);
         }
         // Delete the room from the database

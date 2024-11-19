@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Form\SaManagementType;
-use App\Repository\Model\SaState;
+use App\Repository\Model\SAState;
 use App\Repository\SaRepository;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManager;
@@ -24,15 +24,15 @@ class SaManagementController extends AbstractController
         $nbSalle = $salleRepo->countBySaAvailable();
 
         // We select an SA available
-        $sa = $saRepo->findOneBy(['state' => SaState::Available]);
+        $sa = $saRepo->findOneBy(['state' => SAState::Available]);
 
         // Form creation
         $form = $this->createForm(SaManagementType::class, $sa);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($sa->getState() === SaState::Available && $sa->getRoom()) {
-                $sa->setState(SaState::Functional);
+            if ($sa->getState() === SAState::Available && $sa->getRoom()) {
+                $sa->setState(SAState::Functional);
                 $room = $sa->getRoom();
                 $room->setIdSa($sa->getId()); // Ajoutez cette ligne
                 $manager->persist($sa);

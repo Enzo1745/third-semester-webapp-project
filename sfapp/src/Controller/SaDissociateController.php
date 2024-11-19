@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Repository\Model\SaState;
+use App\Repository\Model\SAState;
 use App\Repository\SaRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,7 +21,7 @@ class SaDissociateController extends AbstractController
 
             // Dissociate the room and reset the sa's state
             $sa->setRoom(null);
-            $sa->setState(SaState::Available);
+            $sa->setState(SAState::Available);
             $entityManager->persist($sa);
             $entityManager->flush();
         }

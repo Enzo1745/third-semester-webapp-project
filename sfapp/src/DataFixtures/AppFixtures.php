@@ -4,7 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Room;
 use App\Entity\Sa;
-use App\Repository\Model\SaState;
+use App\Repository\Model\SAState;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
@@ -13,11 +13,11 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
         $sa1 = new Sa();
-        $sa1->setState(SaState::Available);
+        $sa1->setState(SAState::Available);
         $manager->persist($sa1);
 
         $sa2 = new Sa();
-        $sa2->setState(SaState::Available);
+        $sa2->setState(SAState::Available);
         $manager->persist($sa2);
 
         $room1 = new Room();
@@ -25,7 +25,7 @@ class AppFixtures extends Fixture
         $manager->persist($room1);
 
         $sa3 = new Sa();
-        $sa3->setState(SaState::Functional);
+        $sa3->setState(SAState::Functional);
         $sa3->setRoom($room1);
         $manager->persist($sa3);
 

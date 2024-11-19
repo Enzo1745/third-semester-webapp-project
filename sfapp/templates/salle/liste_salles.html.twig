@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des salles{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/liste_salles.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    <header>
+        <h1>Liste des salles</h1>
+        <a href="/charge">Retour</a>
+    </header>
+
+    <div class="container">
+        <div class="firstRow">Salles</div>
+        <div class="firstRow">Details</div>
+
+        {% for salle in salles %}
+            {% if salle.IdSA is not null %}
+                <div>{{ salle.NumSalle }}</div>
+                <div><a href="{{ path('app_salle_info', { 'NumSalle': salle.NumSalle }) }}">Voir détails</a></div>
+            {% else %}
+                <div>{{ salle.NumSalle }}</div>
+                <div class="noData">Aucun SA associé</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+{% endblock %}

@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use App\Entity\Sa;
 use App\Entity\Room;
-use App\Repository\Model\SaState;
+use App\Repository\Model\SAState;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -31,7 +31,7 @@ class AssociateSaTest extends WebTestCase
     {
         // Create an available SA
         $sa = new Sa();
-        $sa->setState(SaState::Available);
+        $sa->setState(SAState::Available);
         $this->entityManager->persist($sa);
 
         // Create a room without sa
@@ -56,7 +56,7 @@ class AssociateSaTest extends WebTestCase
     {
         // Create an available SA
         $saAvailable = new Sa();
-        $saAvailable->setState(SaState::Available);
+        $saAvailable->setState(SAState::Available);
         $this->entityManager->persist($saAvailable);
 
         // Create a room and associate it to a functional SA (Unavailable room)
@@ -65,7 +65,7 @@ class AssociateSaTest extends WebTestCase
         $this->entityManager->persist($room);
 
         $saFunctional = new Sa();
-        $saFunctional->setState(SaState::Functional);
+        $saFunctional->setState(SAState::Functional);
         $saFunctional->setRoom($room);
         $this->entityManager->persist($saFunctional);
 
@@ -90,7 +90,7 @@ class AssociateSaTest extends WebTestCase
 
         // Create an unavailable SA (state 'Functional')
         $saNotAvailable = new Sa();
-        $saNotAvailable->setState(SaState::Functional);
+        $saNotAvailable->setState(SAState::Functional);
         $this->entityManager->persist($saNotAvailable);
 
         $this->entityManager->flush();
@@ -111,7 +111,7 @@ class AssociateSaTest extends WebTestCase
         $entityManager = $this->entityManager;
 
         $sa = new Sa();
-        $sa->setState(SaState::Available);
+        $sa->setState(SAState::Available);
         $entityManager->persist($sa);
 
         $room = new Room();
@@ -137,10 +137,10 @@ class AssociateSaTest extends WebTestCase
         $this->assertSame($room->getId(), $sa->getRoom()->getId());
 
         // Check that the sa's state is now 'Functional'
-        $this->assertSame(SaState::Functional, $sa->getState());
+        $this->assertSame(SAState::Functional, $sa->getState());
 
         // Check if the number of available SA is decreased
-        $nbSaAvailable = $entityManager->getRepository(Sa::class)->count(['state' => SaState::Available]);
+        $nbSaAvailable = $entityManager->getRepository(Sa::class)->count(['state' => SAState::Available]);
         $this->assertSame(0, $nbSaAvailable);
     }
 

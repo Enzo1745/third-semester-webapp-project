@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use App\Repository\Model\SaState;
+use App\Repository\Model\SAState;
 use App\Entity\Room;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -35,7 +35,7 @@ class DisplaySaTest extends WebTestCase
         $this->entityManager->persist($room);
 
         $sa = new Sa();
-        $sa->setState(SaState::Available);
+        $sa->setState(SAState::Available);
         $sa->setRoom($room);
         $this->entityManager->persist($sa);
 
