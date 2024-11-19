@@ -16,6 +16,10 @@ class RoomRepository extends ServiceEntityRepository
         parent::__construct($registry, Room::class);
     }
 
+    /**
+     * @brief Function to get all the rooms, ordered by their number (Ex : D204 < D302)
+     * @return array
+     */
     public function findAllOrderedByNumSalle(): array
     {
         return $this->createQueryBuilder('s')
@@ -24,6 +28,11 @@ class RoomRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    /**
+     * @brief Function to find a room by using its number
+     * @param string $NumSalle -> the room's number
+     * @return Room|null
+     */
     public function findByNumSalle(string $NumSalle): ?Room
     {
         return $this->createQueryBuilder('s')

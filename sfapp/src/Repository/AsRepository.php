@@ -40,13 +40,19 @@ class AsRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    /**
+     * @brief Function to get the number of sa by their state
+     * @return int|null
+     * @throws \Doctrine\DBAL\Exception
+     */
     public function countBySaState(): ?int
     {
         $conn = $this->getEntityManager()->getConnection();
 
-        $sql = 'SELECT COUNT(s.id) FROM sa s WHERE s.etat = :etat';
+        $sql = 'SELECT COUNT(s.id) FROM sa s WHERE s.state = :state';
 
-        $resultSet = $conn->executeQuery($sql, ['etat' => 'Disponible']);
+        $resultSet = $conn->executeQuery($sql, ['state' => 'Disponible']);
 
         // returns an array of arrays (i.e. a raw data set)
         return $resultSet->fetchOne();

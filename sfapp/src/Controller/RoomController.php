@@ -27,9 +27,9 @@ class RoomController extends AbstractController
      * Description: Displays a list of all rooms.
      */
     #[Route('/charge/salles', name: 'app_salle_liste')]
-    public function listRooms(RoomRepository $salleRepository): Response
+    public function listRooms(RoomRepository $roomRepository): Response
     {
-        $salles = $salleRepository->findAllOrderedByNumSalle();
+        $salles = $roomRepository->findAllOrderedByNumSalle();
 
         return $this->render('salle/liste_salles.html.twig', [
             'salles' => $salles
@@ -43,10 +43,15 @@ class RoomController extends AbstractController
      * Description: Displays detailed information about a specific room.
      */
     #[Route('/charge/salles/{NumSalle}', name: 'app_salle_info')]
-    public function trouverInfosSalles(string $NumSalle, RoomRepository $salleRepository, AsRepository $saRepository): Response
+    public function findRoomInfos(string $NumSalle, RoomRepository $roomRepository, AsRepository $saRepository): Response
     {
-        $salle = $salleRepository->findByNumSalle($NumSalle);
-        $sa = $salle->getIdSA();
+        $salle = $roomRepository->findByNumSalle($NumSalle);
+
+        if ($salle) {
+            $sa = $salle->getIdSA();
+        } else {
+            $sa = null;
+        }
 
         return $this->render('salle/salle_info.html.twig', [
             'salle' => $salle,

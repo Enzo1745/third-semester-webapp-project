@@ -13,9 +13,9 @@
             <div class="salle-num">{{ salle.numSalle }}</div>
         </div>
 
-        {% if sa.temperature is null and sa.humidite is null and sa.CO2 is null %}
+        {% if sa.temperature is null or sa.humidity is null or sa.CO2 is null %}
             <div class="salle-details">
-                <div>Aucunes données</div>
+                Aucune donnée.
             </div>
         {% else %}
             <div class="salle-details">
