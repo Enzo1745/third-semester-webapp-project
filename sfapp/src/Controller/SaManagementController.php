@@ -31,9 +31,12 @@ class SaManagementController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($sa->getState() === SaState::Available and $sa->getRoom()) {
+            if ($sa->getState() === SaState::Available && $sa->getRoom()) {
                 $sa->setState(SaState::Functional);
+                $room = $sa->getRoom();
+                $room->setIdSa($sa->getId()); // Ajoutez cette ligne
                 $manager->persist($sa);
+                $manager->persist($room); // Ajoutez cette ligne
                 $manager->flush();
             }
         }

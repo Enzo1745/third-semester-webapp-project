@@ -19,7 +19,7 @@ class Room
     #[ORM\Column(name: 'idSa', nullable: true)]
     private ?int $idSa = null;
 
-    #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist'])]
     private ?Sa $sa = null;
 
     public function getId(): ?int
@@ -56,18 +56,20 @@ class Room
 
     public function setSa(?Sa $sa): static
     {
-        // unset the owning side of the relation if necessary
-        if ($sa === null && $this->sa !== null) {
-            $this->sa->setRoom(null);
+        if ($sa === null) {
+            if ($this->sa !== null) {
+                $this->sa->setRoom(null);
+            }
+            $this->idSa = null;
+        } else {
+            $this->idSa = $sa->getId();
+            if ($sa->getRoom() !== $this) {
+                $sa->setRoom($this);
+            }
         }
+            $this->sa = $sa;
+            return $this;
 
-        // set the owning side of the relation if necessary
-        if ($sa !== null && $sa->getRoom() !== $this) {
-            $sa->setRoom($this);
-        }
-
-        $this->sa = $sa;
-        return $this;
     }
 
     public function __toString(): string

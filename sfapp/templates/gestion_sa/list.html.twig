@@ -3,47 +3,69 @@
 {% block title %}Gestion des systèmes d'acquisition{% endblock %}
 
 {% block body %}
-    <h1>Liste des systèmes d'acquisition</h1>
-    <a href="/charge/salles/liste"><button>Retour</button></a>
-
-    <div class="newSA">
-        <button><a href="./gestion_sa/associer">Associer un nouveau système d'acqusition</a></button>
+    {# Header section #}
+    <div class="container-fluid bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h2 mb-0">
+                    <i class="fas fa-microchip me-2"></i>Systèmes d'acquisition
+                </h1>
+                <a href="/charge/salles/liste" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Retour
+                </a>
+            </div>
+        </div>
     </div>
-    <div class="listSa">
-        {% if saList is empty %}
-            <p>Aucun système d'acquisition n'est disponible.</p>
 
-        {% else %}
-            <table class="tab">
-                <thead>
-                    <tr>
-                        <th>Système d'acquisition</th>
-                        <th>Salle associée</th>
-                        <th>Option</th>
-                    </tr>
-                </thead>
+    {# Main content #}
+    <div class="container">
+        <div class="mb-4 d-grid gap-2 col-md-4 mx-auto">
+            <a href="./gestion_sa/associer" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Associer un nouveau système d'acquisition
+            </a>
+        </div>
 
-                <tbody>
-                    {% for sa in saList %}
-                        <tr>
-                            <td class="idSa">{{ sa.id }}</td>
-                            {% if sa.room is not null %}
-                                <td class="roomName">{{ sa.room }}</td>
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                {% if saList is empty %}
+                    <div class="alert alert-info m-4" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>Aucun système d'acquisition n'est disponible.
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-primary text-white">
+                            <tr>
+                                <th>Système d'acquisition</th>
+                                <th>Salle associée</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                            </thead>
 
-                                <td>
-                                    <form method="post" action="{{ path('app_sa_dissociate', {id: sa.id}) }}">
-                                        <button type="submit">Dissocier</button>
-                                    </form>
-                                </td>
-                            {% else %}
-                                <td>Aucune</td>
-                                <td></td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
-
+                            <tbody>
+                            {% for sa in saList %}
+                                <tr>
+                                    <td class="align-middle">{{ sa.id }}</td>
+                                    {% if sa.room is not null %}
+                                        <td class="align-middle">{{ sa.room }}</td>
+                                        <td class="text-center">
+                                            <form method="post" action="{{ path('app_sa_dissociate', {id: sa.id}) }}" class="m-0">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-unlink me-2"></i>Dissocier
+                                                </button>
+                                            </form>
+                                        </td>
+                                    {% else %}
+                                        <td class="text-muted align-middle">Aucune</td>
+                                        <td></td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
 {% endblock %}

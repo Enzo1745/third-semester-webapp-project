@@ -10,7 +10,6 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use function Sodium\add;
 
 class SaManagementType extends AbstractType
 {
@@ -21,7 +20,13 @@ class SaManagementType extends AbstractType
                 'class' => Room::class,
                 'label' => 'Salle',
                 'choice_label' => 'roomName',
-                'query_builder' => function (RoomRepository $er) { // Query to get room where no sa is associated
+                'attr' => [
+                    'class' => 'form-control mb-3'
+                ],
+                'label_attr' => [
+                    'class' => 'form-label'
+                ],
+                'query_builder' => function (RoomRepository $er) {
                     return $er->createQueryBuilder('s')
                         ->leftJoin('App\Entity\Sa', 'sa', 'WITH', 'sa.room = s.id')
                         ->where('sa.room IS NULL');
@@ -29,6 +34,10 @@ class SaManagementType extends AbstractType
             ])
             ->add('save', SubmitType::class, [
                 'label' => 'Associer',
+                'attr' => [
+                    'class' => 'btn btn-primary w-100',
+                    'icon' => 'fas fa-link'  // Cette classe sera utilisée pour l'icône
+                ],
             ]);
     }
 

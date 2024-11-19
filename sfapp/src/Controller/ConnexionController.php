@@ -27,11 +27,11 @@ class ConnexionController extends AbstractController
         if ($form->isSubmitted()) {
             // showing errors whent there are empty fields
             if (empty($username)) {
-                $this->addFlash('errorUser', 'Le champ Identifiant est obligatoire');
+                $this->addFlash('danger', 'Le champ Identifiant est obligatoire');
             }
 
             if (empty($password)) {
-                $this->addFlash('errorPWD', 'Le champ Mot de passe est obligatoire');
+                $this->addFlash('danger', 'Le champ Mot de passe est obligatoire');
             }
 
             // redirection to the temporary succes page when the form is valid and when the Id and pwd fields are not empty

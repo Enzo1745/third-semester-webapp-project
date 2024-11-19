@@ -3,29 +3,50 @@
 {% block title %}Gestion des SA{% endblock %}
 
 {% block body %}
-
-<div class="addDiv">
-    <h1>Gestion des systèmes d'acquisition</h1>
-
-
-    <div class="addForm">
-        <p>Nombre de SA disponibles : {{ nbSaDispo }}</p>
-        <br>
-        {% if form is not null %}
-            <form name="form_name" method="post">
-                {{ form(form) }}
-            </form>
-        {% else %}
-            {% if error_message is not null %}
-                {{ error_message }}
-            {% endif %}
-        {% endif %}
-        <br>
+    {# Header section #}
+    <div class="container-fluid bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h2 mb-0">
+                    <i class="fas fa-microchip me-2"></i>Gestion des systèmes d'acquisition
+                </h1>
+                <a href="../gestion_sa" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à la liste des SA
+                </a>
+            </div>
+        </div>
     </div>
 
-    <div class="return">
-        <button><a href="../gestion_sa">Retour à la liste des SA</a></button>
-    </div>
+    {# Main content #}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary bg-gradient text-white">
+                        <h3 class="h4 mb-0">
+                            <i class="fas fa-info-circle me-2"></i>État des systèmes
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="alert alert-info mb-4">
+                            <i class="fas fa-database me-2"></i>Nombre de SA disponibles :
+                            <span class="fw-bold">{{ nbSaDispo }}</span>
+                        </div>
 
-</div>
+                        {% if form is not null %}
+                            {{ form_start(form, {'attr': {'class': 'needs-validation'}}) }}
+                            {{ form_widget(form) }}
+                            {{ form_end(form) }}
+                        {% else %}
+                            {% if error_message is not null %}
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>{{ error_message }}
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

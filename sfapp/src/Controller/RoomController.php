@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Room;
 use App\Form\AddRoomType;
 use App\Form\SerchRoomASType;
+use App\Repository\Model\SaState;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -56,7 +57,7 @@ class RoomController extends AbstractController
 
             if ($existingRoom) {
                 // Add an error flash message
-                $this->addFlash('error', 'Cette salle existe déja');
+                $this->addFlash('danger', 'Cette salle existe déja');
             } else {
                 // Save the new room to the database
                 $entityManager->persist($newRoom);
@@ -91,11 +92,11 @@ class RoomController extends AbstractController
         $choice = $form->get('filter')->getData();
 
         // changing the content of the list depending on the selected filter
-        if ($choice == 'RoomsWithAS') {
-            $rooms = $roomRepository->findAllWithIdSA();
+        if ($choice === 'RoomsWithAS') {
+            $rooms = $roomRepository->findAllWithIdSa();
         }
-        else if ($choice == 'RoomsWithoutAS') {
-            $rooms = $roomRepository->findAllWithoutIdSA();
+        else if ($choice === 'RoomsWithoutAS') {
+            $rooms = $roomRepository->findAllWithoutIdSa();
         }
         else{
             $rooms = $roomRepository->findAllOrderedByRoomNumber();
@@ -136,6 +137,13 @@ class RoomController extends AbstractController
     #[Route('/charge/salles/supprimer/{id}', name: 'app_room_delete', methods: ['POST'])]
     public function delete(Room $room, EntityManagerInterface $entityManager): Response
     {
+
+        //dossociate sa and room
+        if ($sa = $room->getSa()) {
+            $sa->setRoom(null);
+            $sa->setState(SaState::Available);
+            $entityManager->persist($sa);
+        }
         // Delete the room from the database
         $entityManager->remove($room);
         $entityManager->flush();

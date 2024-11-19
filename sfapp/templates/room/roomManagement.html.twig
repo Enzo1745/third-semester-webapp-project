@@ -1,14 +1,55 @@
-
-
 {% extends 'base.html.twig' %}
 
-{% block body %}
-    <h1>Gestion des salles</h1>
-    <a href="/charge/salles/"><button>Retour</button></a>
-    {% block stylesheets %}
-        <link rel="stylesheet" href="sfapp/assets/styles/roomManagement.css">
-    {% endblock %}
+{% block title %}Gestion des salles{% endblock %}
 
-    <h3>Ajouter une nouvelle salle</h3>
-    {{ form(formAddRoom) }}
+{% block body %}
+    {# Header section #}
+    <div class="container-fluid bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h2 mb-0">
+                    <i class="fas fa-cog me-2"></i>Gestion des salles
+                </h1>
+                <a href="/charge/salles/" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Retour
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# Main content #}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary bg-gradient text-white">
+                        <h3 class="h4 mb-0">
+                            <i class="fas fa-plus-circle me-2"></i>Ajouter une nouvelle salle
+                        </h3>
+                    </div>
+                    <div class="card-body p-4">
+                        {{ form_start(formAddRoom, {'attr': {'class': 'needs-validation'}}) }}
+
+                        <div class="mb-3">
+                            {{ form_label(formAddRoom.roomName, 'Numéro de salle', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formAddRoom.roomName, {
+                                'attr': {
+                                    'class': 'form-control',
+                                    'placeholder': 'Entrez le numéro de la salle'
+                                }
+                            }) }}
+
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus-circle me-2"></i>Ajouter la salle
+                            </button>
+                        </div>
+                        {{ form_end(formAddRoom) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

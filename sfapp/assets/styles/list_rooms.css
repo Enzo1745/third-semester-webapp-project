@@ -1,19 +1,50 @@
-header{
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+/* Custom styles to enhance Bootstrap */
+
+/* Hover effect for table rows */
+.hover-effect {
+    transition: all 0.2s ease-in-out;
 }
-.container{
-    margin: 20px 0;
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    border: 3px solid #0d0d0d;
+
+.hover-effect:hover {
+    background-color: rgba(13, 110, 253, 0.05);
+    transform: scale(1.005);
 }
-.container div{
-    border: 3px solid #0d0d0d;
-    text-align: center;
-    padding: 20px 0;
+
+/* Button animations */
+.btn {
+    transition: all 0.3s ease;
 }
-.firstRow{
-    font-weight: bold;
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Card styling */
+.card {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.card-header {
+    border-top-left-radius: 0.5rem !important;
+    border-top-right-radius: 0.5rem !important;
+}
+
+/* Custom shadow effect */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+
+/* Icon colors and animations */
+.fas {
+    transition: transform 0.2s ease;
+}
+
+.btn:hover .fas {
+    transform: scale(1.1);
+}
+
+/* Empty state styling */
+.text-muted .fas {
+    opacity: 0.5;
 }
