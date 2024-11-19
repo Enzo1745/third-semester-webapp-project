@@ -6,68 +6,98 @@ use App\Entity\Sa;
 use App\Entity\Room;
 use App\Repository\Model\SAState;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use App\Repository\RoomRepository;
+use Doctrine\ORM\Tools\SchemaTool;
 
 class DisplayRoomsTest extends WebTestCase
 {
-    /**
-     * Test case: Verifying the details of a salle associated with a SA that has data.
-     * This test checks if the temperature, humidity, and CO2 values are correctly displayed on the page.
-     */
+    private $entityManager;
+    private $client;
+
+    protected function setUp(): void
+    {
+        $this->client = static::createClient();
+        $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
+
+        // Create database schema
+        $this->createSchema();
+    }
+
+    private function createSchema(): void
+    {
+        $metadatas = $this->entityManager->getMetadataFactory()->getAllMetadata();
+        if (!empty($metadatas)) {
+            $tool = new SchemaTool($this->entityManager);
+            $tool->dropSchema($metadatas);
+            $tool->createSchema($metadatas);
+        }
+    }
 
     public function testSearchingDetailsOfAssociatedSAWithData(): void
     {
-        $client = static::createClient();
-
-        // Create SA with data
+        // Create and persist SA first to get its ID
         $sa = new Sa();
         $sa->setState(SAState::Functional);
         $sa->setTemperature(25);
         $sa->setHumidity(60);
         $sa->setCO2(1200);
+        $this->entityManager->persist($sa);
+        $this->entityManager->flush();
 
         // Create Room and associate with SA
-        $salle = new Room();
-        $salle->setNumSalle("D101");
-        $salle->setIdSA($sa);
+        $room = new Room();
+        $room->setRoomName("D101");
+        $room->setIdSA($sa->getId());
+        $this->entityManager->persist($room);
 
-        // Persist entities
-        $entityManager = self::getContainer()->get('doctrine')->getManager();
-        $entityManager->persist($salle);
-        $entityManager->persist($sa);
-        $entityManager->flush();
+        // Update SA with Room reference
+        $sa->setRoom($room);
+        $this->entityManager->persist($sa);
 
-        $roomRepository = self::getContainer()->get(RoomRepository::class);
-        $salleTest = $roomRepository->findOneBy(['NumSalle' => 'D101']);
-        $this->assertNotNull($salleTest);
+        $this->entityManager->flush();
+        $this->entityManager->refresh($sa);
+        $this->entityManager->refresh($room);
 
         // Request the page
-        $crawler = $client->request('GET', '/charge/salles/D101');
+        $crawler = $this->client->request('GET', '/charge/salles/liste/D101');
 
-        // Assert the correct data is displayed
-        //$this->assertSelectorTextContains('.value.temp', '25°');
-        //$this->assertSelectorTextContains('.value.humidity', '60%');
-        //$this->assertSelectorTextContains('.value.co2', '1200');
+        $this->assertResponseIsSuccessful();
+
+        // Test the room name
+        $this->assertSelectorTextContains('.salle-num', 'D101');
+
+        // Test the SA data using the correct selectors
+        $this->assertSelectorTextContains('.detail-block .value.temp', '25°');
+        $this->assertSelectorTextContains('.detail-block .value.humidity', '60%');
+        $this->assertSelectorTextContains('.detail-block .value.co2', '1200');
     }
 
-
-    /**
-     * Test case: Verifying the details of a salle without any SA associated.
-     * This test checks if the "Aucun SA associé" message is displayed when the salle has no SA associated.
-     */
     public function testSearchingDetailsOfSalleWithoutSA(): void
     {
-        $client = static::createClient();
+        // Create Room without SA
+        $room = new Room();
+        $room->setRoomName("D303");
+        $this->entityManager->persist($room);
+        $this->entityManager->flush();
 
-        $salle = new Room();
-        $salle->setNumSalle("D303");
+        // Request the page
+        $crawler = $this->client->request('GET', '/charge/salles/liste/D303');
 
-        $entityManager = self::getContainer()->get('doctrine')->getManager();
-        $entityManager->persist($salle);
-        $entityManager->flush();
+        $this->assertResponseIsSuccessful();
 
-        $crawler = $client->request('GET', '/charge/salles');
+        // Test the room name
+        $this->assertSelectorTextContains('.salle-num', 'D303');
 
-        $this->assertSelectorTextContains('.noData', 'Aucun SA associé');
+        // Test for "Aucune donnée" message
+        $this->assertSelectorTextContains('.salle-details', 'Aucune donnée');
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        if ($this->entityManager) {
+            $this->entityManager->close();
+            $this->entityManager = null;
+        }
     }
 }

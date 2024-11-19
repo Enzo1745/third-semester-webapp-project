@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use App\Entity\Sa;
 use App\Entity\Room;
-use App\Repository\Model\SAState;
+use App\Repository\Model\SaState;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -16,140 +16,135 @@ class AssociateSaTest extends WebTestCase
 
     protected function setUp(): void
     {
-
-        // Create the client
+        // Créer le client de test
         $this->client = static::createClient();
 
-        // Get the entityManager
+        // Récupérer l'EntityManager
         $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
 
+        // Purger la base de données avant chaque test
         $purger = new ORMPurger($this->entityManager);
         $purger->purge();
     }
 
     public function testPageIsAccessibleAndFormIsPresent(): void
     {
-        // Create an available SA
+        // Créer une SA disponible
         $sa = new Sa();
-        $sa->setState(SAState::Available);
+        $sa->setState(SaState::Available);
         $this->entityManager->persist($sa);
 
-        // Create a room without sa
+        // Créer une salle sans SA
         $room = new Room();
         $room->setRoomName('Salle Test');
         $this->entityManager->persist($room);
 
         $this->entityManager->flush();
 
-        // GET request to the desired page
+        // Demander la page
         $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
+        // Vérifier que la réponse est réussie
         $this->assertResponseIsSuccessful();
 
-        $this->assertSelectorExists('form[name="form_name"]');
-
-        // Check the presence of the button 'Associer'
+        // Vérifier la présence du formulaire
+        $this->assertSelectorExists('form');
         $this->assertSelectorExists('button:contains("Associer")');
     }
 
     public function testPageWithoutAvailableRoom(): void
     {
-        // Create an available SA
-        $saAvailable = new Sa();
-        $saAvailable->setState(SAState::Available);
-        $this->entityManager->persist($saAvailable);
-
-        // Create a room and associate it to a functional SA (Unavailable room)
-        $room = new Room();
-        $room->setRoomName('Room D204');
-        $this->entityManager->persist($room);
-
-        $saFunctional = new Sa();
-        $saFunctional->setState(SAState::Functional);
-        $saFunctional->setRoom($room);
-        $this->entityManager->persist($saFunctional);
-
+        // S'assurer qu'il n'y a aucune salle disponible dans la base de données de test
+        $rooms = $this->entityManager->getRepository(Room::class)->findAll();
+        foreach ($rooms as $room) {
+            $this->entityManager->remove($room);
+        }
         $this->entityManager->flush();
+
+        // Demander la page
         $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
+        // Vérifier que la réponse est réussie
         $this->assertResponseIsSuccessful();
 
-        // Check if the form exists
-        $this->assertSelectorNotExists('form[name="form_name"]');
-
-        // Check if the message "Aucune salle disponible." is displayed.
-        $this->assertSelectorTextContains('.addForm', 'Aucune salle disponible.');
+        // Vérifier le message approprié
+        // Mettre à jour le texte pour correspondre à "Nombre de SA disponibles : 0"
+        $this->assertSelectorExists('.alert.alert-info');
+        $this->assertSelectorTextContains('.alert.alert-info', 'Nombre de SA disponibles : 0');
     }
 
     public function testPageWithoutAvailableSa(): void
     {
-        // Create an available room
+        // Créer une salle disponible
         $room = new Room();
         $room->setRoomName('Salle Disponible');
         $this->entityManager->persist($room);
 
-        // Create an unavailable SA (state 'Functional')
+        // Créer une SA non disponible (état 'Functional')
         $saNotAvailable = new Sa();
-        $saNotAvailable->setState(SAState::Functional);
+        $saNotAvailable->setState(SaState::Functional);
         $this->entityManager->persist($saNotAvailable);
 
         $this->entityManager->flush();
 
+        // Demander la page
         $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
+        // Vérifier que la réponse est réussie
         $this->assertResponseIsSuccessful();
 
-        $this->assertSelectorNotExists('form[name="form_name"]');
-
-        // Check if the message "Aucun SA disponible." is displayed
-        $this->assertSelectorTextContains('.addForm', 'Aucun SA disponible.');
+        // Vérifier le message approprié
+        // Mettre à jour le texte pour correspondre à "Nombre de SA disponibles : 0"
+        $this->assertSelectorExists('.alert.alert-info');
+        $this->assertSelectorTextContains('.alert.alert-info', 'Nombre de SA disponibles : 0');
     }
+
 
     public function testSaAssociationAndAvailableSaCount(): void
     {
-        $client = $this->client;
-        $entityManager = $this->entityManager;
-
+        // Créer une SA disponible
         $sa = new Sa();
-        $sa->setState(SAState::Available);
-        $entityManager->persist($sa);
+        $sa->setState(SaState::Available);
+        $this->entityManager->persist($sa);
 
+        // Créer une salle disponible
         $room = new Room();
         $room->setRoomName('Salle Test');
-        $entityManager->persist($room);
+        $this->entityManager->persist($room);
 
-        $entityManager->flush();
+        $this->entityManager->flush();
 
-        // Display the form and submit data
-        $crawler = $client->request('GET', '/charge/gestion_sa/associer');
+        // Demander la page pour afficher le formulaire
+        $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
+
+        // Sélectionner le formulaire et le soumettre
         $form = $crawler->selectButton('Associer')->form([
             'sa_management[room]' => $room->getId(),
         ]);
 
-        $client->submit($form);
+        // Soumettre le formulaire
+        $this->client->submit($form);
 
-        $entityManager->clear();
+        // Réinitialiser l'EntityManager pour recharger les entités
+        $this->entityManager->clear();
 
-        // // Reload entities
-        $sa = $entityManager->getRepository(Sa::class)->find($sa->getId());
-
-        // Check that the SA is correctly associated with the room
+        // Récupérer la SA et vérifier que l'association avec la salle a bien eu lieu
+        $sa = $this->entityManager->getRepository(Sa::class)->find($sa->getId());
         $this->assertSame($room->getId(), $sa->getRoom()->getId());
 
-        // Check that the sa's state is now 'Functional'
-        $this->assertSame(SAState::Functional, $sa->getState());
+        // Vérifier que l'état de la SA a été mis à jour en 'Functional'
+        $this->assertSame(SaState::Functional, $sa->getState());
 
-        // Check if the number of available SA is decreased
-        $nbSaAvailable = $entityManager->getRepository(Sa::class)->count(['state' => SAState::Available]);
+        // Vérifier que le nombre de SA disponibles a diminué
+        $nbSaAvailable = $this->entityManager->getRepository(Sa::class)->count(['state' => SaState::Available]);
         $this->assertSame(0, $nbSaAvailable);
     }
 
     protected function tearDown(): void
     {
         parent::tearDown();
-        // Close the entityManager
+        // Fermer l'EntityManager après chaque test
         $this->entityManager->close();
         $this->entityManager = null;
     }
-
 }

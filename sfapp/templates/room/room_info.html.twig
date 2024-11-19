@@ -21,15 +21,15 @@
             <div class="salle-details">
                 <div class="detail-block">
                     <div class="label">T°</div>
-                    <div class="value temp">{{ sa.temperature ?? 'N/A' }}°</div>
+                    <div class="value temp">{{ sa.temperature|default('N/A') }}°</div>
                 </div>
                 <div class="detail-block">
                     <div class="label">H°</div>
-                    <div class="value humidity">{{ sa.humidity ?? 'N/A' }}%</div>
+                    <div class="value humidity">{{ sa.humidity|default('N/A') }}%</div>
                 </div>
                 <div class="detail-block">
                     <div class="label">Co²</div>
-                    <div class="value co2">{{ sa.CO2 ?? 'N/A' }}</div>
+                    <div class="value co2">{{ sa.CO2|default('N/A') }}</div>
                 </div>
             </div>
         {% endif %}

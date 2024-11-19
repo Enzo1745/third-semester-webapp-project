@@ -2,7 +2,7 @@
 
 namespace App\Tests;
 
-use App\Repository\Model\SAState;
+use App\Repository\Model\SaState;
 use App\Entity\Room;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -30,34 +30,44 @@ class DisplaySaTest extends WebTestCase
 
     public function testDisplayListOfSaWithSa(): void
     {
+        // Create test data
         $room = new Room();
         $room->setRoomName("D204");
         $this->entityManager->persist($room);
 
         $sa = new Sa();
-        $sa->setState(SAState::Available);
+        $sa->setState(SaState::Available);
         $sa->setRoom($room);
         $this->entityManager->persist($sa);
 
         $this->entityManager->flush();
 
-        $this->client->request('GET', '/charge/gestion_sa');
+        // Make request
+        $crawler = $this->client->request('GET', '/charge/gestion_sa');
 
+        // Assert response and content
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorExists('.idSa');
-        $this->assertSelectorTextContains('.roomName', "D204");
+        $this->assertSelectorExists('.sa-table', 'Table should be present');
+        $this->assertSelectorExists('.idSa', 'SA ID should be present');
+        $this->assertSelectorExists('td.roomName', 'Room name cell should exist');
+        $this->assertSelectorTextContains('td.roomName', 'D204');
+
     }
 
     public function testDisplayListOfSaWithoutSa(): void
     {
+        // Clear existing data
         $this->entityManager->createQuery('DELETE FROM App\Entity\Sa')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Room')->execute();
 
-        $this->client->request('GET', '/charge/gestion_sa');
+        // Make request
+        $crawler = $this->client->request('GET', '/charge/gestion_sa');
 
+        // Assert response and content
         $this->assertResponseIsSuccessful();
-        $this->assertSelectorNotExists('.tab');
-        $this->assertSelectorExists('p', 'Aucun système d\'acquisition n\'est disponible.');
+        $this->assertSelectorNotExists('.sa-table', 'Table should not be present');
+        $this->assertSelectorExists('.alert-info', 'Alert message should be present');
+        $this->assertSelectorTextContains('.alert-info', 'Aucun système d\'acquisition n\'est disponible.');
     }
 
     protected function tearDown(): void

@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use App\Entity\Room;
 use App\Entity\Sa;
-use App\Repository\Model\SAState;
+use App\Repository\Model\SaState;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
@@ -35,7 +35,7 @@ class DissociateSaTest extends WebTestCase
 
         // Create an available SA and associate it to the room
         $sa = new Sa();
-        $sa->setState(SAState::Available);
+        $sa->setState(SaState::Available);
         $sa->setRoom($room);
         $this->entityManager->persist($sa);
 
@@ -69,7 +69,7 @@ class DissociateSaTest extends WebTestCase
         $this->entityManager->persist($room);
 
         $sa = new Sa();
-        $sa->setState(SAState::Available);
+        $sa->setState(SaState::Available);
         $sa->setRoom($room);  // Associate the SA with the room
         $this->entityManager->persist($sa);
 

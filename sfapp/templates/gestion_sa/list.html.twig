@@ -33,32 +33,34 @@
                     </div>
                 {% else %}
                     <div class="table-responsive">
-                        <table class="table table-hover mb-0">
+                        <table class="table table-hover mb-0 sa-table">
                             <thead class="bg-primary text-white">
                             <tr>
-                                <th>Système d'acquisition</th>
-                                <th>Salle associée</th>
+                                <th class="idSa">Système d'acquisition</th>
+                                <th class="roomName">Salle associée</th>
                                 <th class="text-center">Actions</th>
                             </tr>
                             </thead>
-
                             <tbody>
                             {% for sa in saList %}
                                 <tr>
-                                    <td class="align-middle">{{ sa.id }}</td>
-                                    {% if sa.room is not null %}
-                                        <td class="align-middle">{{ sa.room }}</td>
-                                        <td class="text-center">
+                                    <td class="align-middle idSa">{{ sa.id }}</td>
+                                    <td class="align-middle roomName">
+                                        {% if sa.room is not null %}
+                                            {{ sa.room.roomName }}
+                                        {% else %}
+                                            <span class="text-muted">Aucune</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if sa.room is not null %}
                                             <form method="post" action="{{ path('app_sa_dissociate', {id: sa.id}) }}" class="m-0">
                                                 <button type="submit" class="btn btn-danger btn-sm">
                                                     <i class="fas fa-unlink me-2"></i>Dissocier
                                                 </button>
                                             </form>
-                                        </td>
-                                    {% else %}
-                                        <td class="text-muted align-middle">Aucune</td>
-                                        <td></td>
-                                    {% endif %}
+                                        {% endif %}
+                                    </td>
                                 </tr>
                             {% endfor %}
                             </tbody>
