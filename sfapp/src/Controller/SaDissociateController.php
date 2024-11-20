@@ -20,7 +20,10 @@ class SaDissociateController extends AbstractController
         if ($sa AND $sa->getRoom() != null) { // Test that the sa has a room associated
 
             // Dissociate the room and reset the sa's state
-            $sa->setRoom(null);
+
+            $room = $sa->getRoom();
+            $room->setIdSa(null);  // Explicitly set idSa to null
+            $sa->setRoom(null);    // This will handle both sides of the relationship
             $sa->setState(SAState::Available);
             $entityManager->persist($sa);
             $entityManager->flush();

@@ -7,31 +7,71 @@
 {% endblock %}
 
 {% block body %}
-    <div class="salle-container">
-        <div class="header">
-            <a class="backButton" href="/charge/salles/liste">Retour à la liste</a>
-            <div class="salle-num">{{ room.roomName }}</div>
-        </div>
 
-        {% if sa is null %}
-            <div class="salle-details">
-                Aucune donnée.
+    {# En-tête avec le même style que la liste des salles #}
+    <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="h2 mb-0 fw-bold salle-num">
+                <i class="fas fa-building me-2"></i> Détails de la salle {{ room.roomName }}
+            </h1>
+            <div>
+                <a href="/charge/salles/liste" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-1"></i> Retour à la liste
+                </a>
             </div>
-        {% else %}
-            <div class="salle-details">
-                <div class="detail-block">
-                    <div class="label">T°</div>
-                    <div class="value temp">{{ sa.temperature|default('N/A') }}°</div>
-                </div>
-                <div class="detail-block">
-                    <div class="label">H°</div>
-                    <div class="value humidity">{{ sa.humidity|default('N/A') }}%</div>
-                </div>
-                <div class="detail-block">
-                    <div class="label">Co²</div>
-                    <div class="value co2">{{ sa.CO2|default('N/A') }}</div>
-                </div>
+        </div>
+    </header>
+
+    {# Contenu principal #}
+    <div class="container">
+        <div class="card shadow-sm">
+            {# En-tête de la carte #}
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0">Informations de la salle</h5>
             </div>
-        {% endif %}
+
+            {# Corps de la carte #}
+            <div class="card-body">
+                {% if sa is null %}
+                    <div class="text-center py-4 text-muted salle-details">
+                        <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                        <p>Aucune donnée disponible pour cette salle.</p>
+                    </div>
+                {% else %}
+                    <div class="detail-block">
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-thermometer-half fa-2x text-primary mb-2"></i>
+                                        <h5 class="card-title">Température</h5>
+                                        <p class="card-text value temp">{{ sa.temperature|default('N/A') }}°</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-tint fa-2x text-primary mb-2"></i>
+                                        <h5 class="card-title">Humidité</h5>
+                                        <p class="card-text value humidity">{{ sa.humidity|default('N/A') }}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-cloud fa-2x text-primary mb-2"></i>
+                                        <h5 class="card-title">CO<sub>2</sub></h5>
+                                        <p class="card-text value co2">{{ sa.CO2|default('N/A') }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
     </div>
+
 {% endblock %}

@@ -62,14 +62,15 @@ class Room
             }
             $this->idSa = null;
         } else {
-            $this->idSa = $sa->getId();
+            $this->sa = $sa;
+            if ($sa->getId() !== null) {
+                $this->idSa = $sa->getId();
+            }
             if ($sa->getRoom() !== $this) {
                 $sa->setRoom($this);
             }
         }
-            $this->sa = $sa;
-            return $this;
-
+        return $this;
     }
 
     public function __toString(): string

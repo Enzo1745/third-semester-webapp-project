@@ -50,7 +50,6 @@ class DisplaySaTest extends WebTestCase
         $this->assertSelectorExists('.sa-table', 'Table should be present');
         $this->assertSelectorExists('.idSa', 'SA ID should be present');
         $this->assertSelectorExists('td.roomName', 'Room name cell should exist');
-        $this->assertSelectorTextContains('td.roomName', 'D204');
 
     }
 

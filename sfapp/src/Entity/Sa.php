@@ -55,6 +55,10 @@ class Sa
     {
         $this->room = $room;
 
+        if ($room !== null && $room->getSa() !== $this) {
+            $room->setSa($this);
+        }
+
         return $this;
     }
 
