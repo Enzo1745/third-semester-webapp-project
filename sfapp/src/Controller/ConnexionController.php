@@ -25,12 +25,16 @@ class ConnexionController extends AbstractController
 
         // script when the user tries to connect
         if ($form->isSubmitted()) {
+
+            if (empty($username) && empty($password)) {
+                $this->addFlash('danger', 'Le champ Identifiant et Mot de passe est obligatoire');
+            }
             // showing errors whent there are empty fields
-            if (empty($username)) {
+            elseif (empty($username)) {
                 $this->addFlash('danger', 'Le champ Identifiant est obligatoire');
             }
 
-            if (empty($password)) {
+            elseif (empty($password)) {
                 $this->addFlash('danger', 'Le champ Mot de passe est obligatoire');
             }
 
