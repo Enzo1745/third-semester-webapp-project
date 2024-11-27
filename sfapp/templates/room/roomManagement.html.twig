@@ -1,55 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestion des salles{% endblock %}
+{% block title %}Ajouter une salle{% endblock %}
 
 {% block body %}
-    {# Header section #}
+
     <div class="container-fluid bg-primary bg-gradient text-white py-4 mb-4 shadow">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h2 mb-0">
-                    <i class="fas fa-cog me-2"></i>Gestion des salles
+                    <i class="fas fa-cog me-2"></i> Ajouter une nouvelle salle
                 </h1>
-                <a href="/charge/salles/" class="btn btn-outline-light">
-                    <i class="fas fa-arrow-left me-2"></i>Retour
+                <a href="{{ path('app_room_list') }}" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i> Retour
                 </a>
             </div>
         </div>
     </div>
 
-
-    {# Flash messages #}
-    {{ block('flash_messages') }}
-
-    {# Main content #}
     <div class="container">
         <div class="row justify-content-center">
+            {{ block('flash_messages') }}
             <div class="col-md-8">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary bg-gradient text-white">
                         <h3 class="h4 mb-0">
-                            <i class="fas fa-plus-circle me-2"></i>Ajouter une nouvelle salle
+                            <i class="fas fa-plus-circle me-2"></i> Formulaire de salle
                         </h3>
                     </div>
                     <div class="card-body p-4">
                         {{ form_start(formAddRoom, {'attr': {'class': 'needs-validation'}}) }}
 
                         <div class="mb-3">
-                            {{ form_label(formAddRoom.roomName, 'Numéro de salle', {'label_attr': {'class': 'form-label'}}) }}
-                            {{ form_widget(formAddRoom.roomName, {
-                                'attr': {
-                                    'class': 'form-control',
-                                    'placeholder': 'Entrez le numéro de la salle'
-                                }
-                            }) }}
+                            {{ form_label(formAddRoom.roomName, 'Nom de la salle', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formAddRoom.roomName, {'attr': {'class': 'form-control', 'placeholder': 'Nom de la salle'}}) }}
+                        </div>
 
+                        <div class="mb-3">
+                            {{ form_label(formAddRoom.nbRadiator, 'Nombre de radiateurs', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formAddRoom.nbRadiator, {'attr': {'class': 'form-control', 'placeholder': 'Nombre de radiateurs'}}) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(formAddRoom.nbWindows, 'Nombre de fenêtres', {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(formAddRoom.nbWindows, {'attr': {'class': 'form-control', 'placeholder': 'Nombre de fenêtres'}}) }}
                         </div>
 
                         <div class="d-grid gap-2">
                             <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-plus-circle me-2"></i>Ajouter la salle
+                                <i class="fas fa-save me-2"></i> Enregistrer
                             </button>
                         </div>
+
                         {{ form_end(formAddRoom) }}
                     </div>
                 </div>

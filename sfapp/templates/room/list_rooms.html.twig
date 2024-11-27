@@ -5,6 +5,7 @@
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/list_rooms.css') }}">
 {% endblock %}
+
 {% block body %}
     {# Main header section with gradient background #}
     <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
@@ -78,26 +79,25 @@
                                 </a>
                             </div>
                             <div class="col-4 text-center">
-                                    <!-- Bouton qui déclenche le modal de suppression -->
-                                    <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal">
-                                        <i class="fas fa-trash-alt me-1"></i> Supprimer
-                                    </button>
-                                </div>
-
+                                <!-- Bouton qui déclenche le modal de suppression, avec un identifiant unique -->
+                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ room.id }}">
+                                    <i class="fas fa-trash-alt me-1"></i> Supprimer
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Modal de confirmation -->
-                        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                        <!-- Modal de confirmation, avec un identifiant unique -->
+                        <div class="modal fade" id="confirmDeleteModal{{ room.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ room.id }}" aria-hidden="true">
                             <div class="modal-dialog">
+                                <!-- Déplacement du formulaire ici -->
                                 <form action="{{ path('app_room_delete', { 'id': room.id }) }}" method="post">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmDeleteModalLabel">Confirmation de suppression</h5>
+                                            <h5 class="modal-title" id="confirmDeleteModalLabel{{ room.id }}">Confirmation de suppression</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
                                         </div>
                                         <div class="modal-body">
-                                            Êtes-vous sûr de vouloir supprimer cette salle ?
+                                            Êtes-vous sûr de vouloir supprimer la salle "{{ room.roomName }}" ?
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
@@ -105,9 +105,10 @@
                                         </div>
                                     </div>
                                 </form>
+                                <!-- Fin du formulaire -->
                             </div>
                         </div>
-                        <!--fin du modal de pression-->
+
                     {% endfor %}
                 {% endif %}
             </div>
