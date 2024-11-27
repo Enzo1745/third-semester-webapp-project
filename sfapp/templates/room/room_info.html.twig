@@ -32,6 +32,40 @@
 
             {# Corps de la carte #}
             <div class="card-body">
+
+                {# Nouveau bloc avec les informations générales de la salle #}
+                <div class="row mb-4">
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-door-open fa-2x text-primary mb-2"></i>
+                                <h5 class="card-title">Numéro de la salle</h5>
+                                <p class="card-text value">{{ room.roomName }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-door-open fa-2x text-primary mb-2"></i>
+                                <h5 class="card-title">Nombre de radiateurs</h5>
+                                <p class="card-text value">{{ room.nbRadiator|default('N/A') }}</p>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <i class="fas fa-window-maximize fa-2x text-primary mb-2"></i>
+                                <h5 class="card-title">Nombre de fenêtres</h5>
+                                <p class="card-text value">{{ room.nbWindows|default('N/A') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Informations SA existantes #}
                 {% if sa is null %}
                     <div class="text-center py-4 text-muted salle-details">
                         <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
@@ -45,7 +79,16 @@
                                     <div class="card-body">
                                         <i class="fas fa-thermometer-half fa-2x text-primary mb-2"></i>
                                         <h5 class="card-title">Température</h5>
-                                        <p class="card-text value temp">{{ sa.temperature|default('N/A') }}°</p>
+                                        <p class="card-text value temp
+                                            {% if sa.temperature <= 20 and sa.temperature >= 17 %}
+                                                good-text
+                                            {% elseif sa.temperature <= 22 and sa.temperature >= 15  %}
+                                                risky-text
+                                            {% else %}
+                                                danger-text
+                                            {% endif %}">
+                                            {{ sa.temperature|default('N/A') }}°
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -54,7 +97,16 @@
                                     <div class="card-body">
                                         <i class="fas fa-tint fa-2x text-primary mb-2"></i>
                                         <h5 class="card-title">Humidité</h5>
-                                        <p class="card-text value humidity">{{ sa.humidity|default('N/A') }}%</p>
+                                        <p class="card-text value humidity
+                                            {% if sa.humidity <= 55 and sa.humidity >= 50 %}
+                                                good-text
+                                            {% elseif sa.humidity <= 60 and sa.humidity >= 45  %}
+                                                risky-text
+                                            {% else %}
+                                                danger-text
+                                            {% endif %}">
+                                            {{ sa.humidity|default('N/A') }}%
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -63,7 +115,16 @@
                                     <div class="card-body">
                                         <i class="fas fa-cloud fa-2x text-primary mb-2"></i>
                                         <h5 class="card-title">CO<sub>2</sub></h5>
-                                        <p class="card-text value co2">{{ sa.CO2|default('N/A') }}</p>
+                                        <p class="card-text value co2
+                                            {% if sa.CO2 <= 800 %}
+                                                good-text
+                                            {% elseif sa.CO2 <= 1200 and sa.CO2 >= 800  %}
+                                                risky-text
+                                            {% else %}
+                                                danger-text
+                                            {% endif %}">
+                                            {{ sa.CO2|default('N/A') }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>

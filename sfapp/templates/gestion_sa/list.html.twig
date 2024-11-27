@@ -54,14 +54,38 @@
                                     </td>
                                     <td class="text-center">
                                         {% if sa.room is not null %}
-                                            <form method="post" action="{{ path('app_sa_dissociate', {id: sa.id}) }}" class="m-0">
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="fas fa-unlink me-2"></i>Dissocier
-                                                </button>
-                                            </form>
+
+
+                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ sa.id }}">
+                                                <i class="fas fa-unlink me-2"></i> Dissocier
+                                            </button>
+
+
                                         {% endif %}
                                     </td>
                                 </tr>
+                                <!-- Modal de confirmation SA -->
+                                <div class="modal fade" id="confirmDeleteModal{{ sa.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ sa.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <form action="{{ path('app_sa_dissociate', {id: sa.id}) }}" method="post">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDeleteModalLabel{{ sa.id }}">Confirmation de dissociation</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Êtes-vous sûr de vouloir dissocier cette SA ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- Fin du modal de confirmation SA -->
+
                             {% endfor %}
                             </tbody>
                         </table>

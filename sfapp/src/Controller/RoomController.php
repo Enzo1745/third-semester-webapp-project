@@ -159,7 +159,7 @@ class RoomController extends AbstractController
         $entityManager->flush();
 
         // Add a success flash message
-        $this->addFlash('success', 'Salle correctement supprimer');
+        $this->addFlash('success', 'Salle correctement supprimée');
 
         // Redirect to the list of rooms
         return $this->redirectToRoute('app_room_list');

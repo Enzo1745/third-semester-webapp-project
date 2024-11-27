@@ -22,6 +22,12 @@ class Room
     #[ORM\OneToOne(mappedBy: 'room', cascade: ['persist'])]
     private ?Sa $sa = null;
 
+    #[ORM\Column]
+    private ?int $NbRadiator = null;
+
+    #[ORM\Column]
+    private ?int $NbWindows = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -76,5 +82,29 @@ class Room
     public function __toString(): string
     {
         return $this->roomName ?? 'Salle non définie';
+    }
+
+    public function getNbRadiator(): ?int
+    {
+        return $this->NbRadiator;
+    }
+
+    public function setNbRadiator(int $NbRadiator): static
+    {
+        $this->NbRadiator = $NbRadiator;
+
+        return $this;
+    }
+
+    public function getNbWindows(): ?int
+    {
+        return $this->NbWindows;
+    }
+
+    public function setNbWindows(int $NbWindows): static
+    {
+        $this->NbWindows = $NbWindows;
+
+        return $this;
     }
 }
