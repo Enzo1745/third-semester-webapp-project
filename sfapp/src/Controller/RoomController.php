@@ -27,16 +27,8 @@ class RoomController extends AbstractController
         return $this->redirectToRoute('app_room_list');
     }
 
-    /**
-     * Route: /charge/salles
-     * Name: app_room
-     * Description: Displays the main room management page.
-     */
-    #[Route('/charge/salles', name: 'app_room')]
-    public function rooms(): Response
-    {
-        return $this->redirectToRoute('app_room_list');
-    }
+
+
 
     /**
      * Route: /charge/salles/ajouter
@@ -77,11 +69,11 @@ class RoomController extends AbstractController
     }
 
     /**
-     * Route: /charge/salles/liste
+     * Route: /charge/salles
      * Name: app_room_list
      * Description: Displays a list of all rooms.
      */
-    #[Route('/charge/salles/liste', name: 'app_room_list')]
+    #[Route('/charge/salles', name: 'app_room_list')]
     public function listRooms(RoomRepository $roomRepository,Request $request): Response
     {
         // Fetch all rooms ordered by room number
@@ -113,11 +105,11 @@ class RoomController extends AbstractController
     }
 
     /**
-     * Route: /charge/salles/liste/{roomName}
+     * Route: /charge/salles/{roomName}
      * Name: app_room_info
      * Description: Displays detailed information about a specific room.
      */
-    #[Route('/charge/salles/liste/{roomName}', name: 'app_room_info')]
+    #[Route('/charge/salles/{roomName}', name: 'app_room_info')]
     public function roomInfo(string $roomName, RoomRepository $roomRepository, EntityManagerInterface $entityManager): Response
     {
         // Find the room by its room numbe
