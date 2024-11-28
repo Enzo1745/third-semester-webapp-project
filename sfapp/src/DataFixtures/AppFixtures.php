@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Room;
 use App\Entity\Sa;
+use App\Entity\User;
 use App\Repository\Model\SAState;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
@@ -59,6 +60,18 @@ class AppFixtures extends Fixture
         $room4->setNbWindows(5);
         $room4->setNbRadiator(3);
         $manager->persist($room4);
+
+        $user1 = new User();
+        $user1->setUsername('chargé');
+        $user1->setPassword('1234');
+        $user1->setRole('charge');
+        $manager->persist($user1);
+
+        $user2 = new User();
+        $user2->setUsername('tech');
+        $user2->setPassword('5678');
+        $user2->setRole('technicien');
+        $manager->persist($user2);
 
         $manager->flush();
     }
