@@ -110,7 +110,32 @@ class RoomController extends AbstractController
      * Description: Displays detailed information about a specific room.
      */
     #[Route('/charge/salles/{roomName}', name: 'app_room_info')]
-    public function roomInfo(string $roomName, Request $request,RoomRepository $roomRepository, EntityManagerInterface $entityManager): Response
+    public function roomInfo(
+        string $roomName,
+        RoomRepository $roomRepository,
+        EntityManagerInterface $entityManager,
+        Request $request
+    ): Response {
+        // Trouver la salle par son nom
+        $room = $roomRepository->findByRoomName($roomName);
+
+        // Trouver le système d'acquisition associé, s'il existe
+        $sa = null;
+        if ($room && $room->getIdSA()) {
+            $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
+        }
+
+
+
+        return $this->render('room/room_info.html.twig', [
+            'room' => $room,
+            'sa' => $sa,
+            'origin' => 'charge'
+        ]);
+    }
+
+    #[Route('/technicien/salles/{roomName}', name: 'app_room_info_technicien')]
+    public function roomInfoTech(string $roomName, RoomRepository $roomRepository, EntityManagerInterface $entityManager): Response
     {
         // Find the room by its room numbe
 
@@ -123,15 +148,18 @@ class RoomController extends AbstractController
             $sa = null;
         }
 
-        $origin = $request->query->get('origin', 'default');
+
 
         // Render the room information template
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
-             'sa' => $sa,
-            'origin' => $origin
+            'sa' => $sa,
+            'origin' => 'technicien'
+
+
         ]);
     }
+
 
     /**
      * Route: /charge/salles/supprimer/{id}
