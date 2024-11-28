@@ -50,7 +50,7 @@ class ConnexionController extends AbstractController
             }
         }
 
-        // Retrun to the connetion form whith the errors when the connection fails
+        // Return to the connexion form whith the errors when the connexion fails
         return $this->render('connexion/index.html.twig', [
             'form' => $form->createView(),
         ]);
