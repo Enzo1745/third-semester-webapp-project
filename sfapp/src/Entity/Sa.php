@@ -39,6 +39,11 @@ class Sa
         return $this->state;
     }
 
+    public function getStateName(): string
+    {
+        return $this->state->value; // Retourne la valeur sous forme de chaîne
+    }
+
     public function setState(SAState $state): static
     {
         $this->state = $state;
