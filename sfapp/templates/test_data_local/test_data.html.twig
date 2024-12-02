@@ -1,0 +1,21 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Test des données acquises{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="@">
+{% endblock %}
+
+{% block body %}
+    <h1>Tester les données d'un SA</h1>
+    <div class="selectSA">
+        {{ form_start(saForm) }}
+        {{ form_widget(saForm) }}
+            <button class="declareBroke">{{ 'Déclarer dysfonctionnel'}}</button>
+        {{ form_end(saForm) }}
+    </div>
+
+    <div class="resultTest">
+
+    </div>
+{% endblock %}

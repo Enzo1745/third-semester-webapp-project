@@ -56,4 +56,14 @@ class SaRepository extends ServiceEntityRepository
 
         return $resultSet->fetchOne();
     }
-}
+
+    public function findAllIds(): array
+    {
+        $results = $this->createQueryBuilder('sa')
+            ->select('sa.id')
+            ->getQuery()
+            ->getArrayResult();
+
+        // Transformer les résultats en un tableau de paires clé-valeur
+        return array_column($results, 'id', 'id');
+    }}
