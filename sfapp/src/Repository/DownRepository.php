@@ -42,12 +42,13 @@ class DownRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    public function findAllDownSa(): array
+    public function findLastDownSa(): array
     {
         return $this->createQueryBuilder('down')
             ->join('down.sa', 'sa')
             ->where('sa.state = :state')
             ->setParameter('state', SAState::Down)
+            ->andWhere('down.date = (SELECT MAX(d.date) FROM App\Entity\Down d WHERE d.sa = sa)')  // Sous-requête pour la dernière panne
             ->getQuery()
             ->getResult();
     }

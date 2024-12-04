@@ -21,46 +21,33 @@ class SaDownController extends AbstractController
     {
         $newDown = new Down();
 
-        $form = $this->createForm(SaDownType::class, $newDown, [
-
-        ]);
+        $form = $this->createForm(SaDownType::class, $newDown);
         $form->handleRequest($request);
 
-
         if ($form->isSubmitted() && $form->isValid()) {
-            if ($newDown->getSa() != null and $newDown->isCO2() or $newDown->isHumidity() or $newDown->isTemperature() or $newDown->isMicrocontroller() and $newDown->getReason() != null) {
-                $newDown->setDate(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+            if ($newDown->getSa() != null && (
+                    $newDown->isCO2() || $newDown->isHumidity() || $newDown->isTemperature() || $newDown->isMicrocontroller()) &&
+                $newDown->getReason() != null) {
 
+                $newDown->setDate(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
                 $newDown->getSa()->setState(SAState::Down);
 
                 $entityManager->persist($newDown);
                 $entityManager->flush();
 
                 $this->addFlash('success', 'Le SA est désormais dysfonctionnel');
-
                 return $this->redirect("#");
             }
         }
 
-        $saList = $saDownRepo->findAllDownSa();
+        $saList = $saDownRepo->findLastDownSa(); // Utiliser la méthode modifiée
         $nbSaFunctionnals = $saRepo->countBySaState(SAState::Functional);
 
-        if ($saList != null)
-        {
-            return $this->render('sa_down/sa_down.html.twig', [
-                "nbSaFunctionnals" => $nbSaFunctionnals,
-                "saForm" => $form->createView(),
-                "saDownList" => $saList,
-            ]);
-        }
-
-        else{
-            return $this->render('sa_down/sa_down.html.twig', [
-                "nbSaFunctionnals" => $nbSaFunctionnals,
-                "saForm" => $form->createView(),
-                "saDownList" => null,
-            ]);
-        }
+        return $this->render('sa_down/sa_down.html.twig', [
+            "nbSaFunctionnals" => $nbSaFunctionnals,
+            "saForm" => $form->createView(),
+            "saDownList" => $saList,
+        ]);
     }
 
     #[Route('/technicien/sa/panne/{id}', name: 'app_functionnal')]
