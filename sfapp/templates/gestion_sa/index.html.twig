@@ -49,4 +49,9 @@
             </div>
         </div>
     </div>
+
+    {{ form_start(form) }}
+    {{ form_row(form.id) }}
+    {{ form_row(form.submit) }}
+    {{ form_end(form) }}
 {% endblock %}
