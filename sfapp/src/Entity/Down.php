@@ -33,7 +33,7 @@ class Down
     #[ORM\Column]
     private ?bool $microcontroller = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
     public function getId(): ?int

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Down;
+use App\Repository\Model\SAState;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -40,4 +41,14 @@ class DownRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findAllDownSa(): array
+    {
+        return $this->createQueryBuilder('down')
+            ->join('down.sa', 'sa')
+            ->where('sa.state = :state')
+            ->setParameter('state', SAState::Down)
+            ->getQuery()
+            ->getResult();
+    }
 }

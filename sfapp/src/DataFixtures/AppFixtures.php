@@ -62,6 +62,31 @@ class AppFixtures extends Fixture
         $room4->setNbRadiator(3);
         $manager->persist($room4);
 
+
+        $sa5 = new Sa();
+        $room5 = new Room();
+        $room5->setRoomName("D306");
+        $room5->setNbWindows(4);
+        $room5->setNbRadiator(2);
+
+        $room5->setSa($sa3);
+        $sa5->setState(SAState::Functional);
+        $manager->persist($sa5);
+        $manager->persist($room5);
+
+        $sa6 = new Sa();
+        $room6 = new Room();
+        $room6->setRoomName("D305");
+        $room6->setNbWindows(4);
+        $room6->setNbRadiator(2);
+
+        $room6->setSa($sa6);
+        $sa6->setState(SAState::Functional);
+        $manager->persist($sa6);
+        $manager->persist($room6);
+
+
+
         $manager->flush();
     }
 }

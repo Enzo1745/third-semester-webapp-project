@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Down;
+use App\Entity\Sa;
 use App\Form\SaDownType;
 use App\Repository\DownRepository;
 use App\Repository\Model\SAState;
@@ -15,8 +16,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SaDownController extends AbstractController
 {
-    #[Route('/technicien/sa/panne', name: 'app_test_data_local')]
-    public function addDown(DownRepository $saRepo, Request $request, EntityManagerInterface $entityManager): Response
+    #[Route('/technicien/sa/panne', name: 'app_down')]
+    public function addDown(DownRepository $saDownRepo, SaRepository $saRepo, Request $request, EntityManagerInterface $entityManager): Response
     {
         $newDown = new Down();
 
@@ -35,12 +36,42 @@ class SaDownController extends AbstractController
                 $entityManager->persist($newDown);
                 $entityManager->flush();
 
+                $this->addFlash('success', 'Le SA est désormais dysfonctionnel');
+
                 return $this->redirect("#");
             }
         }
 
-        return $this->render('sa_down/sa_down.html.twig', [
-            "saForm" => $form->createView(),
-        ]);
+        $saList = $saDownRepo->findAllDownSa();
+        $nbSaFunctionnals = $saRepo->countBySaState(SAState::Functional);
+
+        if ($saList != null)
+        {
+            return $this->render('sa_down/sa_down.html.twig', [
+                "nbSaFunctionnals" => $nbSaFunctionnals,
+                "saForm" => $form->createView(),
+                "saDownList" => $saList,
+            ]);
+        }
+
+        else{
+            return $this->render('sa_down/sa_down.html.twig', [
+                "nbSaFunctionnals" => $nbSaFunctionnals,
+                "saForm" => $form->createView(),
+                "saDownList" => null,
+            ]);
+        }
+    }
+
+    #[Route('/technicien/sa/panne/{id}', name: 'app_functionnal')]
+    public function setFunctionnal(Sa $sa, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        $sa->setState(SAState::Functional);
+
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Le SA a été réhabilité avec succès.');
+
+        return $this->redirectToRoute('app_down');
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Sa;
+use App\Repository\Model\SAState;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -46,13 +47,15 @@ class SaRepository extends ServiceEntityRepository
      * @return int|null -> the number of SA available
      * @throws \Doctrine\DBAL\Exception
      */
-    public function countBySaState(): ?int
+    public function countBySaState(SAState $state): ?int
     {
         $conn = $this->getEntityManager()->getConnection();
 
+        $stateValue = $state->name;
+
         $sql = 'SELECT COUNT(s.id) FROM sa s WHERE s.state = :state';
 
-        $resultSet = $conn->executeQuery($sql, ['state' => 'Disponible']);
+        $resultSet = $conn->executeQuery($sql, ['state' => $state->value]);
 
         return $resultSet->fetchOne();
     }
@@ -66,4 +69,5 @@ class SaRepository extends ServiceEntityRepository
 
         // Transformer les résultats en un tableau de paires clé-valeur
         return array_column($results, 'id', 'id');
-    }}
+    }
+}

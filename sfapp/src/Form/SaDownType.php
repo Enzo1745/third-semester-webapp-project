@@ -8,7 +8,7 @@ use App\Repository\Model\SAState;
 use App\Repository\SaRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -43,7 +43,7 @@ class SaDownType extends AbstractType
                 'label' => 'Microcontrôleur',
                 'required' => false,
             ])
-            ->add('reason', TextType::class, [
+            ->add('reason', TextareaType::class, [
                 'label' => 'Raison',
                 'required' => false,
             ])
