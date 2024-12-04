@@ -26,7 +26,10 @@ class DisplayRoomsTest extends WebTestCase
         // Créer et persister la Room
         $room = new Room();
         $room->setRoomName("D101");
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
+
         $this->entityManager->flush();
 
         // Créer le SA et l'associer à la Room
@@ -40,7 +43,7 @@ class DisplayRoomsTest extends WebTestCase
         $this->entityManager->flush();
 
         // Requête de la page
-        $crawler = $this->client->request('GET', '/charge/salles/liste/D101');
+        $crawler = $this->client->request('GET', '/charge/salles/D101');
 
         $this->assertResponseIsSuccessful();
 
@@ -49,7 +52,7 @@ class DisplayRoomsTest extends WebTestCase
 
 
         //$this->assertSelectorTextContains('.detail-block .value.temp', '25°');
-       // $this->assertSelectorTextContains('.detail-block .value.humidity', '60%');
+        // $this->assertSelectorTextContains('.detail-block .value.humidity', '60%');
         //$this->assertSelectorTextContains('.detail-block .value.co2', '1200');
     }
 
@@ -58,11 +61,13 @@ class DisplayRoomsTest extends WebTestCase
         // Créez la Room sans SA
         $room = new Room();
         $room->setRoomName("D303");
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
         $this->entityManager->flush();
 
         // Effectuez la requête
-        $crawler = $this->client->request('GET', '/charge/salles/liste/D303');
+        $crawler = $this->client->request('GET', '/charge/salles/D303');
 
         $this->assertResponseIsSuccessful();
 

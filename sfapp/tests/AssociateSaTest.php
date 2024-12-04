@@ -37,6 +37,8 @@ class AssociateSaTest extends WebTestCase
         // Créer une salle sans SA
         $room = new Room();
         $room->setRoomName('Salle Test');
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
 
         $this->entityManager->flush();
@@ -78,6 +80,8 @@ class AssociateSaTest extends WebTestCase
         // Créer une salle disponible
         $room = new Room();
         $room->setRoomName('Salle Disponible');
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
 
         // Créer une SA non disponible (état 'Functional')
@@ -110,6 +114,8 @@ class AssociateSaTest extends WebTestCase
         // Créer une salle disponible
         $room = new Room();
         $room->setRoomName('Salle Test');
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
 
         $this->entityManager->flush();

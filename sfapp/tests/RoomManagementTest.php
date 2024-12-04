@@ -23,33 +23,34 @@ class RoomManagementTest extends WebTestCase
     public function testAddRoom()
     {
         $client = static::createClient();
-
-        // Going to add room page
         $crawler = $client->request('GET', '/charge/salles/ajouter');
 
-        // Valid form
-        $form = $crawler->selectButton('Ajouter')->form([
-            'add_room[roomName]' => '201', // Use 'roomName' instead of 'roomNumber'
-        ]);
+        // Debug rendered HTML (for verification)
+        echo $client->getResponse()->getContent();
 
+
+        // Fill and submit the form using the correct field names
+        $form = $crawler->selectButton('Enregistrer')->form([
+            'add_room[roomName]' => '201',
+            'add_room[nbRadiator]' => 2,
+            'add_room[nbWindows]' => 4,
+        ]);
         $client->submit($form);
 
-        // Check redirection after adding a room
+        // Verify redirection
         $this->assertResponseRedirects('/charge/salles/ajouter');
         $client->followRedirect();
 
-        // Check that room added to database
+        // Verify the room is added to the database
         $roomRepository = static::getContainer()->get(RoomRepository::class);
         $room = $roomRepository->findOneBy(['roomName' => '201']);
-
-        $this->assertNotNull($room);
-
-        // Clear database
-        /** @var EntityManagerInterface $entityManager */
-        $entityManager = static::getContainer()->get(EntityManagerInterface::class);
-        $entityManager->remove($room);
-        $entityManager->flush();
+        $this->assertNotNull($room, 'La salle n\'a pas été ajoutée dans la base de données.');
     }
+
+
+
+
+
 
     /*
      * Test if a room can be successfully deleted
@@ -60,6 +61,8 @@ class RoomManagementTest extends WebTestCase
 
         // add room to test
         $room = new Room();
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $room->setRoomName('202');
 
         /** @var EntityManagerInterface $entityManager */
@@ -68,7 +71,7 @@ class RoomManagementTest extends WebTestCase
         $entityManager->flush();
 
         // going to list room
-        $crawler = $client->request('GET', '/charge/salles/liste');
+        $crawler = $client->request('GET', '/charge/salles');
 
         // finf form to delete room 202
         $deleteForm = $crawler->filter('form[action="/charge/salles/supprimer/' . $room->getId() . '"]');
@@ -80,7 +83,7 @@ class RoomManagementTest extends WebTestCase
         $client->submit($form);
 
         // check redirection form
-        $this->assertResponseRedirects('/charge/salles/liste');
+        $this->assertResponseRedirects('/charge/salles');
         $client->followRedirect();
 
         // check room delete from database

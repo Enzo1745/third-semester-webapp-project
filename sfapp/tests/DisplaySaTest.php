@@ -33,6 +33,8 @@ class DisplaySaTest extends WebTestCase
         // Create test data
         $room = new Room();
         $room->setRoomName("D204");
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
 
         $sa = new Sa();
