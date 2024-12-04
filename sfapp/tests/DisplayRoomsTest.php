@@ -52,7 +52,7 @@ class DisplayRoomsTest extends WebTestCase
 
 
         //$this->assertSelectorTextContains('.detail-block .value.temp', '25°');
-       // $this->assertSelectorTextContains('.detail-block .value.humidity', '60%');
+        // $this->assertSelectorTextContains('.detail-block .value.humidity', '60%');
         //$this->assertSelectorTextContains('.detail-block .value.co2', '1200');
     }
 

@@ -29,4 +29,32 @@ class SaListController extends AbstractController
             "saList" => $saList
         ]);
     }
+
+    /**
+     * @brief function show a list of sa in the web page
+     * @param Request $request
+     * @param SaRepository $saRepo
+     * @return Response return the web page with the sa list
+     */
+    #[Route('/technicien/sa', name: 'app_technicien_sa')]
+    public function techListSa(Request $request, SaRepository $saRepo): Response
+    {
+        $saList = $saRepo->findAll(); // Function used to return all the sa in the database.
+
+        return $this->render('gestion_sa/technicienList.html.twig', [
+            "saList" => $saList
+        ]);
+    }
+
+    #[Route('/technicien/sa/delete', name: 'app_sa_delete')]
+    public function deleteSa(Request $request, SaRepository $saRepo): Response
+    {
+
+
+        return $this->render('gestion_sa/technicienList.html.twig', [
+
+        ]);
+    }
+
+
 }

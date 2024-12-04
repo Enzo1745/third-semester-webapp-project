@@ -1,14 +1,5 @@
 /* Custom styles to enhance Bootstrap */
 
-/* Hover effect for table rows */
-.hover-effect {
-    transition: all 0.2s ease-in-out;
-}
-
-.hover-effect:hover {
-    background-color: rgba(13, 110, 253, 0.05);
-    transform: scale(1.005);
-}
 
 /* Button animations */
 .btn {
