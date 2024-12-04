@@ -31,6 +31,9 @@ class Norm
     #[ORM\Column]
     private ?int $co2MaxNorm = null;
 
+    #[ORM\Column(length: 255)]
+    private ?string $season = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +107,18 @@ class Norm
     public function setCo2MaxNorm(int $co2MaxNorm): static
     {
         $this->co2MaxNorm = $co2MaxNorm;
+
+        return $this;
+    }
+
+    public function getSeason(): ?string
+    {
+        return $this->season;
+    }
+
+    public function setSeason(string $season): static
+    {
+        $this->season = $season;
 
         return $this;
     }

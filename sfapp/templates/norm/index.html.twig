@@ -4,7 +4,17 @@
 
 {% block body %}
 
-<div class="example-wrapper">
+    <h1>Normes des salles</h1>
 
-</div>
+    <h2>Humidité</h2>
+    <p>Min : {{ humidityMinNorm }}</p>
+    <p>Max : {{ humidityMaxNorm }}</p>
+
+    <h2>Température</h2>
+    <p>Min : {{ temperatureMinNorm }}</p>
+    <p>Max : {{ temperatureMaxNorm }}</p>
+
+    <h2>CO2</h2>
+    <p>Min : {{ co2MinNorm }}</p>
+    <p>Max : {{ co2MaxNorm }}</p>
 {% endblock %}
