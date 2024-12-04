@@ -7,7 +7,8 @@ use App\Repository\SaRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SaRepository::class)]
-class Sa
+class
+Sa
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
