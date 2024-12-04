@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use PhpParser\Node\Expr\Array_;
+use App\Repository\Model\UserRoles;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -19,7 +19,7 @@ class UtilisateurRepository extends ServiceEntityRepository
 
     public function findUserPassword(string $username): ?string
     {
-        // On sélectionne uniquement le champ 'password' de l'utilisateur
+        //Selects the role of the given user or return null if the user does not exists
         $result = $this->createQueryBuilder('u')
             ->select('u.password')
             ->where('u.username = :username')
@@ -30,18 +30,18 @@ class UtilisateurRepository extends ServiceEntityRepository
         return $result ? $result['password'] : null;
     }
 
-    public function findUserRole(string $username): ?string
+    public function findUserRole(string $username): ?UserRoles
     {
-        // On sélectionne uniquement le champ 'role' de l'utilisateur
         $result = $this->createQueryBuilder('u')
             ->select('u.role')
             ->where('u.username = :username')
             ->setParameter('username', $username)
             ->getQuery()
-            ->getOneOrNullResult();  //
+            ->getOneOrNullResult();
 
         return $result ? $result['role'] : null;
     }
+
 
 
 

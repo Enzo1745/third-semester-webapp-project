@@ -3,7 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\User;
-use http\Client;
+use App\Repository\Model\UserRoles;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -12,50 +12,39 @@ class ConnexionTest extends WebTestCase
     private $client;
     private $entityManager;
 
-
     public function setUp(): void
     {
         $this->client = static::createClient();
         $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
-        $this->clearDatabase(); //We clear here because we flush in our test and we flush because if we dont it does not work
+        $this->clearDatabase();
     }
 
     private function clearDatabase()
     {
-        // Fetch the repository for User entity and delete all users
-        $userRepository = $this->entityManager->getRepository(User::class);
-
-        // You can adjust the query to only clear specific users if needed
         $this->entityManager->createQueryBuilder()
             ->delete()
             ->from(User::class, 'u')
             ->getQuery()
             ->execute();
 
-        // Optionally clear other entities (e.g., orders, sessions) if needed
-        // $this->entityManager->createQueryBuilder()
-        //     ->delete()
-        //     ->from(Order::class, 'o')
-        //     ->getQuery()
-        //     ->execute();
-
-        // Flush and clear the EntityManager to ensure no leftover objects in memory
         $this->entityManager->flush();
         $this->entityManager->clear();
     }
 
-    public function testConnexionRoute():void
+    public function testConnexionRoute(): void
     {
+        print_r("Test de la connexion a la Route /connexion\n");
         $this->client->request('GET', '/connexion');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
-    public function testConnexionCharge():void
+    public function testConnexionCharge(): void
     {
+        print_r("Test de la connexion en tant que Chargé de mission\n");
         $user = new User();
         $user->setUsername('charge');
         $user->setPassword('1234');
-        $user->setRole('charge');
+        $user->setRole(UserRoles::Charge);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
@@ -71,12 +60,13 @@ class ConnexionTest extends WebTestCase
         $this->assertResponseRedirects('/charge/salles');
     }
 
-    public function testConnexionTechnicien():void
+    public function testConnexionTechnicien(): void
     {
+        print_r("Test de la connexion en tant que technicien\n");
         $user = new User();
         $user->setUsername('tech');
         $user->setPassword('5678');
-        $user->setRole('technicien');
+        $user->setRole(UserRoles::Technicien);
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
@@ -89,110 +79,92 @@ class ConnexionTest extends WebTestCase
 
         $this->client->submit($form);
 
-        $this->assertResponseRedirects('/charge/salles/ajouter'); //a modifier apres le merge
+        $this->assertResponseRedirects('/charge/salles/ajouter');
     }
 
     public function testInvalidIdentifiers(): void
     {
-        // Create a user with the username 'charge' and password '1234'
+        print_r("Test de la connexion en cas d'identifiants invalides\n");
         $user = new User();
         $user->setUsername('charge');
-        $user->setPassword('1234');  // Assuming plain text for simplicity
-        $user->setRole('charge');
+        $user->setPassword('1234');
+        $user->setRole(UserRoles::Charge);
 
-        // Persist the user to the test database
         $this->entityManager->persist($user);
         $this->entityManager->flush();
 
-        // Test for invalid username (non-existent user)
         $crawler = $this->client->request('GET', '/connexion');
 
-        // Fill in the form with a non-existent username and any password
+        print_r(" -Test du cas ou l'identifiant est invalide\n");
         $form = $crawler->selectButton('Se connecter')->form([
-            'connection[username]' => 'nonexistentuser', // Non-existent username
-            'connection[password]' => '1234',  // Random password
+            'connection[username]' => 'nonexistentuser',
+            'connection[password]' => '1234',
         ]);
 
-        // Submit the form
         $this->client->submit($form);
 
-        // Assert that the login failed and the user stays on the same page
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK); // Should stay on the same page
-        $this->assertSelectorTextContains('.alert-danger', 'mot de passe ou identifiant invalide'); // Error message
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertSelectorTextContains('.alert-danger', 'mot de passe ou identifiant invalide');
 
-        // Test for incorrect password (with existing user)
         $crawler = $this->client->request('GET', '/connexion');
 
-        // Fill in the form with the correct username but incorrect password
+        print_r(" -Test du cas ou le mot de passe est invalide\n");
         $form = $crawler->selectButton('Se connecter')->form([
-            'connection[username]' => 'charge', // Correct username
-            'connection[password]' => 'wrongpassword',  // Incorrect password
+            'connection[username]' => 'charge',
+            'connection[password]' => 'wrongpassword',
         ]);
 
-        // Submit the form
         $this->client->submit($form);
 
-        // Assert that the login failed and the user stays on the same page
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK); // Should stay on the same page
-        $this->assertSelectorTextContains('.alert-danger', 'mot de passe ou identifiant invalide'); // Error message
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertSelectorTextContains('.alert-danger', 'mot de passe ou identifiant invalide');
     }
-
 
     public function testEmptyIdentifiers(): void
     {
-        // Request the connexion page
+        print_r("Test de la connexion en cas d'identifiants vides\n");
         $crawler = $this->client->request('GET', '/connexion');
 
-        // Fill in the form with empty fields
         $form = $crawler->selectButton('Se connecter')->form([
-            'connection[username]' => '',  // Empty username
-            'connection[password]' => '',  // Empty password
+            'connection[username]' => '',
+            'connection[password]' => '',
         ]);
 
-        // Submit the form
         $this->client->submit($form);
 
-        // Assert the user stays on the same page and sees error messages
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertSelectorTextContains('.alert-danger', 'Le champ Identifiant et Mot de passe est obligatoire');
     }
 
     public function testMissingUsername(): void
     {
-        // Request the connexion page
+        print_r("Test de la connexion en cas d'ID maquant\n");
         $crawler = $this->client->request('GET', '/connexion');
 
-        // Fill in the form with missing username
         $form = $crawler->selectButton('Se connecter')->form([
-            'connection[username]' => '',  // Empty username
-            'connection[password]' => '1234',  // Correct password
+            'connection[username]' => '',
+            'connection[password]' => '1234',
         ]);
 
-        // Submit the form
         $this->client->submit($form);
 
-        // Assert the user stays on the same page and sees the missing username error
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertSelectorTextContains('.alert-danger', 'Le champ Identifiant est obligatoire');
     }
 
     public function testMissingPassword(): void
     {
-        // Request the connexion page
+        print_r("Test de la connexion en cas de Mot De Passe manquant\n");
         $crawler = $this->client->request('GET', '/connexion');
 
-        // Fill in the form with missing password
         $form = $crawler->selectButton('Se connecter')->form([
-            'connection[username]' => 'charge',  // Correct username
-            'connection[password]' => '',  // Empty password
+            'connection[username]' => 'charge',
+            'connection[password]' => '',
         ]);
 
-        // Submit the form
         $this->client->submit($form);
 
-        // Assert the user stays on the same page and sees the missing password error
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertSelectorTextContains('.alert-danger', 'Le champ Mot de passe est obligatoire');
     }
-
 }
