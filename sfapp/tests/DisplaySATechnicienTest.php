@@ -8,11 +8,17 @@ use App\Repository\Model\SAState;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * test od list of sa on the technicien web page
+ */
+
+
 class DisplaySATechnicienTest extends WebTestCase
 {
     private $client;
     private $entityManager;
 
+    //start test
     protected function setUp(): void
     {
         parent::setUp();
@@ -22,12 +28,14 @@ class DisplaySATechnicienTest extends WebTestCase
             ->getManager();
     }
 
+   // test get route
     public function testListRoute(): void
     {
         $this->client->request('GET', '/technicien/sa');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
+    //test show sa with functionnal state
     public function testDisplayFunctionalSA(): void
     {
         $room = new Room();
@@ -51,6 +59,7 @@ class DisplaySATechnicienTest extends WebTestCase
         $this->assertSelectorExists('a:contains("Voir détails")');
     }
 
+    //test show sa with non functionnal state
     public function testDisplayNonFunctionalSANoLinkRoom(): void
     {
         $sa = new Sa();
@@ -70,6 +79,7 @@ class DisplaySATechnicienTest extends WebTestCase
         $this->assertSelectorNotExists('a:contains("Voir détails")');
     }
 
+    //test show sa with waiting state
     public function testDisplayWaitingSA(): void
     {
         $sa = new Sa();
@@ -88,6 +98,7 @@ class DisplaySATechnicienTest extends WebTestCase
         $this->assertSelectorTextContains('table', 'Aucune');
     }
 
+    //end test
     protected function tearDown(): void
     {
         parent::tearDown();

@@ -30,6 +30,12 @@ class SaListController extends AbstractController
         ]);
     }
 
+    /**
+     * @brief function show a list of sa in the web page
+     * @param Request $request
+     * @param SaRepository $saRepo
+     * @return Response return the web page with the sa list
+     */
     #[Route('/technicien/sa', name: 'app_technicien_sa')]
     public function techListSa(Request $request, SaRepository $saRepo): Response
     {
