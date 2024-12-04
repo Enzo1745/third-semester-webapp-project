@@ -37,22 +37,24 @@ class AppFixtures extends Fixture
         $manager->persist($room1);
 
 
-
-        $sa3 = new Sa();
-        $sa3->setState(SAState::Available);
-        $manager->persist($sa3);
-
         $room2 = new Room();
         $room2->setRoomName("D205");
         $room2->setNbWindows(2);
         $room2->setNbRadiator(1);
         $manager->persist($room2);
 
+
+        $sa3 = new Sa();
         $room3 = new Room();
         $room3->setRoomName("D206");
         $room3->setNbWindows(4);
         $room3->setNbRadiator(2);
+
+        $room3->setSa($sa3);
+        $sa3->setState(SAState::Functional);
+        $manager->persist($sa3);
         $manager->persist($room3);
+
 
         $room4 = new Room();
         $room4->setRoomName("D304");

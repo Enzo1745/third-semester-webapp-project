@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\Model\SAState;
 use App\Repository\SaRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SaRepository::class)]
@@ -28,6 +30,17 @@ class Sa
 
     #[ORM\Column(nullable: true)]
     private ?int $CO2 = null;
+
+    /**
+     * @var Collection<int, Down>
+     */
+    #[ORM\OneToMany(targetEntity: Down::class, mappedBy: 'sa')]
+    private Collection $Down;
+
+    public function __construct()
+    {
+        $this->Down = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -94,6 +107,36 @@ class Sa
     public function setCO2(int $CO2): static
     {
         $this->CO2 = $CO2;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Down>
+     */
+    public function getDown(): Collection
+    {
+        return $this->Down;
+    }
+
+    public function addDown(Down $down): static
+    {
+        if (!$this->Down->contains($down)) {
+            $this->Down->add($down);
+            $down->setSa($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDown(Down $down): static
+    {
+        if ($this->Down->removeElement($down)) {
+            // set the owning side to null (unless already changed)
+            if ($down->getSa() === $this) {
+                $down->setSa(null);
+            }
+        }
 
         return $this;
     }
