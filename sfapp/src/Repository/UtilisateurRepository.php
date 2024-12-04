@@ -19,7 +19,7 @@ class UtilisateurRepository extends ServiceEntityRepository
 
     public function findUserPassword(string $username): ?string
     {
-        //Selects the role of the given user or return null if the user does not exists
+        //Selects the password of the given user or return null if the user does not exists
         $result = $this->createQueryBuilder('u')
             ->select('u.password')
             ->where('u.username = :username')
@@ -32,6 +32,7 @@ class UtilisateurRepository extends ServiceEntityRepository
 
     public function findUserRole(string $username): ?UserRoles
     {
+        //Selects the role of the given user or return null if the user does not exists
         $result = $this->createQueryBuilder('u')
             ->select('u.role')
             ->where('u.username = :username')

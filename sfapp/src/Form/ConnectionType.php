@@ -17,13 +17,12 @@ class ConnectionType extends AbstractType
         $builder
         ->add('username')
         ->add('password', PasswordType::class)
-        ->add('button', SubmitType::class);
+        ->add('button', SubmitType::class);//Button to submit the conexion form
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-        // Configure your form options here
         ]);
     }
 }

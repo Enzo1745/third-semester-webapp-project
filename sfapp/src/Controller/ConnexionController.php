@@ -51,7 +51,6 @@ class ConnexionController extends AbstractController
         ]);
     }
 
-
     private function CheckLoginIsvalid($username, $password, UtilisateurRepository $utilisateurRepository): bool
     {
         if (empty($username) && empty($password)) {
