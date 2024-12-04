@@ -37,6 +37,8 @@ class AssociateSaTest extends WebTestCase
         // Créer une salle sans SA
         $room = new Room();
         $room->setRoomName('Salle Test');
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
 
         $this->entityManager->flush();
@@ -78,6 +80,8 @@ class AssociateSaTest extends WebTestCase
         // Créer une salle disponible
         $room = new Room();
         $room->setRoomName('Salle Disponible');
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
 
         // Créer une SA non disponible (état 'Functional')
@@ -110,6 +114,8 @@ class AssociateSaTest extends WebTestCase
         // Créer une salle disponible
         $room = new Room();
         $room->setRoomName('Salle Test');
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
 
         $this->entityManager->flush();
@@ -132,8 +138,8 @@ class AssociateSaTest extends WebTestCase
         $sa = $this->entityManager->getRepository(Sa::class)->find($sa->getId());
         $this->assertSame($room->getId(), $sa->getRoom()->getId());
 
-        // Vérifier que l'état de la SA a été mis à jour en 'Waiting'
-        $this->assertSame(SaState::Waiting, $sa->getState());
+        // Vérifier que l'état de la SA a été mis à jour en 'Functional'
+        $this->assertSame(SaState::Functional, $sa->getState());
 
         // Vérifier que le nombre de SA disponibles a diminué
         $nbSaAvailable = $this->entityManager->getRepository(Sa::class)->count(['state' => SaState::Available]);

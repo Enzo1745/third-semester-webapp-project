@@ -31,6 +31,8 @@ class DissociateSaTest extends WebTestCase
         // Create a room
         $room = new Room();
         $room->setRoomName('D204');
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
 
         // Create an available SA and associate it to the room
@@ -57,8 +59,18 @@ class DissociateSaTest extends WebTestCase
 
         // Check if the button 'Dissocier' is present in the corresponding row with the sa's is
         $this->assertSelectorExists(
-            'form[action="/sa/dissociate/' . $saId . '"] button:contains("Dissocier")'
+            'button[data-bs-target="#confirmDeleteModal' . $saId . '"]',
+            'Le bouton de dissociation est introuvable.'
         );
+
+// Verify that the form exists inside the modal
+        $this->assertSelectorExists(
+            'form[action="/sa/dissociate/' . $saId . '"]',
+            'Le formulaire de dissociation est introuvable.'
+        );
+
+
+
     }
 
     public function testDataIsSuppressed(): void
@@ -66,6 +78,8 @@ class DissociateSaTest extends WebTestCase
         // Set up the room and sa
         $room = new Room();
         $room->setRoomName('D204');
+        $room->setNbRadiator(2);
+        $room->setNbWindows(4);
         $this->entityManager->persist($room);
 
         $sa = new Sa();
@@ -80,8 +94,16 @@ class DissociateSaTest extends WebTestCase
         $crawler = $this->client->request('GET', '/charge/gestion_sa');
         $this->assertResponseIsSuccessful();
 
-        $form = $crawler->selectButton('Dissocier')->form();  // Find the dissociate button
-        $this->client->submit($form);  // Submit the form to dissociate the sa
+
+        // Locate the modal form using its ID and submit it
+        $form = $crawler->filter('form[action="/sa/dissociate/' . $sa->getId() . '"]')->form();
+        $this->client->submit($form);
+
+// Clear the entity manager and check the dissociation
+        $this->entityManager->clear();
+        $refetchedSa = $this->entityManager->find(Sa::class, $sa->getId());
+        $this->assertNull($refetchedSa->getRoom(), 'La dissociation a échoué.');
+
 
         $this->entityManager->clear();  // Clear the entity manager
         $refetchedSa = $this->entityManager->find(Sa::class, $sa->getId());  // Refetch the sa entity by its id
@@ -91,6 +113,8 @@ class DissociateSaTest extends WebTestCase
 
         // Verify that the sa is still in the database (if it was only dissociated, not deleted)
         $this->assertNotNull($refetchedSa);
+
+
     }
 
     protected function tearDown(): void
