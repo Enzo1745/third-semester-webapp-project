@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\UtilisateurRepository;
+use App\Repository\UserRepository;
 
 
 class ConnexionController extends AbstractController
@@ -19,7 +19,7 @@ class ConnexionController extends AbstractController
 
     // Connection page controller
     #[Route('/connexion', name: 'app_connexion')]
-    public function index(Request $request, EntityManagerInterface $manager, UtilisateurRepository $utilisateurRepository): Response
+    public function index(Request $request, EntityManagerInterface $manager, UserRepository $userRepository): Response
     {
         $form = $this->createForm(ConnectionType::class);
         $form->handleRequest($request);
@@ -28,8 +28,8 @@ class ConnexionController extends AbstractController
         $password = $form->get('password')->getData();
 
         if ($form->isSubmitted()) {
-            if ($form->isValid() && $this->CheckLoginIsvalid($username, $password, $utilisateurRepository)) {
-                $role = $utilisateurRepository->findUserRole($username);
+            if ($form->isValid() && $this->CheckLoginIsvalid($username, $password, $userRepository)) {
+                $role = $userRepository->findUserRole($username);
                 var_dump($role);
 
                 if ($role === null) {
@@ -39,7 +39,7 @@ class ConnexionController extends AbstractController
                 if ($role == UserRoles::Charge) {
                     return $this->redirectToRoute('app_room_list');
                 } elseif ($role == UserRoles::Technicien) {
-                    return $this->redirectToRoute('app_room_management');
+                    return $this->redirectToRoute('app_technician_sa');
                 } else {
                     return $this->redirectToRoute('app_gestion_sa');
                 }
@@ -51,7 +51,7 @@ class ConnexionController extends AbstractController
         ]);
     }
 
-    private function CheckLoginIsvalid($username, $password, UtilisateurRepository $utilisateurRepository): bool
+    private function CheckLoginIsvalid($username, $password, UserRepository $userRepository): bool
     {
         if (empty($username) && empty($password)) {
             $this->addFlash('danger', 'Le champ Identifiant et Mot de passe est obligatoire');
@@ -66,7 +66,7 @@ class ConnexionController extends AbstractController
         }
         else
         {
-            $truePassword = $utilisateurRepository->findUserPassword($username);
+            $truePassword = $userRepository->findUserPassword($username);
             if($truePassword == null or $password != $truePassword){//error popup if password is invalid or not if the username does not exists
                 $this->addFlash('danger', 'mot de passe ou identifiant invalide');
             }

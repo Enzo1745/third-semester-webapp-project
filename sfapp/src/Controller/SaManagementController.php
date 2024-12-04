@@ -16,6 +16,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SaManagementController extends AbstractController
 {
+    #[Route('/technicien', name: 'app_technician')]
+    public function technicianRedirect(): Response
+    {
+        return $this->redirectToRoute('app_technician_sa');
+    }
+
     #[Route('charge/gestion_sa/associer', name: 'app_gestion_sa_associer')]
     public function index(Request $request, EntityManagerInterface $manager, SaRepository $saRepo, RoomRepository $salleRepo): Response
     {

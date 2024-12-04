@@ -36,7 +36,7 @@ class SaListController extends AbstractController
      * @param SaRepository $saRepo
      * @return Response return the web page with the sa list
      */
-    #[Route('/technicien/sa', name: 'app_technicien_sa')]
+    #[Route('/technicien/sa', name: 'app_technician_sa')]
     public function techListSa(Request $request, SaRepository $saRepo): Response
     {
         $saList = $saRepo->findAll(); // Function used to return all the sa in the database.
