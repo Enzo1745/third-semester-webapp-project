@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Repository\Model\SAState;
@@ -12,6 +13,30 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
+
+        //normes
+        // Norm summer
+        $summerNorm = new Norm();
+        $summerNorm->setSeason('summer')
+            ->setHumidityMinNorm(30)
+            ->setHumidityMaxNorm(70)
+            ->setTemperatureMinNorm(18)
+            ->setTemperatureMaxNorm(25)
+            ->setCo2MinNorm(400)
+            ->setCo2MaxNorm(1000);
+        $manager->persist($summerNorm);
+
+        // Norm winter
+        $winterNorm = new Norm();
+        $winterNorm->setSeason('winter')
+            ->setHumidityMinNorm(40)
+            ->setHumidityMaxNorm(80)
+            ->setTemperatureMinNorm(15)
+            ->setTemperatureMaxNorm(22)
+            ->setCo2MinNorm(300)
+            ->setCo2MaxNorm(900);
+        $manager->persist($winterNorm);
+
         // Création des SAs sans salle associée
         $sa1 = new Sa();
         $sa1->setState(SAState::Available);

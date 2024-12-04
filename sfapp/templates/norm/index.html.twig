@@ -1,20 +1,89 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Normes{% endblock %}
+{% block title %}Normes des salles{% endblock %}
 
 {% block body %}
+    <header class="page-header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="h2 mb-0 fw-bold">
+                <i class="fas fa-thermometer-half me-2"></i> Normes des salles
+            </h1>
+        </div>
+    </header>
 
-    <h1>Normes des salles</h1>
+    <div class="container">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                <span class="fw-bold"><i class="fas fa-calendar-alt me-2"></i>Sélectionnez une saison</span>
+                <div>
+                    <button id="showSummer" class="btn btn-outline-light me-2">
+                        <i class="fas fa-sun me-1"></i> Été
+                    </button>
+                    <button id="showWinter" class="btn btn-outline-light">
+                        <i class="fas fa-snowflake me-1"></i> Hiver
+                    </button>
+                </div>
+            </div>
 
-    <h2>Humidité</h2>
-    <p>Min : {{ humidityMinNorm }}</p>
-    <p>Max : {{ humidityMaxNorm }}</p>
+            <div class="card-body">
+                <!-- Section pour les normes d'été -->
+                <div id="normsSummer">
+                    <h3 class="text-primary"><i class="fas fa-sun me-2"></i>Normes pour l'été</h3>
+                    <div class="row text-center mb-4">
+                        <div class="col-4">
+                            <h5 class="fw-bold">Humidité</h5>
+                            <p class="danger-text">Max : {{ summerNorm.humidityMaxNorm }}</p>
+                            <p class="blue-text">Min : {{ summerNorm.humidityMinNorm }}</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">Température</h5>
+                            <p class="danger-text">Max : {{ summerNorm.temperatureMaxNorm }}</p>
+                            <p class="blue-text">Min : {{ summerNorm.temperatureMinNorm }}</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">CO2</h5>
+                            <p class="danger-text">Max : {{ summerNorm.co2MaxNorm }}</p>
+                            <p class="blue-text">Min : {{ summerNorm.co2MinNorm }}</p>
+                        </div>
+                    </div>
+                </div>
 
-    <h2>Température</h2>
-    <p>Min : {{ temperatureMinNorm }}</p>
-    <p>Max : {{ temperatureMaxNorm }}</p>
+                <!-- Section pour les normes d'hiver -->
+                <div id="normsWinter" style="display: none;">
+                    <h3 class="text-primary"><i class="fas fa-snowflake me-2"></i>Normes pour l'hiver</h3>
+                    <div class="row text-center mb-4">
+                        <div class="col-4">
+                            <h5 class="fw-bold">Humidité</h5>
+                            <p class="danger-text">Max : {{ winterNorm.humidityMaxNorm }}</p>
+                            <p class="blue-text">Min : {{ winterNorm.humidityMinNorm }}</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">Température</h5>
+                            <p class="danger-text">Max : {{ winterNorm.temperatureMaxNorm }}</p>
+                            <p class="blue-text">Min : {{ winterNorm.temperatureMinNorm }}</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">CO2</h5>
+                            <p class="danger-text">Max : {{ winterNorm.co2MaxNorm }}</p>
+                            <p class="blue-text">Min : {{ winterNorm.co2MinNorm }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <h2>CO2</h2>
-    <p>Min : {{ co2MinNorm }}</p>
-    <p>Max : {{ co2MaxNorm }}</p>
+    <script>
+        // Ajoute un événement au clic pour basculer entre les normes
+        document.getElementById('showSummer').addEventListener('click', () => {
+            document.getElementById('normsSummer').style.display = 'block';
+            document.getElementById('normsWinter').style.display = 'none';
+        });
+
+        document.getElementById('showWinter').addEventListener('click', () => {
+            document.getElementById('normsSummer').style.display = 'none';
+            document.getElementById('normsWinter').style.display = 'block';
+        });
+    </script>
+
 {% endblock %}

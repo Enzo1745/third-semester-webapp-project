@@ -15,23 +15,12 @@ class NormController extends AbstractController
     public function showNorm(Request $request, EntityManagerInterface $entityManager): Response
     {
 
-
-        $season = $request->query->get('season', 'summer');
-
-        $norm = $entityManager->getRepository(Norm::class)->findOneBy(['season' => $season]);
-
-        if (!$norm) {
-            throw $this->createNotFoundException("Aucune donnée trouvé dans la base de donnée");
-        }
+        $summerNorm = $entityManager->getRepository(Norm::class)->findOneBy(['season' => 'summer']);
+        $winterNorm = $entityManager->getRepository(Norm::class)->findOneBy(['season' => 'winter']);
 
         return $this->render('norm/index.html.twig', [
-
-            'humidityMinNorm' => $norm->getHumidityMinNorm(),
-            'humidityMaxNorm' => $norm->getHumidityMaxNorm(),
-            'temperatureMinNorm' => $norm->getTemperatureMinNorm(),
-            'temperatureMaxNorm' => $norm->getTemperatureMaxNorm(),
-            'co2MinNorm' => $norm->getCo2MinNorm(),
-            'co2MaxNorm' => $norm->getCo2MaxNorm(),
+            'summerNorm' => $summerNorm,
+            'winterNorm' => $winterNorm,
         ]);
     }
 }
