@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Repository\Model\UserRoles;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -19,8 +20,8 @@ class User
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
-    #[ORM\Column(length: 255)]
-    private ?string $role = null;
+    #[ORM\Column(type: "string", enumType: UserRoles::class)]
+    private ?UserRoles $role = null;
 
     public function getId(): ?int
     {
@@ -51,12 +52,12 @@ class User
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getRole(): ?UserRoles
     {
         return $this->role;
     }
 
-    public function setRole(string $role): static
+    public function setRole(UserRoles $role): static
     {
         $this->role = $role;
 

@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -15,14 +16,13 @@ class ConnectionType extends AbstractType
         // connection form
         $builder
         ->add('username')
-        ->add('password')
-        ->add('button', SubmitType::class);
+        ->add('password', PasswordType::class)
+        ->add('button', SubmitType::class);//Button to submit the conexion form
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-        // Configure your form options here
         ]);
     }
 }

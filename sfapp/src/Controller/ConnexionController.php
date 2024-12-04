@@ -2,52 +2,80 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Form\ConnectionType;
+use App\Repository\Model\UserRoles;
+use Container2MCmtKJ\getCache_ValidatorExpressionLanguageService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\UtilisateurRepository;
+
 
 class ConnexionController extends AbstractController
 {
 
     // Connection page controller
     #[Route('/connexion', name: 'app_connexion')]
-    public function index(Request $request): Response
+    public function index(Request $request, EntityManagerInterface $manager, UtilisateurRepository $utilisateurRepository): Response
     {
-        // Creation the connection form
         $form = $this->createForm(ConnectionType::class);
         $form->handleRequest($request);
 
-        // getting the content int the ID and password fields
         $username = $form->get('username')->getData();
         $password = $form->get('password')->getData();
 
-        // script when the user tries to connect
         if ($form->isSubmitted()) {
+            if ($form->isValid() && $this->CheckLoginIsvalid($username, $password, $utilisateurRepository)) {
+                $role = $utilisateurRepository->findUserRole($username);
+                var_dump($role);
 
-            if (empty($username) && empty($password)) {
-                $this->addFlash('danger', 'Le champ Identifiant et Mot de passe est obligatoire');
-            }
-            // showing errors whent there are empty fields
-            elseif (empty($username)) {
-                $this->addFlash('danger', 'Le champ Identifiant est obligatoire');
-            }
+                if ($role === null) {
+                    return $this->redirectToRoute('app_connexion');
+                }
 
-            elseif (empty($password)) {
-                $this->addFlash('danger', 'Le champ Mot de passe est obligatoire');
-            }
-
-            // redirection to the temporary succes page when the form is valid and when the Id and pwd fields are not empty
-            if ($form->isValid() && !empty($username) && !empty($password)) {
-                return $this->redirectToRoute('app_room_list');
+                if ($role == UserRoles::Charge) {
+                    return $this->redirectToRoute('app_room_list');
+                } elseif ($role == UserRoles::Technicien) {
+                    return $this->redirectToRoute('app_room_management');
+                } else {
+                    return $this->redirectToRoute('app_gestion_sa');
+                }
             }
         }
 
-        // Retrun to the connetion form whith the errors when the connection fails
         return $this->render('connexion/index.html.twig', [
             'form' => $form->createView(),
         ]);
+    }
+
+    private function CheckLoginIsvalid($username, $password, UtilisateurRepository $utilisateurRepository): bool
+    {
+        if (empty($username) && empty($password)) {
+            $this->addFlash('danger', 'Le champ Identifiant et Mot de passe est obligatoire');
+        }
+        // showing errors when there are empty fields
+        elseif (empty($username)) {
+            $this->addFlash('danger', 'Le champ Identifiant est obligatoire');
+        }
+
+        elseif (empty($password)) {
+            $this->addFlash('danger', 'Le champ Mot de passe est obligatoire');
+        }
+        else
+        {
+            $truePassword = $utilisateurRepository->findUserPassword($username);
+            if($truePassword == null or $password != $truePassword){//error popup if password is invalid or not if the username does not exists
+                $this->addFlash('danger', 'mot de passe ou identifiant invalide');
+            }
+            elseif($password == $truePassword){// check passes if the password is the good one based on the username entered
+                return true;
+            }
+        }
+
+        return false ;
     }
 
 }
