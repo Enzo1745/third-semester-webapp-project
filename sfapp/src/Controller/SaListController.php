@@ -61,6 +61,7 @@ class SaListController extends AbstractController
         if ($sa->getRoom()) {
             $room = $sa->getRoom();
             $sa->setRoom(null);
+            $room->setSa(null);
             $sa->setState(SAState::Available);
             $entityManager->persist($sa);
         }
@@ -72,6 +73,11 @@ class SaListController extends AbstractController
 
         return $this->redirectToRoute('app_technicien_sa');
     }
+
+
+
+
+
 
 
 }
