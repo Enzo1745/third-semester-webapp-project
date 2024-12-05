@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Sa;
 use App\Form\SaManagementType;
 use App\Repository\Model\SAState;
 use App\Repository\SaRepository;
@@ -76,5 +77,20 @@ class SaManagementController extends AbstractController
             'nbSaDispo' => $nbSa,
             'error_message' => null,
         ]);
+    }
+
+    #[Route('technicien/sa/ajouter', name: 'app_add_sa')]
+    public function addSa(EntityManagerInterface $entityManager): Response
+    {
+        // Make a new SA that will be by default in a 'waiting' state
+        $newSa = new SA();
+        $newSa->setState(SAState::Available);
+
+        // Save the modifications in the database
+        $entityManager->persist($newSa);
+        $entityManager->flush();
+
+        // Redirect to the technician's home page
+        return $this->redirectToRoute('app_technician_sa');
     }
 }
