@@ -63,7 +63,7 @@ class DisplaySATechnicienTest extends WebTestCase
     public function testDisplayNonFunctionalSANoLinkRoom(): void
     {
         $sa = new Sa();
-        $sa->setState(SAState::Breakdown)
+        $sa->setState(SAState::Down)
             ->setRoom(null)
             ->setTemperature(18)
             ->setHumidity(60)

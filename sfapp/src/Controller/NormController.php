@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class NormController extends AbstractController
 {
+
     #[Route('/charge/salles/normes', name: 'app_norm_show')]
     public function showNorm(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -20,7 +21,7 @@ class NormController extends AbstractController
 
         return $this->render('norm/index.html.twig', [
             'summerNorm' => $summerNorm,
-            'winterNorm' => $winterNorm,
+            'winterNorm' => $winterNorm
         ]);
     }
 }
