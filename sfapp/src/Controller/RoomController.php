@@ -116,10 +116,10 @@ class RoomController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request
     ): Response {
-        // Trouver la salle par son nom
+        // Find a room by its name
         $room = $roomRepository->findByRoomName($roomName);
 
-        // Trouver le système d'acquisition associé, s'il existe
+        // Find the associated SA
         $sa = null;
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
@@ -155,8 +155,6 @@ class RoomController extends AbstractController
             'room' => $room,
             'sa' => $sa,
             'origin' => 'technicien'
-
-
         ]);
     }
 
@@ -171,7 +169,7 @@ class RoomController extends AbstractController
     public function delete(Room $room, EntityManagerInterface $entityManager): Response
     {
 
-        //dossociate sa and room
+        // dissociate sa and room
         if ($sa = $room->getSa()) {
             $sa->setRoom(null);
             $sa->setState(SAState::Available);
