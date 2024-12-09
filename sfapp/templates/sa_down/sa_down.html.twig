@@ -31,15 +31,17 @@
                     <h5 class="card-title mb-0">Déclarer un SA dysfonctionnel</h5>
                 </div>
                 {% if nbSaFunctionnals > 0 %}
-                {{ form_start(saForm) }}
-                <div class="mb-3">
-                    {{ form_widget(saForm) }}
-                </div>
-                <button type="submit" class="btn btn-danger btn-block mt-3">
-                    <i class="fas fa-exclamation-triangle me-1"></i> Déclarer dysfonctionnel
-                </button>
-                {{ form_end(saForm) }}
+                    {# Display the down form #}
+                    {{ form_start(saForm) }}
+                    <div class="mb-3">
+                        {{ form_widget(saForm) }}
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-block mt-3">
+                        <i class="fas fa-exclamation-triangle me-1"></i> Déclarer dysfonctionnel
+                    </button>
+                    {{ form_end(saForm) }}
                 {% else %}
+                    {# Replace the form by an informative sentence #}
                     <p>Aucun SA fonctionnel.</p>
                 {% endif %}
             </div>
@@ -51,8 +53,8 @@
             <div class="card-body">
                 <h5 class="card-title mb-3">Liste des SA dysfonctionnels</h5>
                 <div class="resultTest">
-                    {# You can dynamically display results here if needed. For example, a success or failure message #}
                     {% if saDownList is not null %}
+                        {# Display the list of down sa #}
                         <div class="table-responsive">
                             <table class="table table-striped table-bordered">
                                 <thead class="table-primary">
@@ -121,6 +123,7 @@
                             </table>
                         </div>
                     {% else %}
+                        {# If there is no sa dysfunctional, display an informative sentence instead of the list #}
                         <p class="text-muted">Aucun SA dysfonctionnel.</p>
                     {% endif %}
                 </div>
