@@ -25,8 +25,7 @@ class RoomManagementTest extends WebTestCase
         $client = static::createClient();
         $crawler = $client->request('GET', '/charge/salles/ajouter');
 
-        // Debug rendered HTML (for verification)
-        echo $client->getResponse()->getContent();
+
 
 
         // Fill and submit the form using the correct field names
