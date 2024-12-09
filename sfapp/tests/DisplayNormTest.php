@@ -55,28 +55,60 @@ class DisplayNormTest extends WebTestCase
         $this->assertResponseIsSuccessful();
 
         // Récupère les valeurs de la norme d'été depuis la page
-        $humidityMaxText = $crawler->filter('#humidity')->first()->text();
-        $temperatureMaxText = $crawler->filter('#temperature')->first()->text();
-        $co2MaxText = $crawler->filter('#CO2')->first()->text();
+        $humidityMaxText = $crawler->filter('#humidity-max')->text();
+        $temperatureMaxText = $crawler->filter('#temperature-max')->text();
+        $co2MaxText = $crawler->filter('#CO2-max')->text();
 
-        // $humidityMinText = $crawler->filter('#humidity')->eq(1)->text();
-        $temperatureMinText = $crawler->filter('#temperature')->eq(1)->text();
-        $co2MinText = $crawler->filter('#CO2')->eq(1)->text();
+        $humidityMinText = $crawler->filter('#humidity-min')->text();
+        $temperatureMinText = $crawler->filter('#temperature-min')->text();
+        $co2MinText = $crawler->filter('#CO2-min')->text();
 
         // Récupère les normes d'été en base de données
         $summerNorm = $this->entityManager->getRepository(Norm::class)->findOneBy(['season' => 'summer']);
 
         // Vérifie que les valeurs des normes d'été sont affichées correctement
         $this->assertStringContainsString('Max : ' . $summerNorm->getHumidityMaxNorm(), $humidityMaxText);
-        // $this->assertStringContainsString('Min : ' . $summerNorm->getHumidityMinNorm(), $humidityMinText);
+        $this->assertStringContainsString('Min : ' . $summerNorm->getHumidityMinNorm(), $humidityMinText);
 
         $this->assertStringContainsString('Max : ' . $summerNorm->getTemperatureMaxNorm(), $temperatureMaxText);
-        // $this->assertStringContainsString('Min : ' . $summerNorm->getTemperatureMinNorm(), $temperatureMinText);
+        $this->assertStringContainsString('Min : ' . $summerNorm->getTemperatureMinNorm(), $temperatureMinText);
 
         $this->assertStringContainsString('Max : ' . $summerNorm->getCo2MaxNorm(), $co2MaxText);
-        // $this->assertStringContainsString('Min : ' . $summerNorm->getCo2MinNorm(), $co2MinText);
+        $this->assertStringContainsString('Min : ' . $summerNorm->getCo2MinNorm(), $co2MinText);
     }
 
+    /*
+     * Impossible to test winter norms because it's made with javascript
+     *
+    public function testIsWinterNorm(): void
+    {
+        $crawler = $this->client->request('GET', '/charge/salles/normes');
 
+        $this->assertResponseIsSuccessful();
 
+        $winterButton = $crawler->filter('#showWinter');
+        $crawler = $winterButton->click();
+        $crawler = $winterButton->
+
+        $humidityMaxText = $crawler->filter('#humidity-max')->text();
+        $temperatureMaxText = $crawler->filter('#temperature-max')->text();
+        $co2MaxText = $crawler->filter('#CO2-max')->text();
+
+        $humidityMinText = $crawler->filter('#humidity-min')->text();
+        $temperatureMinText = $crawler->filter('#temperature-min')->text();
+        $co2MinText = $crawler->filter('#CO2-min')->text();
+
+        $winterNorm = $this->entityManager->getRepository(Norm::class)->findOneBy(['season' => 'winter']);
+
+        $this->assertStringContainsString('Max : ' . $winterNorm->getHumidityMaxNorm(), $humidityMaxText);
+        $this->assertStringContainsString('Min : ' . $winterNorm->getHumidityMinNorm(), $humidityMinText);
+
+        $this->assertStringContainsString('Max : ' . $winterNorm->getTemperatureMaxNorm(), $temperatureMaxText);
+        $this->assertStringContainsString('Min : ' . $winterNorm->getTemperatureMinNorm(), $temperatureMinText);
+
+        $this->assertStringContainsString('Max : ' . $winterNorm->getCo2MaxNorm(), $co2MaxText);
+        $this->assertStringContainsString('Min : ' . $winterNorm->getCo2MinNorm(), $co2MinText);
+
+    }
+    */
 }
