@@ -48,6 +48,13 @@ class SaListController extends AbstractController
         ]);
     }
 
+    /**
+     * @brief Function to delete a system acquisition
+     * @param int $id The ID of the system acquisition to delete
+     * @param SaRepository $saRepo The repository to access the system acquisition data
+     * @param EntityManagerInterface $entityManager The EntityManager to manage persistence operations
+     * @return Response The response that redirects to the list of system acquisitions
+     */
     #[Route('/technicien/sa/delete/{id}', name: 'app_sa_delete', methods: ['POST'])]
     public function deleteSa(int $id, SaRepository $saRepo, EntityManagerInterface $entityManager): Response
     {

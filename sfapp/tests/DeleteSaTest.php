@@ -11,6 +11,12 @@ use App\Repository\Model\SAState;
 
 class DeleteSaTest extends WebTestCase
 {
+    /**
+     * Test deleting a SA with no room associated.
+     *
+     * This test checks that when a SA that is not associated with any Room is deleted,
+     * it is correctly removed from the database, and a success flash message is displayed.
+     */
     public function testDeleteSa(): void
     {
         $client = static::createClient();
@@ -42,6 +48,13 @@ class DeleteSaTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success', 'Le message flash de succès est affiché');
         $this->assertSelectorTextContains('.alert.alert-success', 'Système d\'acquisition supprimé avec succès');
     }
+
+    /**
+     * Test deleting a SA that is associated with a Room.
+     *
+     * This test checks that when a SA that is associated with a Room is deleted,
+     * the relationship between the Room and the SA is correctly dissociated.
+     */
     public function testDeleteSaWithRoom(): void
     {
         $client = static::createClient();
