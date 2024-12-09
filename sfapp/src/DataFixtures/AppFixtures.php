@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Down;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Repository\Model\SAState;
@@ -19,8 +20,6 @@ class AppFixtures extends Fixture
         $sa1->setHumidity(51);
         $sa1->setTemperature(19);
         $manager->persist($sa1);
-
-
 
         $sa2 = new Sa();
         $sa2->setState(SAState::Available);
@@ -64,15 +63,35 @@ class AppFixtures extends Fixture
 
 
         $sa5 = new Sa();
+        $sa5->setTemperature(20);
+        $sa5->setHumidity(40);
+        $sa5->setCO2(1000);
+
         $room5 = new Room();
         $room5->setRoomName("D306");
         $room5->setNbWindows(4);
         $room5->setNbRadiator(2);
 
-        $room5->setSa($sa3);
-        $sa5->setState(SAState::Functional);
-        $manager->persist($sa5);
+        $room5->setIdSa($sa5->getId());
+        $sa5->setRoom($room5);
+
         $manager->persist($room5);
+
+
+        $sa5->setState(SAState::Down);
+        $manager->persist($sa5);
+
+
+        $down1 = new Down();
+        $down1->setSa($sa5);
+        $down1->setDate(new \DateTime('now', new \DateTimeZone('Europe/Paris')));
+        $down1->setCO2(true);
+        $down1->setTemperature(false);
+        $down1->setHumidity(false);
+        $down1->setMicrocontroller(false);
+        $down1->setReason("Capteur de CO2 en panne.");
+
+        $manager->persist($down1);
 
         $sa6 = new Sa();
         $room6 = new Room();
@@ -84,8 +103,6 @@ class AppFixtures extends Fixture
         $sa6->setState(SAState::Functional);
         $manager->persist($sa6);
         $manager->persist($room6);
-
-
 
         $manager->flush();
     }

@@ -20,7 +20,7 @@ class SaAssociateController extends AbstractController
     public function index(Request $request, EntityManagerInterface $manager, SaRepository $saRepo, RoomRepository $salleRepo): Response
     {
         // We get the number of availables SA and Rooms.
-        $nbSa = $saRepo->countBySaState();
+        $nbSa = $saRepo->countBySaState(SAState::Available);
         $nbSalle = $salleRepo->countBySaAvailable();
 
         // We select an SA available
