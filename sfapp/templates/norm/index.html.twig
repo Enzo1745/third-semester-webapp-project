@@ -26,8 +26,8 @@
             </div>
 
             <div class="card-body">
-                <!-- Section pour les normes d'été -->
-                <div id="normsSummer">
+                <!-- summer norm section -->
+                <div id="normsSummer"> <!-- default show -->
                     <h3 class="text-primary"><i class="fas fa-sun me-2"></i>Normes pour l'été</h3>
                     <div class="row text-center mb-4">
                         <div class="col-4">
@@ -48,8 +48,8 @@
                     </div>
                 </div>
 
-                <!-- Section pour les normes d'hiver -->
-                <div id="normsWinter" style="display: none;">
+                <!-- Winter norm section -->
+                <div id="normsWinter" style="display: none;">  <!-- default hidden -->
                     <h3 class="text-primary"><i class="fas fa-snowflake me-2"></i>Normes pour l'hiver</h3>
                     <div class="row text-center mb-4">
                         <div class="col-4">
@@ -74,15 +74,15 @@
     </div>
 
     <script>
-        // Ajoute un événement au clic pour basculer entre les normes
+        // change between summer and winter value
         document.getElementById('showSummer').addEventListener('click', () => {
-            document.getElementById('normsSummer').style.display = 'block';
-            document.getElementById('normsWinter').style.display = 'none';
+            document.getElementById('normsSummer').style.display = 'block'; // show
+            document.getElementById('normsWinter').style.display = 'none'; // hide
         });
 
         document.getElementById('showWinter').addEventListener('click', () => {
-            document.getElementById('normsSummer').style.display = 'none';
-            document.getElementById('normsWinter').style.display = 'block';
+            document.getElementById('normsSummer').style.display = 'none'; //show
+            document.getElementById('normsWinter').style.display = 'block'; //hide
         });
     </script>
 

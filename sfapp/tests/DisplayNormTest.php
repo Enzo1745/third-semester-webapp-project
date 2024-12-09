@@ -48,13 +48,13 @@ class DisplayNormTest extends WebTestCase
 
     public function testIsSummerNorm(): void
     {
-        // Envoie la requête GET pour accéder à la page
+        // get requet to acces web page
         $crawler = $this->client->request('GET', '/charge/salles/normes');
 
-        // Vérifie que la réponse est réussie
+        // check answer
         $this->assertResponseIsSuccessful();
 
-        // Récupère les valeurs de la norme d'été depuis la page
+        // norm value
         $humidityMaxText = $crawler->filter('#humidity-max')->text();
         $temperatureMaxText = $crawler->filter('#temperature-max')->text();
         $co2MaxText = $crawler->filter('#CO2-max')->text();
@@ -63,10 +63,10 @@ class DisplayNormTest extends WebTestCase
         $temperatureMinText = $crawler->filter('#temperature-min')->text();
         $co2MinText = $crawler->filter('#CO2-min')->text();
 
-        // Récupère les normes d'été en base de données
+        // norm value in bdd
         $summerNorm = $this->entityManager->getRepository(Norm::class)->findOneBy(['season' => 'summer']);
 
-        // Vérifie que les valeurs des normes d'été sont affichées correctement
+        // check similary beetween bdd and web page
         $this->assertStringContainsString('Max : ' . $summerNorm->getHumidityMaxNorm(), $humidityMaxText);
         $this->assertStringContainsString('Min : ' . $summerNorm->getHumidityMinNorm(), $humidityMinText);
 

@@ -16,10 +16,12 @@ class NormController extends AbstractController
     public function showNorm(Request $request, EntityManagerInterface $entityManager): Response
     {
 
+        // norm season find in bdd
         $summerNorm = $entityManager->getRepository(Norm::class)->findOneBy(['season' => 'summer']);
         $winterNorm = $entityManager->getRepository(Norm::class)->findOneBy(['season' => 'winter']);
 
         return $this->render('norm/index.html.twig', [
+            //return norm value
             'summerNorm' => $summerNorm,
             'winterNorm' => $winterNorm
         ]);
