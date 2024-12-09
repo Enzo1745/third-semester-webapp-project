@@ -33,8 +33,11 @@ class SaAssociateController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($sa->getState() === SAState::Available and $sa->getRoom()) {
                 $sa->setState(SAState::Waiting);
+                $room = $sa->getRoom();
+                $room->setIdSa($sa->getId());
 
                 $manager->persist($sa);
+                $manager->persist($room);
                 $manager->flush();
 
             }

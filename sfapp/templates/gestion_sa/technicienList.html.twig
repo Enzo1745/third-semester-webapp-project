@@ -19,10 +19,11 @@
                         <table class="table table-hover mb-0">
                             <thead class="bg-primary text-white">
                             <tr>
-                                <th>Système d'acquisition</th>
-                                <th>Salle associée</th>
-                                <th>Détails Salle</th>
-                                <th>Status</th>
+                                <th class="text-center">Système d'acquisition</th>
+                                <th class="text-center">Salle associée</th>
+                                <th class="text-center">Détails Salle</th>
+                                <th class="text-center">Etat</th>
+                                <th class="text-center">Status</th>
                                 <th class="text-center">Actions</th>
                             </tr>
                             </thead>
@@ -35,15 +36,15 @@
                             {% for sa in saList %}
 
                                 <tr>
-                                    <td>{{ sa.id }}</td>
-                                    <td>
+                                    <td class="text-center">{{ sa.id }}</td>
+                                    <td class="text-center">
                                         {% if sa.room is not null %}
                                             {{ sa.room.roomName }}
                                         {% else %}
                                             <span class="text-muted">Aucune</span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         {% if sa.room is not null %}
                                             <a href="{{ path('app_room_info_technicien', { 'roomName': sa.room.roomName}) }}"
                                                class="btn btn-outline-primary btn-sm">
@@ -53,7 +54,7 @@
                                             <span class="text-muted">Non applicable</span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <p class="card-text value state
                                             {% if sa.state.value == 'Fonctionnel' %}
                                                 good-text
@@ -69,6 +70,24 @@
                                             {{ sa.getStateName() }}
                                         </p>
                                     </td>
+                                    <td class="text-center">
+                                        <!-- Statut SA -->
+                                        <span class="rounded-circle d-inline-block
+                                            {% if sa.state.value == 'Disponible' or
+                                            sa.state.value == 'En attente' %}
+                                                bg-secondary
+                                            {% elseif
+                                            sa.temperature >= -15 and sa.temperature <= 45 and
+                                            sa.humidity >= 30 and sa.humidity <= 70 and
+                                            sa.co2 >= 500 and sa.co2 <= 2000 %}
+                                                bg-success
+                                            {% else %}
+                                                bg-danger
+                                            {% endif %}
+                                                "style="width: 15px; height: 15px;">
+                                        </span>
+                                    </td>
+
                                     <td class="text-center">
                                         <!-- Supprimer -->
                                         <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ sa.id }}">

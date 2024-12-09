@@ -14,22 +14,6 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // Création des SAs sans salle associée
-        $sa1 = new Sa();
-        $sa1->setState(SAState::Available);
-        $sa1->setCO2(4000);
-        $sa1->setHumidity(51);
-        $sa1->setTemperature(19);
-        $manager->persist($sa1);
-
-
-
-        $sa2 = new Sa();
-        $sa2->setState(SAState::Available);
-        $sa2->setCO2(4800);
-        $sa2->setHumidity(50);
-        $sa2->setTemperature(16);
-        $manager->persist($sa2);
 
         // Création des salles
         $room1 = new Room();
@@ -37,12 +21,6 @@ class AppFixtures extends Fixture
         $room1->setNbWindows(2);
         $room1->setNbRadiator(1);
         $manager->persist($room1);
-
-
-
-        $sa3 = new Sa();
-        $sa3->setState(SAState::Available);
-        $manager->persist($sa3);
 
         $room2 = new Room();
         $room2->setRoomName("D205");
@@ -61,6 +39,26 @@ class AppFixtures extends Fixture
         $room4->setNbWindows(5);
         $room4->setNbRadiator(3);
         $manager->persist($room4);
+
+        $sa1 = new Sa();
+        $sa1->setState(SAState::Available);
+        $sa1->setCO2(1000);
+        $sa1->setHumidity(51);
+        $sa1->setTemperature(19);
+        $manager->persist($sa1);
+
+
+
+        $sa2 = new Sa();
+        $sa2->setState(SAState::Available);
+        $sa2->setCO2(4000);
+        $sa2->setHumidity(50);
+        $sa2->setTemperature(16);
+        $manager->persist($sa2);
+
+        $sa3 = new Sa();
+        $sa3->setState(SAState::Available);
+        $manager->persist($sa3);
 
         $user1 = new User();
         $user1->setUsername('chargé');
