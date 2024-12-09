@@ -11,32 +11,40 @@ class TestsController extends AbstractController
     #[Route('/tests', name: 'run_tests')]
     public function runTests(): Response
     {
+        // Rrecup racine repertory
         $projectDir = $this->getParameter('kernel.project_dir');
         $phpunitCommand = sprintf(
             'php %s/bin/phpunit --no-logging --configuration=%s/phpunit.xml.dist --testdox %s/tests',
-            $projectDir, // project folder
-            $projectDir, // config xml
-            $projectDir  // tests folder
+            $projectDir,
+            $projectDir,
+            $projectDir
         );
 
-
-
-        $process = \Symfony\Component\Process\Process::fromShellCommandline($phpunitCommand);
+        // make process
+        $process = Process::fromShellCommandline($phpunitCommand);
         $process->run();
 
-        // Vérification des erreurs
+        // check errors
         if (!$process->isSuccessful()) {
-            return new Response(
-                '<pre>Erreur pendant l\'exécution des tests : '
-                . htmlspecialchars($process->getErrorOutput())
-                . "\nSortie standard :\n"
-                . htmlspecialchars($process->getOutput())
-                . '</pre>',
+            return new Response( //color red for error
+                '<div style="font-family:monospace; padding:1rem; background:#ffecec; color:#d8000c; border:1px solid #d8000c;">
+                    <h3>Erreur pendant l\'exécution des tests :</h3>
+                    <pre>' . htmlspecialchars($process->getErrorOutput()) . '</pre>
+                </div>',
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 
-        // Retourner les résultats des tests
-        return new Response('<pre>' . htmlspecialchars($process->getOutput()) . '</pre>');
+        //get result into a variable
+        $output = $process->getOutput();
+
+
+        // Return test
+        return new Response(
+            '<div style="font-family:monospace; padding:1rem; background:#e8f5e9; color:#2e7d32; border:1px solid #2e7d32;">
+                <h3>Résultats des tests :</h3>
+                <pre>' . htmlspecialchars($output) . '</pre>
+            </div>'
+        );
     }
 }

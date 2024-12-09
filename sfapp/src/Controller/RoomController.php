@@ -119,6 +119,12 @@ class RoomController extends AbstractController
         // Trouver la salle par son nom
         $room = $roomRepository->findByRoomName($roomName);
 
+        if (!$room) {
+            return $this->render('room/not_found.html.twig', [
+                'message' => 'Salle introuvable.',
+            ]);
+        }
+
         // Trouver le système d'acquisition associé, s'il existe
         $sa = null;
         if ($room && $room->getIdSA()) {
@@ -168,23 +174,29 @@ class RoomController extends AbstractController
      * Description: Deletes a room.
      */
     #[Route('/charge/salles/supprimer/{id}', name: 'app_room_delete', methods: ['POST'])]
-    public function delete(Room $room, EntityManagerInterface $entityManager): Response
+    public function delete(?Room $room, EntityManagerInterface $entityManager): Response
     {
+        if (!$room) {
+            $this->addFlash('error', 'Salle introuvable.');
+            return new Response('Salle introuvable.', Response::HTTP_NOT_FOUND);
+            return $this->redirectToRoute('app_room_list');
 
-        //dossociate sa and room
-        if ($sa = $room->getSa()) {
+        }
+
+        // Vérifiez si un SA est associé à la salle
+        $sa = $room->getSa();
+        if ($sa) {
             $sa->setRoom(null);
             $sa->setState(SAState::Available);
             $entityManager->persist($sa);
         }
-        // Delete the room from the database
+
+        // Supprimez la salle
         $entityManager->remove($room);
         $entityManager->flush();
 
-        // Add a success flash message
         $this->addFlash('success', 'Salle correctement supprimée');
-
-        // Redirect to the list of rooms
         return $this->redirectToRoute('app_room_list');
     }
+
 }

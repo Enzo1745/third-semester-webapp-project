@@ -4,7 +4,7 @@ namespace App\Tests;
 
 use App\Entity\Sa;
 use App\Entity\Room;
-use App\Repository\Model\SaState;
+use App\Repository\Model\SAState;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
@@ -25,6 +25,11 @@ class AssociateSaTest extends WebTestCase
         // Purger la base de données avant chaque test
         $purger = new ORMPurger($this->entityManager);
         $purger->purge();
+    }
+
+    public function testSaStateExists(): void
+    {
+        $this->assertTrue(class_exists(SaState::class), 'SAState class does not exist.');
     }
 
     public function testPageIsAccessibleAndFormIsPresent(): void
