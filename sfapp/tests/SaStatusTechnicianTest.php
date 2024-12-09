@@ -13,6 +13,12 @@ class SaStatusTechnicianTest extends WebTestCase
     private EntityManagerInterface $entityManager;
     private $client;
 
+    /**
+     * @brief Set up the test environment
+     *
+     * This method creates and persists sample SA entities with different states (Functional, Down, Available, Waiting)
+     * to simulate the data for the tests.
+     */
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -42,6 +48,9 @@ class SaStatusTechnicianTest extends WebTestCase
         $this->entityManager->flush();
     }
 
+    /**
+     * @brief Test if the system acquisition with status "Functional" is displayed correctly
+     */
     public function testSaStatusFunctional()
     {
         $crawler = $this->client->request('GET', '/technicien/sa');
@@ -60,6 +69,9 @@ class SaStatusTechnicianTest extends WebTestCase
         }
     }
 
+    /**
+     * @brief Test if the system acquisition with status "Down" is displayed correctly
+     */
     public function testSaStatusDown()
     {
         $crawler = $this->client->request('GET', '/technicien/sa');
@@ -78,6 +90,9 @@ class SaStatusTechnicianTest extends WebTestCase
         }
     }
 
+    /**
+     * @brief Test if the system acquisition with status "Available" is displayed correctly
+     */
     public function testSaStatusAvailable()
     {
         $crawler = $this->client->request('GET', '/technicien/sa');
@@ -96,6 +111,9 @@ class SaStatusTechnicianTest extends WebTestCase
         }
     }
 
+    /**
+     * @brief Test if the system acquisition with status "Waiting" is displayed correctly
+     */
     public function testSaStatusWaiting()
     {
         $crawler = $this->client->request('GET', '/technicien/sa');
