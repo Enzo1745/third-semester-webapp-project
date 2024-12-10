@@ -41,7 +41,7 @@ class SaAssociateController extends AbstractController
         }
 
         // Update of the SA and Rooms number
-        $nbSa = $saRepo->countBySaState();
+        $nbSa = $saRepo->countBySaState(SAState::Available);
         $nbSalle = $salleRepo->countBySaAvailable();
 
         // If the number of room available is less than 1, the form isn't print on the web page and we return an error message.
