@@ -20,7 +20,7 @@ class SaAssociateController extends AbstractController
     public function index(Request $request, EntityManagerInterface $manager, SaRepository $saRepo, RoomRepository $salleRepo): Response
     {
         // We get the number of availables SA and Rooms.
-        $nbSa = $saRepo->countBySaState();
+        $nbSa = $saRepo->countBySaState(SAState::Available);
         $nbSalle = $salleRepo->countBySaAvailable();
 
         // We select an SA available
@@ -41,7 +41,7 @@ class SaAssociateController extends AbstractController
         }
 
         // Update of the SA and Rooms number
-        $nbSa = $saRepo->countBySaState();
+        $nbSa = $saRepo->countBySaState(SAState::Available);
         $nbSalle = $salleRepo->countBySaAvailable();
 
         // If the number of room available is less than 1, the form isn't print on the web page and we return an error message.
