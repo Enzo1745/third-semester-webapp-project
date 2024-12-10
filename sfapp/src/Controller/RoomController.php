@@ -8,6 +8,7 @@ use App\Form\AddRoomType;
 use App\Form\SerchRoomASType;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
+use App\Repository\DownRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -113,11 +114,13 @@ class RoomController extends AbstractController
     public function roomInfo(
         string $roomName,
         RoomRepository $roomRepository,
+        DownRepository $downRepo,
         EntityManagerInterface $entityManager,
         Request $request
     ): Response {
         // Find a room by its name
         $room = $roomRepository->findByRoomName($roomName);
+        $down = null;
 
         if (!$room) {
             return $this->render('room/not_found.html.twig', [
@@ -129,38 +132,47 @@ class RoomController extends AbstractController
         $sa = null;
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
+            if ($sa->getState() == SAState::Down)
+            {
+                $down = $downRepo->findOneBy(['sa' => $sa]);
+            } else {
+                $sa = null;
+            }
         }
 
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
             'sa' => $sa,
-            'origin' => 'charge'
+            'origin' => 'charge',
+            'down' => $down
         ]);
     }
 
     #[Route('/technicien/salles/{roomName}', name: 'app_room_info_technicien')]
-    public function roomInfoTech(string $roomName, RoomRepository $roomRepository, EntityManagerInterface $entityManager): Response
+    public function roomInfoTech(string $roomName, RoomRepository $roomRepository, EntityManagerInterface $entityManager, DownRepository $downRepo): Response
     {
-        // Find the room by its room numbe
-
+        // Find the room by its room number
         $room = $roomRepository->findByRoomName($roomName);
+        $down = null;
 
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
+            if ($sa->getState() == SAState::Down)
+            {
+                $down = $downRepo->findOneBy(['sa' => $sa]);
+            }
         } else {
             $sa = null;
         }
 
-
-
         // Render the room information template
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
-            'sa' => $sa,
+             'sa' => $sa,
+            'down' => $down,
             'origin' => 'technicien'
         ]);
     }
-
 
     /**
      * Route: /charge/salles/supprimer/{id}

@@ -151,6 +151,15 @@
                         </div>
                     </div>
                 {% endif %}
+
+                {% if down is not null %}
+                    <div class="alert alert-warning mt-4">
+                    <h5 class="alert-heading">Panne en cours</h5>
+                    <p>{{ down.reason }}</p>
+                    </div>
+                {% endif %}
+
+
             </div>
         </div>
     </div>

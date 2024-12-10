@@ -16,7 +16,8 @@ class SaManagementType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('room', EntityType::class, [
+            ->add(
+                'room', EntityType::class, [
                 'class' => Room::class,
                 'label' => 'Salle',
                 'choice_label' => 'roomName',
