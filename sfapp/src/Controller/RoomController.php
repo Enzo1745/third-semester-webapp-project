@@ -218,8 +218,8 @@ class RoomController extends AbstractController
         if ($room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
         }
-        if (!$sa) {
-            return 'grey';  // No SA found for the room, so no diagnostic
+        if (!$sa or $sa->getCO2() == null or $sa->getTemperature() == null or $sa->getHumidity() == null) {
+            return 'grey';  // No functional SA found for the room, so no diagnostic
         }
 
         $temperatureCompliant = $sa->getTemperature() >= $summerNorms->getTemperatureMinNorm() &&

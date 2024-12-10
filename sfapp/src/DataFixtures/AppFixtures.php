@@ -15,8 +15,6 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-
-        //normes
         // Norm summer
         $summerNorm = new Norm();
         $summerNorm->setSeason('summer')
@@ -39,7 +37,7 @@ class AppFixtures extends Fixture
             ->setCo2MaxNorm(900);
         $manager->persist($winterNorm);
 
-        // Création des SAs sans salle associée
+        // Creation of the SA alone
         $sa1 = new Sa();
         $sa1->setState(SAState::Available);
         $sa1->setCO2(4000);
@@ -128,7 +126,27 @@ class AppFixtures extends Fixture
         $manager->persist($sa6);
         $manager->persist($room6);
 
+        $room7 = new Room();
+        $room7->setRoomName("D307");
+        $room7->setNbWindows(4);
+        $room7->setNbRadiator(2);
+        $manager->persist($room7);
 
+        $sa7 = new Sa();
+        $sa7->setState(SAState::Available);
+        $sa7->setCO2(650);
+        $sa7->setHumidity(55);
+        $sa7->setTemperature(20);
+        $manager->persist($sa7);
+
+
+
+        $sa8 = new Sa();
+        $sa8->setState(SAState::Available);
+        $sa8->setCO2(2000);
+        $sa8->setHumidity(90);
+        $sa8->setTemperature(31);
+        $manager->persist($sa8);
 
         $manager->flush();
     }
