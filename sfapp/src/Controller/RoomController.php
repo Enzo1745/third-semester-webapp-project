@@ -116,7 +116,7 @@ class RoomController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request
     ): Response {
-        // Trouver la salle par son nom
+        // Find a room by its name
         $room = $roomRepository->findByRoomName($roomName);
 
         if (!$room) {
@@ -125,13 +125,11 @@ class RoomController extends AbstractController
             ]);
         }
 
-        // Trouver le système d'acquisition associé, s'il existe
+        // Find the associated SA
         $sa = null;
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
         }
-
-
 
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
@@ -147,7 +145,6 @@ class RoomController extends AbstractController
 
         $room = $roomRepository->findByRoomName($roomName);
 
-
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
         } else {
@@ -161,8 +158,6 @@ class RoomController extends AbstractController
             'room' => $room,
             'sa' => $sa,
             'origin' => 'technicien'
-
-
         ]);
     }
 
@@ -180,23 +175,23 @@ class RoomController extends AbstractController
             $this->addFlash('error', 'Salle introuvable.');
             return new Response('Salle introuvable.', Response::HTTP_NOT_FOUND);
             return $this->redirectToRoute('app_room_list');
-
         }
 
-        // Vérifiez si un SA est associé à la salle
+        // Verify that SA is asociated with a room
         $sa = $room->getSa();
         if ($sa) {
             $sa->setRoom(null);
             $sa->setState(SAState::Available);
             $entityManager->persist($sa);
         }
-
-        // Supprimez la salle
+        // Delete the room from the database
         $entityManager->remove($room);
         $entityManager->flush();
 
+        // Add a success flash message
         $this->addFlash('success', 'Salle correctement supprimée');
+
+        // Redirect to the list of rooms
         return $this->redirectToRoute('app_room_list');
     }
-
 }

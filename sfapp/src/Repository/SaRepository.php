@@ -17,6 +17,15 @@ class SaRepository extends ServiceEntityRepository
         parent::__construct($registry, Sa::class);
     }
 
+    public function countSa(): int
+    {
+        return (int) $this->createQueryBuilder('s')
+            ->select('COUNT(s.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+
     //    /**
     //     * @return Sa[] Returns an array of Sa objects
     //     */
