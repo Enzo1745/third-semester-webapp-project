@@ -62,7 +62,7 @@ class SaListController extends AbstractController
 
         if (!$sa) {
             $this->addFlash('error', 'Système d\'acquisition non trouvé');
-            return $this->redirectToRoute('app_technicien_sa');
+            return $this->redirectToRoute('app_technician_sa');
         }
 
         if ($sa->getRoom()) {
@@ -78,6 +78,6 @@ class SaListController extends AbstractController
 
         $this->addFlash('success', 'Système d\'acquisition supprimé avec succès');
 
-        return $this->redirectToRoute('app_technicien_sa');
+        return $this->redirectToRoute('app_technician_sa');
     }
 }
