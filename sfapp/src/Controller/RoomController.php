@@ -96,6 +96,7 @@ class RoomController extends AbstractController
             $rooms = $roomRepository->findAllOrderedByRoomNumber();
         }
 
+        // Creates the diagnostic and gives a status to each room
         $roomsWithDiagnostics = [];
         foreach ($rooms as $room) {
             $diagnosticStatus = $this->getDiagnosticStatus($room, $entityManager, $normRepository);
@@ -124,7 +125,7 @@ class RoomController extends AbstractController
         EntityManagerInterface $entityManager,
         Request $request
     ): Response {
-        // Trouver la salle par son nom
+        // Find a room by its name
         $room = $roomRepository->findByRoomName($roomName);
 
         if (!$room) {
@@ -133,7 +134,7 @@ class RoomController extends AbstractController
             ]);
         }
 
-        // Trouver le système d'acquisition associé, s'il existe
+        // Find an SA if it exists
         $sa = null;
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
@@ -191,7 +192,7 @@ class RoomController extends AbstractController
 
         }
 
-        // Vérifiez si un SA est associé à la salle
+        // Check if the SA is assiociate with any room
         $sa = $room->getSa();
         if ($sa) {
             $sa->setRoom(null);
@@ -199,7 +200,7 @@ class RoomController extends AbstractController
             $entityManager->persist($sa);
         }
 
-        // Supprimez la salle
+        // Delete the room
         $entityManager->remove($room);
         $entityManager->flush();
 
