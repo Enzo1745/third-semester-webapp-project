@@ -2,10 +2,10 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Entity\User;
+use App\Entity\Norm;
 use App\Repository\Model\SAState;
 use App\Repository\Model\UserRoles;
 use Doctrine\Bundle\FixturesBundle\Fixture;
