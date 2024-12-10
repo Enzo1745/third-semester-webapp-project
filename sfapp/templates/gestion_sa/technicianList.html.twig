@@ -74,19 +74,16 @@
                                 <td class="text-center">
                                     <!-- SA status -->
                                     <span class="rounded-circle d-inline-block
-                                            {% if sa.state.value == 'Disponible' or
-                                        sa.state.value == 'En attente' %}
-                                                bg-secondary
-                                            {% elseif
-                                        sa.temperature >= -15 and sa.temperature <= 45 and
-                                        sa.humidity >= 30 and sa.humidity <= 70 and
-                                        sa.co2 >= 500 and sa.co2 <= 2000 %}
-                                                bg-success
-                                            {% else %}
-                                                bg-danger
-                                            {% endif %}
-                                                <style="width: 15px; height: 15px;">
-                                        </span>
+                                        {% if sa.state.value == 'Disponible' or sa.state.value == 'En attente' %}
+                                            bg-secondary
+                                        {% elseif sa.temperature >= -15 and sa.temperature <= 45 and sa.humidity >= 30 and sa.humidity <= 70 and sa.co2 >= 500 and sa.co2 <= 2000 %}
+                                            bg-success
+                                        {% else %}
+                                            bg-danger
+                                        {% endif %}
+                                    " style="width: 15px; height: 15px;">
+                                    </span>
+
                                 </td>
 
                                 <td class="text-center">
