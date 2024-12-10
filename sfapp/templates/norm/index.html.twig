@@ -16,6 +16,7 @@
         </div>
     </header>
 
+    {{ block('flash_messages') }}
 
     <div class="container">
         <div class="card shadow-sm mb-4">
@@ -27,6 +28,11 @@
                     </button>
                     <button id="showWinter" class="btn btn-outline-light">
                         <i class="fas fa-snowflake me-1"></i> Hiver
+                    </button>
+
+                    <!-- Bouton pour ouvrir le modal de modification -->
+                    <button class="btn btn-outline-light ms-2" data-bs-toggle="modal" data-bs-target="#normsModal">
+                        <i class="fas fa-edit me-1"></i> Modifier les normes
                     </button>
                 </div>
             </div>
@@ -79,8 +85,71 @@
         </div>
     </div>
 
+    <!-- Modal Bootstrap pour modifier les normes -->
+    <div class="modal fade" id="normsModal" tabindex="-1" aria-labelledby="normsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="normsModalLabel">Modifier les Normes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulaire pour modifier les normes -->
+                    <form method="POST">
+                        <!-- Normes d'été (initialement masqué) -->
+                        <div id="formSummer" style="display: none;">
+                            <h5>Normes d'été</h5>
+                            <label for="humidityMinNormSummer" class="form-label">Humidité Min (Été)</label>
+                            <input type="number" class="form-control" id="humidityMinNormSummer" name="humidityMinNormSummer" value="{{ summerNorm.humidityMinNorm }}">
+
+                            <label for="humidityMaxNormSummer" class="form-label">Humidité Max (Été)</label>
+                            <input type="number" class="form-control" id="humidityMaxNormSummer" name="humidityMaxNormSummer" value="{{ summerNorm.humidityMaxNorm }}">
+
+                            <label for="temperatureMinNormSummer" class="form-label">Température Min (Été)</label>
+                            <input type="number" class="form-control" id="temperatureMinNormSummer" name="temperatureMinNormSummer" value="{{ summerNorm.temperatureMinNorm }}">
+
+                            <label for="temperatureMaxNormSummer" class="form-label">Température Max (Été)</label>
+                            <input type="number" class="form-control" id="temperatureMaxNormSummer" name="temperatureMaxNormSummer" value="{{ summerNorm.temperatureMaxNorm }}">
+
+                            <label for="co2MinNormSummer" class="form-label">CO2 Min (Été)</label>
+                            <input type="number" class="form-control" id="co2MinNormSummer" name="co2MinNormSummer" value="{{ summerNorm.co2MinNorm }}">
+
+                            <label for="co2MaxNormSummer" class="form-label">CO2 Max (Été)</label>
+                            <input type="number" class="form-control" id="co2MaxNormSummer" name="co2MaxNormSummer" value="{{ summerNorm.co2MaxNorm }}">
+                        </div>
+
+                        <!-- Normes d'hiver (initialement masqué) -->
+                        <div id="formWinter" style="display: none;">
+                            <h5>Normes d'hiver</h5>
+                            <label for="humidityMinNormWinter" class="form-label">Humidité Min (Hiver)</label>
+                            <input type="number" class="form-control" id="humidityMinNormWinter" name="humidityMinNormWinter" value="{{ winterNorm.humidityMinNorm }}">
+
+                            <label for="humidityMaxNormWinter" class="form-label">Humidité Max (Hiver)</label>
+                            <input type="number" class="form-control" id="humidityMaxNormWinter" name="humidityMaxNormWinter" value="{{ winterNorm.humidityMaxNorm }}">
+
+                            <label for="temperatureMinNormWinter" class="form-label">Température Min (Hiver)</label>
+                            <input type="number" class="form-control" id="temperatureMinNormWinter" name="temperatureMinNormWinter" value="{{ winterNorm.temperatureMinNorm }}">
+
+                            <label for="temperatureMaxNormWinter" class="form-label">Température Max (Hiver)</label>
+                            <input type="number" class="form-control" id="temperatureMaxNormWinter" name="temperatureMaxNormWinter" value="{{ winterNorm.temperatureMaxNorm }}">
+
+                            <label for="co2MinNormWinter" class="form-label">CO2 Min (Hiver)</label>
+                            <input type="number" class="form-control" id="co2MinNormWinter" name="co2MinNormWinter" value="{{ winterNorm.co2MinNorm }}">
+
+                            <label for="co2MaxNormWinter" class="form-label">CO2 Max (Hiver)</label>
+                            <input type="number" class="form-control" id="co2MaxNormWinter" name="co2MaxNormWinter" value="{{ winterNorm.co2MaxNorm }}">
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // change between summer and winter value
+        // Change between summer and winter value
         document.getElementById('showSummer').addEventListener('click', () => {
             document.getElementById('normsSummer').style.display = 'block'; // show
             document.getElementById('normsWinter').style.display = 'none'; // hide
@@ -89,6 +158,19 @@
         document.getElementById('showWinter').addEventListener('click', () => {
             document.getElementById('normsSummer').style.display = 'none'; //show
             document.getElementById('normsWinter').style.display = 'block'; //hide
+        });
+
+        // Fonction pour afficher le bon formulaire dans le modal
+        document.getElementById('normsModal').addEventListener('show.bs.modal', () => {
+            const isSummerVisible = document.getElementById('normsSummer').style.display === 'block';
+
+            if (isSummerVisible) {
+                document.getElementById('formSummer').style.display = 'block';
+                document.getElementById('formWinter').style.display = 'none';
+            } else {
+                document.getElementById('formWinter').style.display = 'block';
+                document.getElementById('formSummer').style.display = 'none';
+            }
         });
     </script>
 
