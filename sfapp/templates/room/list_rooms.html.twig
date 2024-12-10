@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Liste des salles{% endblock %}
+{% block title %}Room List{% endblock %}
 
 {% block stylesheets %}
     <link rel="stylesheet" href="{{ asset('styles/list_rooms.css') }}">
@@ -11,19 +11,18 @@
     <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
         <div class="container d-flex justify-content-between align-items-center">
             <h1 class="h2 mb-0 fw-bold">
-                <i class="fas fa-building me-2"></i> Liste des salles
+                <i class="fas fa-building me-2"></i> Room List
             </h1>
             <div>
                 <a href="/charge/salles/ajouter" class="btn btn-outline-light me-2">
-                    <i class="fas fa-plus-circle me-1"></i> Ajouter une salle
+                    <i class="fas fa-plus-circle me-1"></i> Add a Room
                 </a>
                 <a href="/charge/gestion_sa" class="btn btn-outline-light">
-                    <i class="fas fa-link me-1"></i> Associer/Dissocier SA
+                    <i class="fas fa-link me-1"></i> Associate/Disassociate SA
                 </a>
                 <a href="/charge/salles/normes" class="btn btn-outline-light">
-                    <i class="bi bi-sliders2-vertical"></i> Normes
+                    <i class="bi bi-sliders2-vertical"></i> Norms
                 </a>
-
             </div>
         </div>
     </header>
@@ -37,7 +36,7 @@
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
                     <i class="fas fa-search text-primary me-2"></i>
-                    <h5 class="card-title mb-0">Filtrer</h5>
+                    <h5 class="card-title mb-0">Filter</h5>
                 </div>
                 {{ form(form) }}
             </div>
@@ -51,13 +50,13 @@
             <div class="card-header bg-primary text-white py-3">
                 <div class="row">
                     <div class="col-4 text-center fw-bold">
-                        <i class="fas fa-door-open me-2"></i>Salles
+                        <i class="fas fa-door-open me-2"></i>Rooms
                     </div>
                     <div class="col-4 text-center fw-bold">
-                        <i class="fas fa-info-circle me-2"></i>Détails
+                        <i class="fas fa-info-circle me-2"></i>Details
                     </div>
                     <div class="col-4 text-center fw-bold">
-                        <i class="fas fa-trash-alt me-2"></i>Supprimer
+                        <i class="fas fa-trash-alt me-2"></i>Delete
                     </div>
                 </div>
             </div>
@@ -67,7 +66,7 @@
                 {% if rooms is empty %}
                     <div class="text-center py-4 text-muted">
                         <i class="fas fa-inbox fa-2x mb-3"></i>
-                        <p>Aucune salle n'est disponible.</p>
+                        <p>No rooms available.</p>
                     </div>
                 {% else %}
                     {% for room in rooms %}
@@ -80,37 +79,37 @@
                             <div class="col-4 text-center">
                                 <a href="{{ path('app_room_info', { 'roomName': room.roomName }) }}"
                                    class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-eye me-1"></i> Voir détails
+                                    <i class="fas fa-eye me-1"></i> View details
                                 </a>
                             </div>
                             <div class="col-4 text-center">
-                                <!-- Bouton qui déclenche le modal de suppression, avec un identifiant unique -->
+                                <!-- Button to trigger the delete modal, with a unique ID -->
                                 <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ room.id }}">
-                                    <i class="fas fa-trash-alt me-1"></i> Supprimer
+                                    <i class="fas fa-trash-alt me-1"></i> Delete
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Modal de confirmation, avec un identifiant unique -->
+                        <!-- Delete confirmation modal, with a unique ID -->
                         <div class="modal fade" id="confirmDeleteModal{{ room.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ room.id }}" aria-hidden="true">
                             <div class="modal-dialog">
-                                <!-- Déplacement du formulaire ici -->
+                                <!-- Move the form here -->
                                 <form action="{{ path('app_room_delete', { 'id': room.id }) }}" method="post">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmDeleteModalLabel{{ room.id }}">Confirmation de suppression</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                            <h5 class="modal-title" id="confirmDeleteModalLabel{{ room.id }}">Delete Confirmation</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            Êtes-vous sûr de vouloir supprimer la salle "{{ room.roomName }}" ?
+                                            Are you sure you want to delete the room "{{ room.roomName }}"?
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                                            <button type="submit" class="btn btn-danger">Supprimer</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-danger">Delete</button>
                                         </div>
                                     </div>
                                 </form>
-                                <!-- Fin du formulaire -->
+                                <!-- End of form -->
                             </div>
                         </div>
 

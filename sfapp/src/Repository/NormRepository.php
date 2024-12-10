@@ -16,6 +16,11 @@ class NormRepository extends ServiceEntityRepository
         parent::__construct($registry, Norm::class);
     }
 
+    public function findBySeason(string $season): ?Norm
+    {
+        return $this->findOneBy(['season' => $season]);
+    }
+
     //    /**
     //     * @return Norm[] Returns an array of Norm objects
     //     */
