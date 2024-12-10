@@ -48,14 +48,17 @@
         <div class="card shadow-sm">
             {# Table header #}
             <div class="card-header bg-primary text-white py-3">
-                <div class="row">
-                    <div class="col-4 text-center fw-bold">
+                <div class="row text-center">
+                    <div class="col-3 fw-bold">
                         <i class="fas fa-door-open me-2"></i>Rooms
                     </div>
-                    <div class="col-4 text-center fw-bold">
+                    <div class="col-3 fw-bold">
                         <i class="fas fa-info-circle me-2"></i>Details
                     </div>
-                    <div class="col-4 text-center fw-bold">
+                    <div class="col-3 fw-bold">
+                        <i class="fas fa-stethoscope me-2"></i>Diagnostique
+                    </div>
+                    <div class="col-3 fw-bold">
                         <i class="fas fa-trash-alt me-2"></i>Delete
                     </div>
                 </div>
@@ -69,39 +72,53 @@
                         <p>No rooms available.</p>
                     </div>
                 {% else %}
-                    {% for room in rooms %}
+                    {% for roomWithDiagnostic in rooms %}
                         <div class="row p-3 border-bottom align-items-center hover-effect">
-                            <div class="col-4 text-center">
+                            <div class="col-3 text-center">
                                 <i class="fas fa-door-closed text-primary me-2"></i>
-                                {{ room.roomName }}
+                                {{ roomWithDiagnostic.room.roomName }}
                             </div>
 
-                            <div class="col-4 text-center">
-                                <a href="{{ path('app_room_info', { 'roomName': room.roomName }) }}"
+                            <!-- Details column -->
+                            <div class="col-3 text-center">
+                                <a href="{{ path('app_room_info', { 'roomName': roomWithDiagnostic.room.roomName }) }}"
                                    class="btn btn-outline-primary btn-sm">
                                     <i class="fas fa-eye me-1"></i> View details
                                 </a>
                             </div>
-                            <div class="col-4 text-center">
+
+                            <!-- Diagnostic column -->
+                            <div class="col-3 text-center">
+                                {% set color = 'grey' %}
+                                {% if roomWithDiagnostic.diagnosticStatus == 'green' %}
+                                    {% set color = 'green' %}
+                                {% elseif roomWithDiagnostic.diagnosticStatus == 'yellow' %}
+                                    {% set color = 'yellow' %}
+                                {% elseif roomWithDiagnostic.diagnosticStatus == 'red' %}
+                                    {% set color = 'red' %}
+                                {% endif %}
+                                <div style="width: 30px; height: 30px; background-color: {{ color }}; border-radius: 50%; display: inline-block;"></div>
+                            </div>
+
+                            <div class="col-3 text-center">
                                 <!-- Button to trigger the delete modal, with a unique ID -->
-                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ room.id }}">
+                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ roomWithDiagnostic.room.id }}">
                                     <i class="fas fa-trash-alt me-1"></i> Delete
                                 </button>
                             </div>
                         </div>
 
                         <!-- Delete confirmation modal, with a unique ID -->
-                        <div class="modal fade" id="confirmDeleteModal{{ room.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ room.id }}" aria-hidden="true">
+                        <div class="modal fade" id="confirmDeleteModal{{ roomWithDiagnostic.room.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ roomWithDiagnostic.room.id }}" aria-hidden="true">
                             <div class="modal-dialog">
-                                <!-- Move the form here -->
-                                <form action="{{ path('app_room_delete', { 'id': room.id }) }}" method="post">
+                                <form action="{{ path('app_room_delete', { 'id': roomWithDiagnostic.room.id }) }}" method="post">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmDeleteModalLabel{{ room.id }}">Delete Confirmation</h5>
+                                            <h5 class="modal-title" id="confirmDeleteModalLabel{{ roomWithDiagnostic.room.id }}">Delete Confirmation</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            Are you sure you want to delete the room "{{ room.roomName }}"?
+                                            Are you sure you want to delete the room "{{ roomWithDiagnostic.room.roomName }}"?
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -109,10 +126,8 @@
                                         </div>
                                     </div>
                                 </form>
-                                <!-- End of form -->
                             </div>
                         </div>
-
                     {% endfor %}
                 {% endif %}
             </div>

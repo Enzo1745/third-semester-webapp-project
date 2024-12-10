@@ -4,11 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Room;
 use App\Entity\Sa;
-use App\Repository\NormRepository;
 use App\Form\AddRoomType;
 use App\Form\SerchRoomASType;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
+use App\Repository\NormRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -75,7 +75,7 @@ class RoomController extends AbstractController
      * Description: Displays a list of all rooms.
      */
     #[Route('/charge/salles', name: 'app_room_list')]
-    public function listRooms(RoomRepository $roomRepository, Request $request, EntityManagerInterface $entityManager): Response
+    public function listRooms(RoomRepository $roomRepository, NormRepository $normRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         // Fetch all rooms ordered by room number
 
@@ -98,7 +98,7 @@ class RoomController extends AbstractController
 
         $roomsWithDiagnostics = [];
         foreach ($rooms as $room) {
-            $diagnosticStatus = $this->getDiagnosticStatus($room, $entityManager);
+            $diagnosticStatus = $this->getDiagnosticStatus($room, $entityManager, $normRepository);
             $roomsWithDiagnostics[] = [
                 'room' => $room,
                 'diagnosticStatus' => $diagnosticStatus
@@ -108,7 +108,7 @@ class RoomController extends AbstractController
         // Render the list of rooms
         return $this->render('room/list_rooms.html.twig', [
             'form' => $form->createView(),
-            'rooms' => $roomsWithDiagnostics
+            'rooms' => $roomsWithDiagnostics,
         ]);
     }
 
