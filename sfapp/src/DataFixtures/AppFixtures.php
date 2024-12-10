@@ -47,8 +47,6 @@ class AppFixtures extends Fixture
         $sa1->setTemperature(19);
         $manager->persist($sa1);
 
-
-
         $sa2 = new Sa();
         $sa2->setState(SAState::Available);
         $sa2->setCO2(4800);
@@ -62,8 +60,6 @@ class AppFixtures extends Fixture
         $room1->setNbWindows(2);
         $room1->setNbRadiator(1);
         $manager->persist($room1);
-
-
 
         $sa3 = new Sa();
         $sa3->setState(SAState::Available);

@@ -19,7 +19,7 @@ class Sa
     #[ORM\Column(enumType: SAState::class)]
     private ?SAState $state = null;
 
-    #[ORM\OneToOne(inversedBy: 'sa', cascade: ['persist', 'remove'])]
+    #[ORM\OneToOne(inversedBy: 'sa', cascade: ['persist'])]
     private ?Room $room = null;
 
     #[ORM\Column(nullable: true)]
