@@ -8,6 +8,7 @@ use App\Form\AddRoomType;
 use App\Form\SerchRoomASType;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
+use App\Repository\NormRepository;
 use App\Repository\DownRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -75,7 +76,7 @@ class RoomController extends AbstractController
      * Description: Displays a list of all rooms.
      */
     #[Route('/charge/salles', name: 'app_room_list')]
-    public function listRooms(RoomRepository $roomRepository,Request $request): Response
+    public function listRooms(RoomRepository $roomRepository, NormRepository $normRepository, Request $request, EntityManagerInterface $entityManager): Response
     {
         // Fetch all rooms ordered by room number
 
@@ -96,12 +97,20 @@ class RoomController extends AbstractController
             $rooms = $roomRepository->findAllOrderedByRoomNumber();
         }
 
-
+        // Creates the diagnostic and gives a status to each room
+        $roomsWithDiagnostics = [];
+        foreach ($rooms as $room) {
+            $diagnosticStatus = $this->getDiagnosticStatus($room, $entityManager, $normRepository);
+            $roomsWithDiagnostics[] = [
+                'room' => $room,
+                'diagnosticStatus' => $diagnosticStatus
+            ];
+        }
 
         // Render the list of rooms
         return $this->render('room/list_rooms.html.twig', [
             'form' => $form->createView(),
-            'rooms' => $rooms
+            'rooms' => $roomsWithDiagnostics,
         ]);
     }
 
@@ -117,6 +126,7 @@ class RoomController extends AbstractController
         DownRepository $downRepo,
         EntityManagerInterface $entityManager
     ): Response {
+        // Find a room by its name
         $room = $roomRepository->findByRoomName($roomName);
         $down = null;
 
@@ -126,13 +136,16 @@ class RoomController extends AbstractController
             ]);
         }
 
+        // Find an SA if it exists
         $sa = null;
-        if ($room->getIdSA()) {
+        if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
             if ($sa && $sa->getState() == SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
             }
         }
+
+
 
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
@@ -141,7 +154,6 @@ class RoomController extends AbstractController
             'down' => $down,
         ]);
     }
-
 
     #[Route('/technicien/salles/{roomName}', name: 'app_room_info_technicien')]
     public function roomInfoTech(string $roomName, RoomRepository $roomRepository, EntityManagerInterface $entityManager, DownRepository $downRepo): Response
@@ -182,6 +194,7 @@ class RoomController extends AbstractController
             $this->addFlash('error', 'Salle introuvable.');
             return new Response('Salle introuvable.', Response::HTTP_NOT_FOUND);
             return $this->redirectToRoute('app_room_list');
+
         }
 
         // Verify that SA is asociated with a room
@@ -191,7 +204,8 @@ class RoomController extends AbstractController
             $sa->setState(SAState::Available);
             $entityManager->persist($sa);
         }
-        // Delete the room from the database
+
+        // Delete the room
         $entityManager->remove($room);
         $entityManager->flush();
 
@@ -200,5 +214,49 @@ class RoomController extends AbstractController
 
         // Redirect to the list of rooms
         return $this->redirectToRoute('app_room_list');
+    }
+
+    public function getDiagnosticStatus(Room $room, EntityManagerInterface $entityManager, NormRepository $normRepository): string
+    {
+        $this->normRepository = $normRepository;
+
+        // Fetch the norms for summer season
+        $summerNorms = $this->normRepository->findOneBy(['season' => 'summer']);
+
+        $sa = null;
+        if ($room->getIdSA()) {
+            $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
+        }
+        if (!$sa or $sa->getCO2() == null or $sa->getTemperature() == null or $sa->getHumidity() == null) {
+            return 'grey';  // No functional SA found for the room, so no diagnostic
+        }
+
+        $temperatureCompliant = $sa->getTemperature() >= $summerNorms->getTemperatureMinNorm() &&
+            $sa->getTemperature() <= $summerNorms->getTemperatureMaxNorm();
+        $humidityCompliant = $sa->getHumidity() >= $summerNorms->getHumidityMinNorm() &&
+            $sa->getHumidity() <= $summerNorms->getHumidityMaxNorm();
+        $co2Compliant = $sa->getCO2() >= $summerNorms->getCo2MinNorm() &&
+            $sa->getCO2() <= $summerNorms->getCo2MaxNorm();
+
+        // Determine the diagnostic status
+        $compliantCount = 0;
+        if ($temperatureCompliant) {
+            $compliantCount++;
+        }
+        if ($humidityCompliant) {
+            $compliantCount++;
+        }
+        if ($co2Compliant) {
+            $compliantCount++;
+        }
+
+        // Logic for diagnostic color
+        if ($compliantCount === 3) {
+            return 'green';
+        } elseif ($compliantCount === 0) {
+            return 'red';
+        } else {
+            return 'yellow';
+        }
     }
 }
