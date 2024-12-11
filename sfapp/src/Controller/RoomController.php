@@ -115,10 +115,8 @@ class RoomController extends AbstractController
         string $roomName,
         RoomRepository $roomRepository,
         DownRepository $downRepo,
-        EntityManagerInterface $entityManager,
-        Request $request
+        EntityManagerInterface $entityManager
     ): Response {
-        // Find a room by its name
         $room = $roomRepository->findByRoomName($roomName);
         $down = null;
 
@@ -128,15 +126,11 @@ class RoomController extends AbstractController
             ]);
         }
 
-        // Find the associated SA
         $sa = null;
-        if ($room && $room->getIdSA()) {
+        if ($room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
-            if ($sa->getState() == SAState::Down)
-            {
+            if ($sa && $sa->getState() == SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
-            } else {
-                $sa = null;
             }
         }
 
@@ -144,9 +138,10 @@ class RoomController extends AbstractController
             'room' => $room,
             'sa' => $sa,
             'origin' => 'charge',
-            'down' => $down
+            'down' => $down,
         ]);
     }
+
 
     #[Route('/technicien/salles/{roomName}', name: 'app_room_info_technicien')]
     public function roomInfoTech(string $roomName, RoomRepository $roomRepository, EntityManagerInterface $entityManager, DownRepository $downRepo): Response
