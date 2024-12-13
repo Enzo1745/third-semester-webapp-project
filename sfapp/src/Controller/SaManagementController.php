@@ -39,7 +39,7 @@ class SaManagementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($sa->getState() === SAState::Available && $sa->getRoom()) {
-                $sa->setState(SAState::Functional);
+                $sa->setState(SAState::Waiting);
                 $room = $sa->getRoom();
                 $room->setIdSa($sa->getId()); // Ajoutez cette ligne
                 $manager->persist($sa);
@@ -85,6 +85,8 @@ class SaManagementController extends AbstractController
         // Make a new SA that will be by default in a 'waiting' state
         $newSa = new SA();
         $newSa->setState(SAState::Available);
+
+        $this->addFlash('success', 'SA ajouter avec succés');
 
         // Save the modifications in the database
         $entityManager->persist($newSa);

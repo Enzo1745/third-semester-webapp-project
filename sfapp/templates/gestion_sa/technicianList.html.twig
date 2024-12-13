@@ -8,15 +8,26 @@
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h2 mb-0"><i class="fas fa-microchip me-2"></i> Systèmes d'acquisition</h1>
 
-                <!-- Bouton d'association à droite -->
-                <a href="/technicien/sa/associer" class="btn btn-outline-light ms-2">
-                    <i class="fas fa-plus-circle me-1"></i> Association
-                </a>
+                <!-- Conteneur pour les boutons alignés à droite -->
+                <div class="d-flex">
+                    <a href="/technicien/sa/associer" class="btn btn-outline-light ms-2">
+                        <i class="fas fa-plus-circle me-1"></i> Association
+                    </a>
+                    <a href="#" class="btn btn-outline-light ms-2" data-bs-toggle="modal" data-bs-target="#confirmAddSaModal">
+                        <i class="fas fa-plus-circle me-1"></i> Ajouter un SA
+                    </a>
+                    <a href="/technicien/sa/panne" class="btn btn-outline-light ms-2">
+                        <i class="fas fa-plus-circle me-1"></i> Declarer une panne
+                    </a>
+                </div>
             </div>
         </div>
     </div>
 
+
+
     <div class="container">
+        {{ block('flash_messages') }}
         <!-- Table des systèmes d'acquisition -->
         <div class="card shadow-sm">
             <div class="card-body p-0">
@@ -28,7 +39,7 @@
                             <th class="text-center">Salle associée</th>
                             <th class="text-center">Détails Salle</th>
                             <th class="text-center">Etat</th>
-                            <th class="text-center">Status</th>
+                            <th class="text-center">Statut</th>
                             <th class="text-center">Actions</th>
                         </tr>
                         </thead>
@@ -81,7 +92,8 @@
                                     <span class="rounded-circle d-inline-block
                                         {% if sa.state.value == 'Disponible' or sa.state.value == 'En attente' %}
                                             bg-secondary
-                                        {% elseif sa.temperature >= -15 and sa.temperature <= 45 and sa.humidity >= 30 and sa.humidity <= 70 and sa.co2 >= 500 and sa.co2 <= 2000 %}
+
+                                        {% elseif sa.temperature >= -15 and sa.temperature <= 45 and sa.humidity >= 30 and sa.humidity <= 70 and sa.co2 >= 500 and sa.co2 <= 2000 and sa.state.value != 'En panne'%}
                                             bg-success
                                         {% else %}
                                             bg-danger
@@ -98,6 +110,24 @@
                                     </button>
                                 </td>
                             </tr>
+                            <!--Modal confirmation ajout SA-->
+                            <div class="modal fade" id="confirmAddSaModal" tabindex="-1" aria-labelledby="confirmAddSaModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmAddSaModalLabel">Confirmation d'ajout</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Êtes-vous sûr de vouloir ajouter un nouveau système d'acquisition ?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                            <a href="{{ path('app_add_sa') }}" class="btn btn-primary">Confirmer</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
                             <!-- Modal de confirmation de suppression -->
                             <div class="modal fade" id="confirmDeleteModal{{ sa.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ sa.id }}" aria-hidden="true">
