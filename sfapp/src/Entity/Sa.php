@@ -12,9 +12,12 @@ use Doctrine\ORM\Mapping as ORM;
 class Sa
 {
     #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
+    #[ORM\Column(type: 'integer')]
+    #[ORM\GeneratedValue(strategy: 'NONE')] // Désactiver l'auto-incrémentation par défaut
     private ?int $id = null;
+
+
+
 
     #[ORM\Column(enumType: SAState::class)]
     private ?SAState $state = null;
@@ -42,9 +45,16 @@ class Sa
         $this->Down = new ArrayCollection();
     }
 
+
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getState(): ?SAState
