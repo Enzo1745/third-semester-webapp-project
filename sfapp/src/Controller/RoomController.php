@@ -6,6 +6,7 @@ use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\AddRoomType;
 use App\Form\SerchRoomASType;
+use App\Repository\Model\NormSeason;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
 use App\Repository\NormRepository;
@@ -221,7 +222,7 @@ class RoomController extends AbstractController
         $this->normRepository = $normRepository;
 
         // Fetch the norms for summer season
-        $summerNorms = $this->normRepository->findOneBy(['season' => 'summer']);
+        $summerNorms = $this->normRepository->findOneBy(['NormSeason' => NormSeason::Summer]);
 
         $sa = null;
         if ($room->getIdSA()) {

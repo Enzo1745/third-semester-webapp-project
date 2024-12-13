@@ -141,7 +141,7 @@
                         </div>
 
                         <!-- Submit button -->
-                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#confirmUpdateModal"> Enregistrer </button>
                     </form>
                 </div>
             </div>
@@ -173,5 +173,26 @@
             }
         });
     </script>
+
+    <!-- Update confirmation modal, with a unique ID -->
+    <div class="modal fade" id="confirmUpdateModal" tabindex="-1" aria-labelledby="confirmUpdateModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="{{ path('app_norm_show') }}" method="post">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="confirmDeleteModalLabel">Confimation de modification</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        Êtes-vous sûr(e) de vouloir modifer ces normes-ci ?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Modifier</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
 
 {% endblock %}
