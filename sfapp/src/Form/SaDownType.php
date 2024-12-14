@@ -24,7 +24,7 @@ class SaDownType extends AbstractType
                 'query_builder' => function (SaRepository $er) {
                     return $er->createQueryBuilder('s')
                         ->where('s.state = :state')
-                        ->setParameter('state', SAState::Functional);
+                        ->setParameter('state', SAState::Installed);
                 },
             ])
             ->add('temperature', CheckboxType::class, [

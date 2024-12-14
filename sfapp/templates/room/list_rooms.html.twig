@@ -11,18 +11,18 @@
     <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
         <div class="container d-flex justify-content-between align-items-center">
             <h1 class="h2 mb-0 fw-bold">
-                <i class="fas fa-building me-2"></i> Room List
+                <i class="fas fa-building me-2"></i> Liste salles
             </h1>
             <div>
                 <a href="/charge/salles/ajouter" class="btn btn-outline-light me-2">
-                    <i class="fas fa-plus-circle me-1"></i> Add a Room
+                    <i class="fas fa-plus-circle me-1"></i> Ajouter une salle
                 </a>
 
                 <a href="/charge/gestion_sa" class="btn btn-outline-light">
-                    <i class="fas fa-link me-1"></i> Associate/Disassociate SA
+                    <i class="fas fa-link me-1"></i> Associer/Dissocier SA
                 </a>
                 <a href="/charge/salles/normes" class="btn btn-outline-light">
-                    <i class="bi bi-sliders2-vertical"></i> Norms
+                    <i class="bi bi-sliders2-vertical"></i> Normes
                 </a>
             </div>
         </div>
@@ -37,7 +37,7 @@
             <div class="card-body">
                 <div class="d-flex align-items-center mb-3">
                     <i class="fas fa-search text-primary me-2"></i>
-                    <h5 class="card-title mb-0">Filter</h5>
+                    <h5 class="card-title mb-0">Filtres</h5>
                 </div>
                 {{ form(form) }}
             </div>
@@ -51,24 +51,24 @@
             <div class="card-header bg-primary text-white py-3">
                 <div class="row text-center">
                     <div class="col-3 fw-bold">
-                        <i class="fas fa-door-open me-2"></i>Rooms
+                        <i class="fas fa-door-open me-2"></i>Salles
                     </div>
                     <div class="col-3 fw-bold">
-                        <i class="fas fa-info-circle me-2"></i>Details
+                        <i class="fas fa-info-circle me-2"></i>Détails
                     </div>
                     <div class="col-3 fw-bold">
-                        <i class="fas fa-stethoscope me-2"></i>Diagnostique
+                        <i class="fas fa-stethoscope me-2"></i>Diagnostic
                         <button class="btn btn-sm btn-light ms-2"
                                 type="button"
                                 data-bs-toggle="tooltip"
                                 data-bs-placement="top"
-                                title="Le diagnostique révèle à quel point les normes sont respectées dans la salle. Voici leur code couleur :&#10;gris : aucun diagnostic effectuable&#10;vert : les normes de température, humidité et CO2 sont respectées&#10;jaune : une norme ou plus ne sont pas respectées&#10;rouge : aucune norme n'est respectée."
+                                title="Le diagnostic révèle à quel point les normes sont respectées dans la salle. Voici leur code couleur :&#10;gris : aucun diagnostic effectuable&#10;vert : les normes de température, humidité et CO2 sont respectées&#10;jaune : une norme ou plus ne sont pas respectées&#10;rouge : aucune norme n'est respectée."
                                 style="padding: 2px 6px; border-radius: 50%; cursor: pointer;">
                             <i class="fas fa-question text-primary"></i>
                         </button>
                     </div>
                     <div class="col-3 fw-bold">
-                        <i class="fas fa-trash-alt me-2"></i>Delete
+                        <i class="fas fa-trash-alt me-2"></i>Supprimer
                     </div>
                 </div>
             </div>
@@ -78,7 +78,7 @@
                 {% if rooms is empty %}
                     <div class="text-center py-4 text-muted">
                         <i class="fas fa-inbox fa-2x mb-3"></i>
-                        <p>No rooms available.</p>
+                        <p>Aucune salle disponible.</p>
                     </div>
                 {% else %}
                     {% for roomWithDiagnostic in rooms %}
@@ -92,7 +92,7 @@
                             <div class="col-3 text-center">
                                 <a href="{{ path('app_room_info', { 'roomName': roomWithDiagnostic.room.roomName }) }}"
                                    class="btn btn-outline-primary btn-sm">
-                                    <i class="fas fa-eye me-1"></i> View details
+                                    <i class="fas fa-eye me-1"></i> Voir détails
                                 </a>
                             </div>
 
@@ -112,7 +112,7 @@
                             <div class="col-3 text-center">
                                 <!-- Button to trigger the delete modal, with a unique ID -->
                                 <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ roomWithDiagnostic.room.id }}">
-                                    <i class="fas fa-trash-alt me-1"></i> Delete
+                                    <i class="fas fa-trash-alt me-1"></i> Supprimer
                                 </button>
                             </div>
                         </div>
@@ -127,11 +127,11 @@
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
-                                            Are you sure you want to delete the room "{{ roomWithDiagnostic.room.roomName }}"?
+                                            Etes vous sur de vouloir supprimer cette salle "{{ roomWithDiagnostic.room.roomName }}"?
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                            <button type="submit" class="btn btn-danger">Supprimer</button>
                                         </div>
                                     </div>
                                 </form>

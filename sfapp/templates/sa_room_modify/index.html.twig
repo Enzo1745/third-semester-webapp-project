@@ -50,15 +50,18 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#changeRoomModal{{ sa.id }}"
-                                                {% if sa.state.value not in ['Fonctionnel', 'En panne', 'En attente'] %} disabled {% endif %}>
-                                            Changer l'association
-                                        </button>
+                                        {% if sa.state.value in ['Fonctionnel', 'En panne', 'En attente'] %}
+                                            <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#changeRoomModal{{ sa.id }}">
+                                                Changer l'association
+                                            </button>
+                                        {% endif %}
+
+                                        
                                     </td>
 
                                     <td>
                                         <p class="card-text value state
-                                                    {% if sa.state.value == 'Fonctionnel' %}
+                                                    {% if sa.state.value == 'Installé' %}
                                                         good-text
                                                     {% elseif sa.state.value == 'En panne' %}
                                                         danger-text

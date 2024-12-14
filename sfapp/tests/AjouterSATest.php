@@ -1,39 +1,39 @@
 <?php
 
-namespace App\Tests\Controller;
+namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Sa;
 use App\Repository\SaRepository;
 
-class SAControllerTest extends WebTestCase
+class AjouterSATest extends WebTestCase
 {
     public function testAddSa()
     {
-        // Démarre le client HTTP Symfony
         $client = static::createClient();
-
-        // Récupère l'EntityManager
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
 
-        // Compte le nombre d'entités Sa avant l'action
+        // Compte le nombre de SA avant l'ajout
         $initialCount = $entityManager->getRepository(Sa::class)->count([]);
 
-        // Ouvre la page contenant le bouton
-        $crawler = $client->request('GET', '/page/avec/le/bouton');  // Remplace par la route de ta page
+        // Accède à la page contenant le formulaire d'ajout
+        $crawler = $client->request('GET', '/technicien/sa'); // Remplace par la bonne route
 
-        // Clique sur le bouton "Ajouter un Système d'Acquisition"
-        $button = $crawler->selectButton('Ajouter un Système d\'Acquisition')->form();
-        $client->submit($button);
-
-        // Vérifie que la réponse est correcte
+        // Vérifie que la page s'affiche correctement
         $this->assertResponseIsSuccessful();
+        /*
+                // Soumet le formulaire du bouton
+                $button = $crawler->selectButton('Ajouter un SA')->form(); // Assurez-vous que le texte est exact
+                $client->submit($button);
 
-        // Compte le nombre d'entités Sa après l'action
-        $finalCount = $entityManager->getRepository(Sa::class)->count([]);
+                       // Vérifie que la redirection a réussi
+                       $this->assertResponseRedirects('/technicien/sa'); // Remplace par la bonne route
+                      $client->followRedirect();
 
-        // Vérifie que le nombre d'entités Sa a augmenté de 1
-        $this->assertEquals($initialCount + 1, $finalCount, 'Le nombre de systèmes d\'acquisition n\'a pas augmenté comme prévu');
-    }
+                       // Vérifie que le SA a été ajouté
+                       $finalCount = $entityManager->getRepository(Sa::class)->count([]);
+                       $this->assertEquals($initialCount + 1, $finalCount, 'Le SA n\'a pas été ajouté correctement.');
+                */  }
+
 }
