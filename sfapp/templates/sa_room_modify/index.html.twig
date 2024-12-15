@@ -50,7 +50,7 @@
                                         {% endif %}
                                     </td>
                                     <td>
-                                        {% if sa.state.value in ['Fonctionnel', 'En panne', 'En attente'] %}
+                                        {% if sa.state.value in ['En panne', 'En attente'] and sa.room is not null%}
                                             <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#changeRoomModal{{ sa.id }}">
                                                 Changer l'association
                                             </button>
@@ -98,7 +98,7 @@
                                                         <label for="saSelect" class="form-label">Choisir un SA disponible</label>
                                                         <select id="saSelect" name="sa" class="form-select">
                                                             {% for availableSa in availableSaList %}
-                                                                <option value="{{ availableSa.id }}">{{ availableSa.id }} - {{ availableSa.getStateName() }}</option>
+                                                                <option value="{{ availableSa.id }}">{{ availableSa.id }}</option>
                                                             {% endfor %}
                                                         </select>
                                                     </div>

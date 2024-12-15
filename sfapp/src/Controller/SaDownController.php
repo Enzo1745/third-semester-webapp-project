@@ -76,7 +76,7 @@ class SaDownController extends AbstractController
     public function setFunctionnal(Sa $sa, EntityManagerInterface $entityManager, Request $request): Response
     {
         // Set the selected sa' state to functional
-        $sa->setState(SAState::Installed);
+        $sa->setState(SAState::Available);
 
         // Update the database
         $entityManager->flush();
