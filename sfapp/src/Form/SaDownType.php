@@ -44,7 +44,7 @@ class SaDownType extends AbstractType
                 'required' => false,
             ])
             ->add('reason', TextareaType::class, [
-                'label' => 'Raison',
+                'label' => 'Remarque',
                 'required' => false,
             ])
         ;
