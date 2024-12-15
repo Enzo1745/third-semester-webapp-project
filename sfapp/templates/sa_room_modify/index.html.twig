@@ -79,7 +79,7 @@
                                     <td class="text-center">
 
                                         <form action="{{ path('app_sa_set_functional', {'saId': sa.id}) }}" method="POST">
-                                            <button type="submit" class="btn btn-success btn-sm" {% if sa.state.value != 'En attente' %}disabled{% endif %}>Valider</button>
+                                            <button type="submit" class="btn btn-success btn-sm" {% if sa.state.value != 'En attente' %}hidden {% endif %}>Valider</button>
                                         </form>
                                     </td>
                                 </tr>
