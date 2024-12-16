@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Norm;
+use App\Repository\Model\NormSeason;
+use App\Repository\NormRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,11 +15,11 @@ class NormController extends AbstractController
 {
 
     #[Route('/charge/salles/normes', name: 'app_norm_show')]
-    public function showNorm(Request $request, EntityManagerInterface $entityManager): Response
+    public function showNorm(Request $request, EntityManagerInterface $entityManager, NormRepository $normRepository): Response
     {
         // Norm season find in DB
-        $summerNorm = $entityManager->getRepository(Norm::class)->findOneBy(['season' => 'summer']);
-        $winterNorm = $entityManager->getRepository(Norm::class)->findOneBy(['season' => 'winter']);
+        $summerNorm = $normRepository->findBySeason(NormSeason::Summer);
+        $winterNorm = $normRepository->findBySeason(NormSeason::Winter);
 
         $this->updateNorms($request, $summerNorm, $winterNorm, $entityManager);
 

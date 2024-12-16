@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\Norm;
+use App\Repository\Model\NormSeason;
+use App\Repository\Model\NormType;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,10 +18,16 @@ class NormRepository extends ServiceEntityRepository
         parent::__construct($registry, Norm::class);
     }
 
-    public function findBySeason(string $season): ?Norm
+    public function findBySeason(NormSeason $season): ?Norm
     {
-        return $this->findOneBy(['season' => $season]);
+        return $this->findOneBy(['NormSeason' => $season]);
     }
+
+    public function findByType(NormType $type): ?Norm
+    {
+        return $this->findOneBy(['NormType' => $type]);
+    }
+
 
     //    /**
     //     * @return Norm[] Returns an array of Norm objects

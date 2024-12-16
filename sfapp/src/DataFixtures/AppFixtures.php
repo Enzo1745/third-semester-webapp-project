@@ -2,11 +2,12 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Down;
 use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Entity\User;
+use App\Repository\Model\NormSeason;
+use App\Repository\Model\NormType;
 use App\Repository\Model\SAState;
 use App\Repository\Model\UserRoles;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -16,20 +17,51 @@ class AppFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // Create Norms
-        foreach (["Winter", "Spring", "Summer", "Fall"] as $season) {
-            $norm = new Norm();
-            $norm->setHumidityMinNorm(30);
-            $norm->setHumidityMaxNorm(70);
-            $norm->setTemperatureMinNorm(10);
-            $norm->setTemperatureMaxNorm(25);
-            $norm->setCo2MinNorm(400);
-            $norm->setCo2MaxNorm(600);
-            $norm->setSeason($season);
 
-            $manager->persist($norm);
-            $norms[] = $norm;
-        }
+        $norm = new Norm();
+        $norm->setHumidityMinNorm(30);
+        $norm->setHumidityMaxNorm(70);
+        $norm->setTemperatureMinNorm(10);
+        $norm->setTemperatureMaxNorm(25);
+        $norm->setCo2MinNorm(650);
+        $norm->setCo2MaxNorm(1600);
+        $norm->setNormSeason(NormSeason::Summer);
+        $norm->setNormType(NormType::Comfort);
+        $manager->persist($norm);
+
+        $norm2 = new Norm();
+        $norm2->setHumidityMinNorm(40);
+        $norm2->setHumidityMaxNorm(80);
+        $norm2->setTemperatureMinNorm(-5);
+        $norm2->setTemperatureMaxNorm(20);
+        $norm2->setCo2MinNorm(650);
+        $norm2->setCo2MaxNorm(1600);
+        $norm2->setNormSeason(NormSeason::Winter);
+        $norm2->setNormType(NormType::Comfort);
+        $manager->persist($norm2);
+
+        $technicalNorm = new Norm();
+        $technicalNorm->setHumidityMinNorm(30);
+        $technicalNorm->setHumidityMaxNorm(70);
+        $technicalNorm->setTemperatureMinNorm(-15);
+        $technicalNorm->setTemperatureMaxNorm(45);
+        $technicalNorm->setCo2MinNorm(500);
+        $technicalNorm->setCo2MaxNorm(2000);
+        $technicalNorm->setNormSeason(NormSeason::Summer);
+        $technicalNorm->setNormType(NormType::Technical);
+        $manager->persist($technicalNorm);
+
+        $technicalNorm2 = new Norm();
+        $technicalNorm2->setHumidityMinNorm(30);
+        $technicalNorm2->setHumidityMaxNorm(80);
+        $technicalNorm2->setTemperatureMinNorm(-15);
+        $technicalNorm2->setTemperatureMaxNorm(45);
+        $technicalNorm2->setCo2MinNorm(500);
+        $technicalNorm2->setCo2MaxNorm(2000);
+        $technicalNorm2->setNormSeason(NormSeason::Winter);
+        $technicalNorm2->setNormType(NormType::Technical);
+        $manager->persist($technicalNorm2);
+
 
         // Create Users
         $user1 = new User();
@@ -115,3 +147,4 @@ class AppFixtures extends Fixture
         $manager->flush();
     }
 }
+
