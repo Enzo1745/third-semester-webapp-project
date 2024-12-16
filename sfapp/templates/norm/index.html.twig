@@ -148,30 +148,27 @@
         </div>
     </div>
 
-    <script>
-        // Change between summer and winter value
-        document.getElementById('showSummer').addEventListener('click', () => {
-            document.getElementById('normsSummer').style.display = 'block'; // show
-            document.getElementById('normsWinter').style.display = 'none'; // hide
-        });
 
-        document.getElementById('showWinter').addEventListener('click', () => {
-            document.getElementById('normsSummer').style.display = 'none'; //show
-            document.getElementById('normsWinter').style.display = 'block'; //hide
-        });
 
-        // Fonction pour afficher le bon formulaire dans le modal
-        document.getElementById('normsModal').addEventListener('show.bs.modal', () => {
-            const isSummerVisible = document.getElementById('normsSummer').style.display === 'block';
+    <!-- Modal de confirmation -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir enregistrer ces modifications ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button id="confirmSave" type="button" class="btn btn-primary">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            if (isSummerVisible) {
-                document.getElementById('formSummer').style.display = 'block';
-                document.getElementById('formWinter').style.display = 'none';
-            } else {
-                document.getElementById('formWinter').style.display = 'block';
-                document.getElementById('formSummer').style.display = 'none';
-            }
-        });
-    </script>
+
 
 {% endblock %}
