@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Form\SearchSaASType;
+use App\Form\SerchRoomASType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\SaRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -41,9 +43,33 @@ class SaListController extends AbstractController
     #[Route('/technicien/sa', name: 'app_technician_sa')]
     public function techListSa(Request $request, SaRepository $saRepo): Response
     {
-        $saList = $saRepo->findAll(); // Function used to return all the sa in the database.
+
+        $form = $this->createForm(SearchSaASType::class);
+        $form->handleRequest($request);
+
+
+        $choice = $form->get('filter')->getData();
+
+
+        if ($choice === 'SADown') {
+            $saList = $saRepo->findBy(['state' => SAState::Down]);
+        } elseif ($choice === 'SAWaiting') {
+            $saList = $saRepo->findBy(['state' => SAState::Waiting]);
+        } elseif ($choice === 'SAInstall') {
+            $saList = $saRepo->findBy(['state' => SAState::Installed]);
+        }
+        elseif ($choice === 'SAAvailable') {
+            $saList = $saRepo->findBy(['state' => SAState::Available]);
+        }
+        else {
+            $saList = $saRepo->findAll(); // Default: no filter
+        }
+
+
+
 
         return $this->render('gestion_sa/technicianList.html.twig', [
+            'form' => $form->createView(),
             "saList" => $saList
         ]);
     }
