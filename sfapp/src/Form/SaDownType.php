@@ -20,6 +20,7 @@ class SaDownType extends AbstractType
         $builder
             ->add('sa', EntityType::class, [
                 'class' => Sa::class,
+                'label' => 'SA',
                 'choice_label' => 'id',
                 'query_builder' => function (SaRepository $er) {
                     return $er->createQueryBuilder('s')
