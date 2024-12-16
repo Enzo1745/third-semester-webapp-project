@@ -139,7 +139,7 @@ class RoomController extends AbstractController
 
         // Find an SA if it exists
         $sa = null;
-        if ($room && $room->getIdSA()) {
+        if ($room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
             if ($sa && $sa->getState() == SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
@@ -194,7 +194,7 @@ class RoomController extends AbstractController
         if (!$room) {
             $this->addFlash('error', 'Salle introuvable.');
             return new Response('Salle introuvable.', Response::HTTP_NOT_FOUND);
-            return $this->redirectToRoute('app_room_list');
+           // return $this->redirectToRoute('app_room_list');
 
         }
 
@@ -228,9 +228,12 @@ class RoomController extends AbstractController
         if ($room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
         }
-        if (!$sa or $sa->getCO2() == null or $sa->getTemperature() == null or $sa->getHumidity() == null) {
+        if (!$sa or $sa->getCO2() == null or $sa->getTemperature() == null or $sa->getHumidity() == null or $sa->getState() == SAState::Waiting) {
             return 'grey';  // No functional SA found for the room, so no diagnostic
         }
+
+
+
 
         $temperatureCompliant = $sa->getTemperature() >= $summerNorms->getTemperatureMinNorm() &&
             $sa->getTemperature() <= $summerNorms->getTemperatureMaxNorm();
