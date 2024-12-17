@@ -25,11 +25,13 @@ class SaStatusTechnicianTest extends WebTestCase
         $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
 
         // Nettoyage de la base de données
+        // Nettoyage de la base de données
+        $this->entityManager->createQuery('DELETE FROM App\Entity\Down')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Sa')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Room')->execute();
 
         $statuses = [
-            SAState::Functional,
+            SAState::Installed,
             SAState::Down,
             SAState::Available,
             SAState::Waiting,

@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Repository\Model\NormSeason;
+use App\Repository\Model\NormType;
 use App\Repository\NormRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,8 +33,13 @@ class Norm
     #[ORM\Column]
     private ?int $co2MaxNorm = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $season = null;
+    #[ORM\Column(enumType: NormType::class)]
+    private ?NormType $NormType = null;
+
+    #[ORM\Column(enumType: NormSeason::class)]
+    private ?NormSeason $NormSeason = null;
+
+
 
     public function getId(): ?int
     {
@@ -111,15 +118,29 @@ class Norm
         return $this;
     }
 
-    public function getSeason(): ?string
+    public function getNormType(): ?NormType
     {
-        return $this->season;
+        return $this->NormType;
     }
 
-    public function setSeason(string $season): static
+    public function setNormType(NormType $NormType): static
     {
-        $this->season = $season;
+        $this->NormType = $NormType;
 
         return $this;
     }
+
+    public function getNormSeason(): ?NormSeason
+    {
+        return $this->NormSeason;
+    }
+
+    public function setNormSeason(NormSeason $NormSeason): static
+    {
+        $this->NormSeason = $NormSeason;
+
+        return $this;
+    }
+
+
 }

@@ -39,8 +39,8 @@ class SaAssociateController extends AbstractController
                 $manager->persist($sa);
                 $manager->persist($room);
                 $manager->flush();
-
             }
+
         }
 
         // Update of the SA and Rooms number

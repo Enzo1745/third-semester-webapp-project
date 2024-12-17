@@ -2,10 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\AddRoomType;
 use App\Form\SerchRoomASType;
+use App\Repository\Model\NormSeason;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
 use App\Repository\NormRepository;
@@ -136,9 +138,15 @@ class RoomController extends AbstractController
             ]);
         }
 
+        $normRepository = $entityManager->getRepository(Norm::class);
+        $norms = $normRepository->findOneBy([
+            'NormType' => 'confort',
+            'NormSeason' => 'été'
+        ]);
+
         // Find an SA if it exists
         $sa = null;
-        if ($room && $room->getIdSA()) {
+        if ($room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
             if ($sa && $sa->getState() == SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
@@ -151,35 +159,53 @@ class RoomController extends AbstractController
             'room' => $room,
             'sa' => $sa,
             'origin' => 'charge',
+            'norms' => $norms,
             'down' => $down,
         ]);
     }
 
     #[Route('/technicien/salles/{roomName}', name: 'app_room_info_technicien')]
-    public function roomInfoTech(string $roomName, RoomRepository $roomRepository, EntityManagerInterface $entityManager, DownRepository $downRepo): Response
-    {
-        // Find the room by its room number
+    public function roomInfoTech(
+        string $roomName,
+        RoomRepository $roomRepository,
+        EntityManagerInterface $entityManager,
+        DownRepository $downRepo
+    ): Response {
+        // 1. Récupération de la salle par son nom
         $room = $roomRepository->findByRoomName($roomName);
-        $down = null;
 
+        // 2. Initialisation des variables par défaut
+        $sa = null;
+        $down = null;
+        $norms = null;
+
+        // 3. Récupération des normes de type 'confort' pour la saison 'été'
+        $normRepository = $entityManager->getRepository(Norm::class);
+        $norms = $normRepository->findOneBy([
+            'NormType' => 'confort',
+            'NormSeason' => 'été'
+        ]);
+
+        // 4. Vérification de l'existence d'une SA associée à la salle
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
-            if ($sa->getState() == SAState::Down)
-            {
+
+            // Si l'état de la SA est 'En panne', récupérer les détails de la panne
+            if ($sa && $sa->getState() === SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
             }
-        } else {
-            $sa = null;
         }
 
-        // Render the room information template
+        // 5. Passage des données au template
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
-             'sa' => $sa,
+            'sa' => $sa,
             'down' => $down,
-            'origin' => 'technicien'
+            'norms' => $norms, // Normes récupérées
+            'origin' => 'technicien',
         ]);
     }
+
 
     /**
      * Route: /charge/salles/supprimer/{id}
@@ -193,7 +219,7 @@ class RoomController extends AbstractController
         if (!$room) {
             $this->addFlash('error', 'Salle introuvable.');
             return new Response('Salle introuvable.', Response::HTTP_NOT_FOUND);
-            return $this->redirectToRoute('app_room_list');
+           // return $this->redirectToRoute('app_room_list');
 
         }
 
@@ -221,15 +247,18 @@ class RoomController extends AbstractController
         $this->normRepository = $normRepository;
 
         // Fetch the norms for summer season
-        $summerNorms = $this->normRepository->findOneBy(['season' => 'summer']);
+        $summerNorms = $this->normRepository->findOneBy(['NormSeason' => NormSeason::Summer]);
 
         $sa = null;
         if ($room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
         }
-        if (!$sa or $sa->getCO2() == null or $sa->getTemperature() == null or $sa->getHumidity() == null) {
+        if (!$sa or $sa->getCO2() == null or $sa->getTemperature() == null or $sa->getHumidity() == null or $sa->getState() == SAState::Waiting) {
             return 'grey';  // No functional SA found for the room, so no diagnostic
         }
+
+
+
 
         $temperatureCompliant = $sa->getTemperature() >= $summerNorms->getTemperatureMinNorm() &&
             $sa->getTemperature() <= $summerNorms->getTemperatureMaxNorm();

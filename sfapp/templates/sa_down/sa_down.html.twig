@@ -18,9 +18,10 @@
 
     {{ block('flash_messages') }}
     <div class="ms-3">
-        <a href="" class="btn btn-primary d-inline-flex align-items-center">
+        <a href="{{ path('app_technician_sa') }}" class="btn btn-primary d-inline-flex align-items-center">
             <i class="fas fa-arrow-left me-2"></i>Retour à la liste des SA
         </a>
+
     </div>
 
     <div class="container mb-4 text-center">
@@ -60,7 +61,7 @@
                                 <thead class="table-primary">
                                 <tr>
                                     <th scope="col" class="text-center">SA</th>
-                                    <th scope="col" class="text-center">Raison</th>
+                                    <th scope="col" class="text-center">Remarque</th>
                                     <th scope="col" class="text-center">Température</th>
                                     <th scope="col" class="text-center">Humidité</th>
                                     <th scope="col" class="text-center">CO2</th>
@@ -77,7 +78,7 @@
                                         {% if saDown.reason is not null %}
                                             {{ saDown.reason }}
                                         {% else %}
-                                            Aucune raison fournie.
+                                            Aucune remarque fournie.
                                         {% endif %}
                                     </td>
 

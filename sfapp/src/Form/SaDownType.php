@@ -20,11 +20,12 @@ class SaDownType extends AbstractType
         $builder
             ->add('sa', EntityType::class, [
                 'class' => Sa::class,
+                'label' => 'SA',
                 'choice_label' => 'id',
                 'query_builder' => function (SaRepository $er) {
                     return $er->createQueryBuilder('s')
                         ->where('s.state = :state')
-                        ->setParameter('state', SAState::Functional);
+                        ->setParameter('state', SAState::Installed);
                 },
             ])
             ->add('temperature', CheckboxType::class, [
@@ -44,7 +45,7 @@ class SaDownType extends AbstractType
                 'required' => false,
             ])
             ->add('reason', TextareaType::class, [
-                'label' => 'Raison',
+                'label' => 'Remarque',
                 'required' => false,
             ])
         ;

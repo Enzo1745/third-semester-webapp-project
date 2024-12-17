@@ -39,7 +39,7 @@ class SaManagementController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             if ($sa->getState() === SAState::Available && $sa->getRoom()) {
-                $sa->setState(SAState::Functional);
+                $sa->setState(SAState::Waiting);
                 $room = $sa->getRoom();
                 $room->setIdSa($sa->getId()); // Ajoutez cette ligne
                 $manager->persist($sa);
@@ -79,18 +79,64 @@ class SaManagementController extends AbstractController
         ]);
     }
 
-    #[Route('technicien/sa/ajouter', name: 'app_add_sa')]
-    public function addSa(EntityManagerInterface $entityManager): Response
+    #[Route('technicien/sa/ajouter', name: 'app_add_sa', methods: ['POST'])]
+    public function addSa(Request $request, EntityManagerInterface $entityManager): Response
     {
-        // Make a new SA that will be by default in a 'waiting' state
+
+        $saId = $request->request->get('sa_id');
+
+
         $newSa = new SA();
+
+        if (!empty($saId)) {
+
+            $existingSa = $entityManager->getRepository(SA::class)->find($saId);
+            if ($existingSa) {
+                $this->addFlash('error', 'Un système d\'acquisition avec cet ID existe déjà.');
+                return $this->redirectToRoute('app_technician_sa');
+            }
+            $newSa->setId((int)$saId);
+        } else {
+
+            $ids = $entityManager->createQueryBuilder()
+                ->select('sa.id')
+                ->from(SA::class, 'sa')
+                ->getQuery()
+                ->getArrayResult();
+
+
+            $allIds = array_column($ids, 'id');
+            sort($allIds);
+
+
+            $newId = 1;
+            foreach ($allIds as $existingId) {
+                if ($existingId === $newId) {
+                    $newId++;
+                } elseif ($existingId > $newId) {
+
+                    break;
+                }
+            }
+
+            $newSa->setId($newId);
+        }
+
+
         $newSa->setState(SAState::Available);
 
-        // Save the modifications in the database
+
         $entityManager->persist($newSa);
         $entityManager->flush();
 
-        // Redirect to the technician's home page
+        $this->addFlash('success', 'SA ajouté avec succès.');
         return $this->redirectToRoute('app_technician_sa');
+
     }
+
+
+
+
+
+
 }

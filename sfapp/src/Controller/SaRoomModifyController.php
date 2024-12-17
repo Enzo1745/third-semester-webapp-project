@@ -74,7 +74,9 @@ class SaRoomModifyController extends AbstractController
             if ($currentRoom) {
                 // Reset the current room and set the current SA to 'Available'
                 $currentRoom->setIdSa(null);
-                $currentSa->setState(SAState::Available);
+                if ($currentSa->getState() != SAState::Down) {
+                    $currentSa->setState(SAState::Available);
+                }
                 $currentRoom->setSa(null);
                 $em->persist($currentRoom);
             }
@@ -120,7 +122,7 @@ class SaRoomModifyController extends AbstractController
 
         // If the SA state is 'Waiting', change it to 'Functional'
         if ($sa->getState() == SAState::Waiting) {
-            $sa->setState(SAState::Functional);
+            $sa->setState(SAState::Installed);
             $em->persist($sa);
             $em->flush();
         }

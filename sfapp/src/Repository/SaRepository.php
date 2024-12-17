@@ -26,6 +26,16 @@ class SaRepository extends ServiceEntityRepository
     }
 
 
+    public function findSaByState(SAState $state): array
+    {
+        return $this->createQueryBuilder('s')
+            ->where('s.state = :state')
+            ->setParameter('state', $state->value)
+            ->getQuery()
+            ->getResult();
+    }
+
+
     //    /**
     //     * @return Sa[] Returns an array of Sa objects
     //     */

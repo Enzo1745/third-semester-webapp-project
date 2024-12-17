@@ -57,7 +57,7 @@ class SaDownController extends AbstractController
         }
 
         $saList = $saDownRepo->findLastDownSa(); // Get the list of all down sa
-        $nbSaFunctionnals = $saRepo->countBySaState(SAState::Functional); // Get the number of functioning SA
+        $nbSaFunctionnals = $saRepo->countBySaState(SAState::Installed); // Get the number of functioning SA
 
         return $this->render('sa_down/sa_down.html.twig', [
             "nbSaFunctionnals" => $nbSaFunctionnals,
@@ -76,7 +76,7 @@ class SaDownController extends AbstractController
     public function setFunctionnal(Sa $sa, EntityManagerInterface $entityManager, Request $request): Response
     {
         // Set the selected sa' state to functional
-        $sa->setState(SAState::Functional);
+        $sa->setState(SAState::Available);
 
         // Update the database
         $entityManager->flush();
