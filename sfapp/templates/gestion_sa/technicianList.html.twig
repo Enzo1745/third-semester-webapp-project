@@ -109,14 +109,14 @@
 
                                     <td class="text-center">
                                         <p class="card-text value state
-                                                {% if sa.state.value == 'Fonctionnel' %}
+                                                {% if sa.state.value == 'Installé' %}
                                                     good-text
                                                 {% elseif sa.state.value == 'En panne' %}
                                                     danger-text
                                                 {% elseif sa.state.value == 'Disponible' %}
                                                     available-text
                                                 {% elseif sa.state.value == 'En attente' %}
-                                                    warning-text
+                                                    risky-text
                                                 {% else %}
                                                     muted-text
                                                 {% endif %}">

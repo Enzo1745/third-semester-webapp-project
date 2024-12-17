@@ -29,6 +29,18 @@ class NormRepository extends ServiceEntityRepository
     }
 
 
+    public function findTechnicalLimitsBySeason(NormSeason $season): ?Norm
+    {
+        return $this->createQueryBuilder('n')
+            ->where('n.NormSeason = :season')
+            ->andWhere('n.NormType = :type')
+            ->setParameter('season', $season->value) // Utiliser la valeur de l'enum (Hiver/Été)
+            ->setParameter('type', NormType::Technical->value) // Technique
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
     //    /**
     //     * @return Norm[] Returns an array of Norm objects
     //     */
