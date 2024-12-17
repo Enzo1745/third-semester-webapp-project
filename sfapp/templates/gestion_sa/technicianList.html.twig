@@ -62,9 +62,9 @@
             <div style='text-align: left;'>
                 <strong>Explication des couleurs :</strong><br>
                 <span style='color: grey;'><strong>Gris :</strong> Aucun diagnostic effectuable.</span><br>
-                <span style='color: green;'><strong>Vert :</strong> Toutes les normes sont respectées.</span><br>
-                <span style='color: #ffc107;'><strong>Jaune :</strong> Une ou plusieurs normes ne sont pas respectées.</span><br>
-                <span style='color: red;'><strong>Rouge :</strong> Aucune norme n'est respectée.</span>
+                <span style='color: green;'><strong>Vert :</strong> Toutes les normes sont respectées.(norme technique)</span><br>
+                <span style='color: #ffc107;'><strong>Jaune :</strong> Une ou plusieurs normes ne sont pas respectées.(norme technique)</span><br>
+                <span style='color: red;'><strong>Rouge :</strong> Aucune norme n'est respectée.(norme technique)</span>
             </div>"
                                             data-bs-html="true"
                                             style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
@@ -106,6 +106,7 @@
                                             <span class="text-muted">Non applicable</span>
                                         {% endif %}
                                     </td>
+
                                     <td class="text-center">
                                         <p class="card-text value state
                                                 {% if sa.state.value == 'Fonctionnel' %}
@@ -122,17 +123,15 @@
                                             {{ sa.getStateName() }}
                                         </p>
                                     </td>
+
                                     <td class="text-center">
-                                            <span class="rounded-circle d-inline-block
-                                                {% if sa.state.value == 'Disponible' or sa.state.value == 'En attente' %}
-                                                    bg-secondary
-                                                {% elseif sa.temperature >= -15 and sa.temperature <= 45 and sa.humidity >= 30 and sa.humidity <= 70 and sa.co2 >= 500 and sa.co2 <= 2000 and sa.state.value != 'En panne' %}
-                                                    bg-success
-                                                {% else %}
-                                                    bg-danger
-                                                {% endif %}
-                                            " style="width: 15px; height: 15px;"></span>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            {% set color = sa.diagnosticStatus|default('grey') %}
+                                            <div style="width: 25px; height: 25px; background-color: {{ color }}; border-radius: 50%;"></div>
+                                        </div>
                                     </td>
+
+
                                     <td class="text-center">
                                         <!-- Supprimer -->
                                         <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ sa.id }}">

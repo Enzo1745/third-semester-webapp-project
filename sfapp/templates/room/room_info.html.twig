@@ -73,6 +73,11 @@
                             <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
                             <p>Aucune donnée disponible pour cette salle.</p>
                         </div>
+                    {% elseif sa.state.value == 'En attente' %}
+                        <div class="text-center">
+                            <i class="fas fa-clock fa-2x mb-3"></i>
+                            <p>Le système d'acquisition est en attente d'activation.</p>
+                        </div>
                     {% else %}
                         <div class="row">
                             <div class="col-md-4 mb-3">
