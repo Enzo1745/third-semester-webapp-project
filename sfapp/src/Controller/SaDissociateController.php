@@ -11,7 +11,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SaDissociateController extends AbstractController
 {
-    #[Route('/sa/dissociate/{id}', name: 'app_sa_dissociate', methods: ['POST'])]
+    #[Route('/charge/sa/dissociate/{id}', name: 'app_sa_dissociate', methods: ['POST'])]
     public function dissociate(int $id, SaRepository $saRepo, EntityManagerInterface $entityManager): Response
     {
         // Get the sa with the $id
