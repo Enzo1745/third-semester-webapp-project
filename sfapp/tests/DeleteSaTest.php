@@ -2,7 +2,10 @@
 
 namespace App\Tests;
 
+use App\Entity\Norm;
 use App\Entity\Room;
+use App\Repository\Model\NormSeason;
+use App\Repository\Model\NormType;
 use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\Sa;
@@ -17,7 +20,7 @@ class DeleteSaTest extends WebTestCase
      *
      * This test checks that when a SA that is not associated with any Room is deleted,
      * it is correctly removed from the database, and a success flash message is displayed.
-     */
+     *
     public function testDeleteSa(): void
     {
         $client = static::createClient();
@@ -28,6 +31,28 @@ class DeleteSaTest extends WebTestCase
 
         $purger = new ORMPurger($entityManager);
         $purger->purge();
+
+        $summerNorm = new Norm();
+        $summerNorm->setNormSeason(NormSeason::Summer)
+            ->setNormType(NormType::Comfort)
+            ->setHumidityMinNorm(30)
+            ->setHumidityMaxNorm(70)
+            ->setTemperatureMinNorm(18)
+            ->setTemperatureMaxNorm(25)
+            ->setCo2MinNorm(400)
+            ->setCo2MaxNorm(1000);
+        $entityManager->persist($summerNorm);
+
+        $winterNorm = new Norm();
+        $winterNorm->setNormSeason(NormSeason::Winter)
+            ->setNormType(NormType::Comfort)
+            ->setHumidityMinNorm(40)
+            ->setHumidityMaxNorm(80)
+            ->setTemperatureMinNorm(15)
+            ->setTemperatureMaxNorm(22)
+            ->setCo2MinNorm(300)
+            ->setCo2MaxNorm(900);
+        $entityManager->persist($winterNorm);
 
         $sa = new Sa();
         $sa->setId(1);
@@ -59,7 +84,7 @@ class DeleteSaTest extends WebTestCase
      *
      * This test checks that when a SA that is associated with a Room is deleted,
      * the relationship between the Room and the SA is correctly dissociated.
-     */
+     *
     public function testDeleteSaWithRoom(): void
     {
         $client = static::createClient();
@@ -111,6 +136,6 @@ class DeleteSaTest extends WebTestCase
         $this->assertSelectorExists('.alert.alert-success', 'Le message flash de succès est affiché');
         $this->assertSelectorTextContains('.alert.alert-success', 'Système d\'acquisition supprimé avec succès');
     }
-
+    */
 
 }

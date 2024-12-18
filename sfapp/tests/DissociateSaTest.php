@@ -64,11 +64,12 @@ class DissociateSaTest extends WebTestCase
             'Le bouton de dissociation est introuvable.'
         );
 
-// Verify that the form exists inside the modal
-        $this->assertSelectorExists(
-            'form[action="/sa/dissociate/' . $saId . '"]',
-            'Le formulaire de dissociation est introuvable.'
-        );
+        $form = $crawler->filter('form')->first()->form();
+        $this->client->submit($form);
+
+        $this->entityManager->clear();
+        $dissociatedSa = $this->entityManager->find(Sa::class, $sa->getId());
+        $this->assertNull($dissociatedSa->getRoom(), 'Le formulaire de dissociation est introuvable.');
 
 
 

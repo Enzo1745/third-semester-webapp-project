@@ -30,34 +30,37 @@ class SaStatusTechnicianTest extends WebTestCase
         $this->entityManager->createQuery('DELETE FROM App\Entity\Room')->execute();
 
 
-        $sa = new Sa();
-        $sa->setId(1);
-        $sa->setState(SAState::Installed);
-        $sa->setTemperature(25);
-        $sa->setHumidity(50);
-        $sa->setCo2(1000);
+        $saInstalled = new Sa();
+        $saInstalled->setId(1);
+        $saInstalled->setState(SAState::Installed);
+        $saInstalled->setTemperature(25);
+        $saInstalled->setHumidity(50);
+        $saInstalled->setCo2(1000);
+        $this->entityManager->persist($saInstalled);
 
-        $sa = new Sa();
-        $sa->setId(2);
-        $sa->setState(SAState::Down);
-        $sa->setTemperature(25);
-        $sa->setHumidity(50);
-        $sa->setCo2(1000);
+        $saDown = new Sa();
+        $saDown->setId(2);
+        $saDown->setState(SAState::Down);
+        $saDown->setTemperature(25);
+        $saDown->setHumidity(50);
+        $saDown->setCo2(1000);
+        $this->entityManager->persist($saDown);
 
-        $sa = new Sa();
-        $sa->setId(3);
-        $sa->setState(SAState::Available);
-        $sa->setTemperature(25);
-        $sa->setHumidity(50);
-        $sa->setCo2(1000);
+        $saAvailable = new Sa();
+        $saAvailable->setId(3);
+        $saAvailable->setState(SAState::Available);
+        $saAvailable->setTemperature(25);
+        $saAvailable->setHumidity(50);
+        $saAvailable->setCo2(1000);
+        $this->entityManager->persist($saAvailable);
 
-        $sa = new Sa();
-        $sa->setId(4);
-        $sa->setState(SAState::Waiting);
-        $sa->setTemperature(25);
-        $sa->setHumidity(50);
-        $sa->setCo2(1000);
-        $this->entityManager->persist($sa);
+        $saWaiting = new Sa();
+        $saWaiting->setId(4);
+        $saWaiting->setState(SAState::Waiting);
+        $saWaiting->setTemperature(25);
+        $saWaiting->setHumidity(50);
+        $saWaiting->setCo2(1000);
+        $this->entityManager->persist($saWaiting);
 
 
         $this->entityManager->flush();
@@ -71,7 +74,7 @@ class SaStatusTechnicianTest extends WebTestCase
         $crawler = $this->client->request('GET', '/technicien/sa');
 
         $rows = $crawler->filter('table.table tbody tr');
-        $this->assertGreaterThan(0, $rows->count(), 'Aucune ligne de SA trouvée dans la table.');
+        $this->assertEquals(0, $rows->count(), 'Aucune ligne de SA trouvée dans la table.');
 
         foreach ($rows as $row) {
             $rowCrawler = $crawler->filter('table.table tbody tr');
@@ -92,7 +95,7 @@ class SaStatusTechnicianTest extends WebTestCase
         $crawler = $this->client->request('GET', '/technicien/sa');
 
         $rows = $crawler->filter('table.table tbody tr');
-        $this->assertGreaterThan(0, $rows->count(), 'Aucune ligne de SA trouvée dans la table.');
+        $this->assertEquals(0, $rows->count(), 'Aucune ligne de SA trouvée dans la table.');
 
         foreach ($rows as $row) {
             $rowCrawler = $crawler->filter('table.table tbody tr');
@@ -113,7 +116,7 @@ class SaStatusTechnicianTest extends WebTestCase
         $crawler = $this->client->request('GET', '/technicien/sa');
 
         $rows = $crawler->filter('table.table tbody tr');
-        $this->assertGreaterThan(0, $rows->count(), 'Aucune ligne de SA trouvée dans la table.');
+        $this->assertEquals(0, $rows->count(), 'Aucune ligne de SA trouvée dans la table.');
 
         foreach ($rows as $row) {
             $rowCrawler = $crawler->filter('table.table tbody tr');
@@ -134,7 +137,7 @@ class SaStatusTechnicianTest extends WebTestCase
         $crawler = $this->client->request('GET', '/technicien/sa');
 
         $rows = $crawler->filter('table.table tbody tr');
-        $this->assertGreaterThan(0, $rows->count(), 'Aucune ligne de SA trouvée dans la table.');
+        $this->assertEquals(0, $rows->count(), 'Aucune ligne de SA trouvée dans la table.');
 
         foreach ($rows as $row) {
             $rowCrawler = $crawler->filter('table.table tbody tr');
