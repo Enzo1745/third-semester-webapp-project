@@ -1,0 +1,111 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Salle{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/salle_info.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0">Actions à faire</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled" id="actions-list">
+                    <li class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label for="message1" class="form-check-label mb-0">
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                            </label>
+                            <input type="checkbox" id="message1" class="form-check-input action-checkbox">
+                        </div>
+                    </li>
+                    <li class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label for="message2" class="form-check-label mb-0">
+                                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </label>
+                            <input type="checkbox" id="message2" class="form-check-input action-checkbox">
+                        </div>
+                    </li>
+                    <li class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label for="message3" class="form-check-label mb-0">
+                                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
+                            </label>
+                            <input type="checkbox" id="message3" class="form-check-input action-checkbox">
+                        </div>
+                    </li>
+                    <li class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <label for="message4" class="form-check-label mb-0">
+                                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum.
+                            </label>
+                            <input type="checkbox" id="message4" class="form-check-input action-checkbox">
+                        </div>
+                    </li>
+                </ul>
+                <button class="btn btn-primary disabled" id="confirmButton" data-bs-toggle="modal" data-bs-target="#confirmationModal" disabled>
+                    Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Avez-vous réalisé les actions sélectionnées ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="confirmActions">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Récupère toutes les cases à cocher et le bouton de confirmation
+        const checkboxes = document.querySelectorAll('.action-checkbox');
+        const confirmButton = document.getElementById('confirmButton');
+
+        // Fonction pour activer/désactiver le bouton
+        function updateButtonState() {
+            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+            confirmButton.disabled = !anyChecked; // Active ou désactive le bouton
+            confirmButton.classList.toggle('disabled', !anyChecked); // Ajoute ou retire la classe "disabled"
+        }
+
+        // Ajoute un événement à chaque case à cocher
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateButtonState);
+        });
+
+        // Supprime les éléments cochés lorsque l'utilisateur confirme
+        document.getElementById('confirmActions').addEventListener('click', function () {
+            const listItems = document.querySelectorAll('#actions-list li');
+            listItems.forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                if (checkbox.checked) {
+                    item.remove();
+                }
+            });
+
+            // Ferme le modal
+            const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
+            confirmationModal.hide();
+
+            // Désactive à nouveau le bouton si nécessaire
+            updateButtonState();
+        });
+    </script>
+{% endblock %}
