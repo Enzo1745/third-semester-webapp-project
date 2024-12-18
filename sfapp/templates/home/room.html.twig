@@ -7,6 +7,8 @@
 {% endblock %}
 
 {% block body %}
+
+    <!-- Tasks to do by the user -->
     <div class="container">
         <div class="card shadow-sm">
             <div class="card-header bg-primary text-white py-3">
@@ -54,7 +56,7 @@
         </div>
     </div>
 
-    <!-- Modal -->
+    <!-- Modal to confirm the tasks are done -->
     <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -66,46 +68,53 @@
                     Avez-vous réalisé les actions sélectionnées ?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
-                    <button type="button" class="btn btn-primary" id="confirmActions">Confirmer</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-primary" id="confirmActions">Oui</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Récupère toutes les cases à cocher et le bouton de confirmation
-        const checkboxes = document.querySelectorAll('.action-checkbox');
+        // Retrieve all checkboxes and the confirmation button
         const confirmButton = document.getElementById('confirmButton');
 
-        // Fonction pour activer/désactiver le bouton
+        // Function to enable/disable the button
         function updateButtonState() {
-            const anyChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
-            confirmButton.disabled = !anyChecked; // Active ou désactive le bouton
-            confirmButton.classList.toggle('disabled', !anyChecked); // Ajoute ou retire la classe "disabled"
+            // Check if any checkbox is selected
+            const anyChecked = document.querySelectorAll('.action-checkbox:checked').length > 0;
+            confirmButton.disabled = !anyChecked; // Enable or disable the button
+            confirmButton.classList.toggle('disabled', !anyChecked); // Add or remove the "disabled" class
         }
 
-        // Ajoute un événement à chaque case à cocher
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', updateButtonState);
+        // Add event listener to each checkbox dynamically
+        document.getElementById('actions-list').addEventListener('change', function (event) {
+            if (event.target.classList.contains('action-checkbox')) {
+                updateButtonState();
+            }
         });
 
-        // Supprime les éléments cochés lorsque l'utilisateur confirme
+        // Remove checked items when the user confirms
         document.getElementById('confirmActions').addEventListener('click', function () {
-            const listItems = document.querySelectorAll('#actions-list li');
-            listItems.forEach(item => {
-                const checkbox = item.querySelector('input[type="checkbox"]');
-                if (checkbox.checked) {
-                    item.remove();
+            const checkboxes = document.querySelectorAll('.action-checkbox:checked');
+
+            // Loop through the checked checkboxes and remove their parent list items
+            checkboxes.forEach(checkbox => {
+                const listItem = checkbox.closest('li');
+                if (listItem) {
+                    listItem.remove();
                 }
             });
 
-            // Ferme le modal
+            // Update the button state after removing tasks
+            updateButtonState();
+
+            // Close the modal
             const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
             confirmationModal.hide();
-
-            // Désactive à nouveau le bouton si nécessaire
-            updateButtonState();
         });
     </script>
+
+
+
 {% endblock %}
