@@ -46,22 +46,6 @@ class SaListController extends AbstractController
      * @param NormRepository $normRepository
      * @return Response Returns the web page with the SA list and diagnostics
      */
-    /**
-     * @brief Function to show a list of SA in the web page
-     * @param Request $request
-     * @param SaRepository $saRepo
-     * @param EntityManagerInterface $entityManager
-     * @param NormRepository $normRepository
-     * @return Response Returns the web page with the SA list and diagnostics
-     */
-    /**
-     * @brief Function to show a list of SA in the web page
-     * @param Request $request
-     * @param SaRepository $saRepo
-     * @param EntityManagerInterface $entityManager
-     * @param NormRepository $normRepository
-     * @return Response Returns the web page with the SA list and diagnostics
-     */
     #[Route('/technicien/sa', name: 'app_technician_sa')]
     public function techListSa(
         Request $request,
@@ -184,12 +168,10 @@ class SaListController extends AbstractController
 
     }
 
-    public function getDiagnosticStatus(Room $room, EntityManagerInterface $entityManager, NormRepository $normRepository): string
+    public function getDiagnosticStatus(Room $room, Sa $sa, EntityManagerInterface $entityManager, NormRepository $normRepository): string
     {
-        $this->normRepository = $normRepository;
-
         // Fetch the norms for summer season
-        $summerNorms = $this->normRepository->findOneBy(['NormSeason' => NormSeason::Summer]);
+        $summerNorms = $this->$normRepository->findOneBy(['NormSeason' => NormSeason::Summer]);
 
         $sa = null;
         if ($room->getIdSA()) {

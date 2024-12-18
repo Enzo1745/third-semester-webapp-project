@@ -2,9 +2,13 @@
 
 namespace App\Tests;
 
+use App\Entity\Norm;
 use App\Entity\Sa;
 use App\Entity\Room;
+use App\Repository\Model\NormSeason;
+use App\Repository\Model\NormType;
 use App\Repository\Model\SAState;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Doctrine\ORM\Tools\SchemaTool;
 
@@ -18,12 +22,35 @@ class DisplayRoomsTest extends WebTestCase
         $this->client = static::createClient();
         $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
 
+        $purger = new ORMPurger($this->entityManager);
+        $purger->purge();
 
+        $summerNorm = new Norm();
+        $summerNorm->setNormSeason(NormSeason::Summer)
+            ->setNormType(NormType::Comfort)
+            ->setHumidityMinNorm(30)
+            ->setHumidityMaxNorm(70)
+            ->setTemperatureMinNorm(18)
+            ->setTemperatureMaxNorm(25)
+            ->setCo2MinNorm(400)
+            ->setCo2MaxNorm(1000);
+        $this->entityManager->persist($summerNorm);
+
+        $winterNorm = new Norm();
+        $winterNorm->setNormSeason(NormSeason::Winter)
+            ->setNormType(NormType::Comfort)
+            ->setHumidityMinNorm(40)
+            ->setHumidityMaxNorm(80)
+            ->setTemperatureMinNorm(15)
+            ->setTemperatureMaxNorm(22)
+            ->setCo2MinNorm(300)
+            ->setCo2MaxNorm(900);
+        $this->entityManager->persist($winterNorm);
     }
 
     public function testSearchingDetailsOfAssociatedSAWithData(): void
     {
-        // Créer et persister la Room
+        // Create et persist the Room
         $room = new Room();
         $room->setRoomName("D101");
         $room->setNbRadiator(2);
@@ -34,7 +61,8 @@ class DisplayRoomsTest extends WebTestCase
 
         // Créer le SA et l'associer à la Room
         $sa = new Sa();
-        $sa->setState(SAState::Functional);
+        $sa->setId(1);
+        $sa->setState(SAState::Installed);
         $sa->setTemperature(25);
         $sa->setHumidity(60);
         $sa->setCO2(1200);

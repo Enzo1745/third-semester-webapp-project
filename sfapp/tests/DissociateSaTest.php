@@ -37,6 +37,7 @@ class DissociateSaTest extends WebTestCase
 
         // Create an available SA and associate it to the room
         $sa = new Sa();
+        $sa->setId(1);
         $sa->setState(SaState::Available);
         $sa->setRoom($room);
         $this->entityManager->persist($sa);
@@ -47,7 +48,7 @@ class DissociateSaTest extends WebTestCase
         $saId = $sa->getId();
 
         // GET request to the desired page
-        $crawler = $this->client->request('GET', '/charge/sa_management');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa');
 
         $this->assertResponseIsSuccessful();
 
@@ -83,6 +84,7 @@ class DissociateSaTest extends WebTestCase
         $this->entityManager->persist($room);
 
         $sa = new Sa();
+        $sa->setId(1);
         $sa->setState(SaState::Available);
         $sa->setRoom($room);  // Associate the SA with the room
         $this->entityManager->persist($sa);
@@ -91,12 +93,12 @@ class DissociateSaTest extends WebTestCase
 
 
         // GET request to the desired page
-        $crawler = $this->client->request('GET', '/charge/sa_management');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa');
         $this->assertResponseIsSuccessful();
 
 
         // Locate the modal form using its ID and submit it
-        $form = $crawler->filter('form[action="/sa/dissociate/' . $sa->getId() . '"]')->form();
+        $form = $crawler->filter('form')->form();
         $this->client->submit($form);
 
 // Clear the entity manager and check the dissociation

@@ -3,6 +3,9 @@
 namespace App\Tests;
 
 use App\Entity\Norm;
+use App\Repository\Model\NormSeason;
+use App\Repository\Model\NormType;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class DisplayNormTest extends WebTestCase
@@ -16,9 +19,13 @@ class DisplayNormTest extends WebTestCase
         $this->client = static::createClient();
         $this->entityManager = $this->client->getContainer()->get('doctrine.orm.entity_manager');
 
+        $purger = new ORMPurger($this->entityManager);
+        $purger->purge();
+
         // Add summmer and winter norms in the test database
         $summerNorm = new Norm();
-        $summerNorm->setSeason('summer')
+        $summerNorm->setNormSeason(NormSeason::Summer)
+            ->setNormType(NormType::Comfort)
             ->setHumidityMinNorm(30)
             ->setHumidityMaxNorm(70)
             ->setTemperatureMinNorm(18)
@@ -28,7 +35,8 @@ class DisplayNormTest extends WebTestCase
         $this->entityManager->persist($summerNorm);
 
         $winterNorm = new Norm();
-        $winterNorm->setSeason('winter')
+        $winterNorm->setNormSeason(NormSeason::Winter)
+            ->setNormType(NormType::Comfort)
             ->setHumidityMinNorm(40)
             ->setHumidityMaxNorm(80)
             ->setTemperatureMinNorm(15)
@@ -64,7 +72,7 @@ class DisplayNormTest extends WebTestCase
         $co2MinText = $crawler->filter('#CO2-min')->text();
 
         // norm value in bdd
-        $summerNorm = $this->entityManager->getRepository(Norm::class)->findOneBy(['season' => 'summer']);
+        $summerNorm = $this->entityManager->getRepository(Norm::class)->findBySeason(NormSeason::Summer);
 
         // check similary beetween bdd and web page
         $this->assertStringContainsString('Max : ' . $summerNorm->getHumidityMaxNorm(), $humidityMaxText);

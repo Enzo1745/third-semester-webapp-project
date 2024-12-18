@@ -4,6 +4,7 @@ namespace App\Tests;
 
 use App\Repository\Model\SaState;
 use App\Entity\Room;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use App\Entity\Sa;
@@ -20,11 +21,14 @@ class DisplaySaTest extends WebTestCase
         $this->entityManager = $this->client->getContainer()
             ->get('doctrine')
             ->getManager();
+
+        $purger = new ORMPurger($this->entityManager);
+        $purger->purge();
     }
 
     public function testListRoute(): void
     {
-        $this->client->request('GET', '/charge/sa_management');
+        $this->client->request('GET', '/charge/gestion_sa');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
@@ -38,6 +42,7 @@ class DisplaySaTest extends WebTestCase
         $this->entityManager->persist($room);
 
         $sa = new Sa();
+        $sa->setId(1);
         $sa->setState(SaState::Available);
         $sa->setRoom($room);
         $this->entityManager->persist($sa);
@@ -45,7 +50,7 @@ class DisplaySaTest extends WebTestCase
         $this->entityManager->flush();
 
         // Make request
-        $crawler = $this->client->request('GET', '/charge/sa_management');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa');
 
         // Assert response and content
         $this->assertResponseIsSuccessful();
@@ -62,7 +67,7 @@ class DisplaySaTest extends WebTestCase
         $this->entityManager->createQuery('DELETE FROM App\Entity\Room')->execute();
 
         // Make request
-        $crawler = $this->client->request('GET', '/charge/sa_management');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa');
 
         // Assert response and content
         $this->assertResponseIsSuccessful();

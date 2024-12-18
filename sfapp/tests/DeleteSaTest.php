@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\Room;
+use Doctrine\Common\DataFixtures\Purger\ORMPurger;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\Sa;
 use App\Repository\SaRepository;
@@ -21,11 +22,15 @@ class DeleteSaTest extends WebTestCase
     {
         $client = static::createClient();
         $container = static::getContainer();
+
         $entityManager = $container->get(EntityManagerInterface::class);
         $saRepository = $entityManager->getRepository(Sa::class);
 
+        $purger = new ORMPurger($entityManager);
+        $purger->purge();
 
         $sa = new Sa();
+        $sa->setId(1);
         $sa->setState(SAState::Available);
         $sa->setRoom(null);
         $entityManager->persist($sa);
@@ -69,6 +74,7 @@ class DeleteSaTest extends WebTestCase
 
 
         $sa = new Sa();
+        $sa->setId(2);
         $sa->setState(SAState::Available);
         $sa->setRoom($room);
         $room->setSa($sa);

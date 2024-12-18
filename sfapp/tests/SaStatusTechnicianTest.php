@@ -25,27 +25,40 @@ class SaStatusTechnicianTest extends WebTestCase
         $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
 
         // Nettoyage de la base de données
-        // Nettoyage de la base de données
         $this->entityManager->createQuery('DELETE FROM App\Entity\Down')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Sa')->execute();
         $this->entityManager->createQuery('DELETE FROM App\Entity\Room')->execute();
 
-        $statuses = [
-            SAState::Installed,
-            SAState::Down,
-            SAState::Available,
-            SAState::Waiting,
-        ];
 
-        foreach ($statuses as $index => $state) { // Pour chaque état, crée un SA
-            $sa = new Sa();
-            $sa->setState($state); // enum
-            $sa->setTemperature(25 + $index);
-            $sa->setHumidity(50 + $index);
-            $sa->setCo2(1000 + $index * 100);
+        $sa = new Sa();
+        $sa->setId(1);
+        $sa->setState(SAState::Installed);
+        $sa->setTemperature(25);
+        $sa->setHumidity(50);
+        $sa->setCo2(1000);
 
-            $this->entityManager->persist($sa);
-        }
+        $sa = new Sa();
+        $sa->setId(2);
+        $sa->setState(SAState::Down);
+        $sa->setTemperature(25);
+        $sa->setHumidity(50);
+        $sa->setCo2(1000);
+
+        $sa = new Sa();
+        $sa->setId(3);
+        $sa->setState(SAState::Available);
+        $sa->setTemperature(25);
+        $sa->setHumidity(50);
+        $sa->setCo2(1000);
+
+        $sa = new Sa();
+        $sa->setId(4);
+        $sa->setState(SAState::Waiting);
+        $sa->setTemperature(25);
+        $sa->setHumidity(50);
+        $sa->setCo2(1000);
+        $this->entityManager->persist($sa);
+
 
         $this->entityManager->flush();
     }

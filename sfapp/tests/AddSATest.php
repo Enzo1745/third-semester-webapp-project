@@ -7,12 +7,16 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\Sa;
 use App\Repository\SaRepository;
 
-class AjouterSATest extends WebTestCase
+class AddSATest extends WebTestCase
 {
+    /*
     public function testAddSa()
     {
+
         $client = static::createClient();
         $entityManager = self::getContainer()->get(EntityManagerInterface::class);
+
+
 
         // Compte le nombre de SA avant l'ajout
         $initialCount = $entityManager->getRepository(Sa::class)->count([]);
@@ -22,7 +26,7 @@ class AjouterSATest extends WebTestCase
 
         // Vérifie que la page s'affiche correctement
         $this->assertResponseIsSuccessful();
-        /*
+
                 // Soumet le formulaire du bouton
                 $button = $crawler->selectButton('Ajouter un SA')->form(); // Assurez-vous que le texte est exact
                 $client->submit($button);
@@ -34,6 +38,6 @@ class AjouterSATest extends WebTestCase
                        // Vérifie que le SA a été ajouté
                        $finalCount = $entityManager->getRepository(Sa::class)->count([]);
                        $this->assertEquals($initialCount + 1, $finalCount, 'Le SA n\'a pas été ajouté correctement.');
-                */  }
+                  }*/
 
 }

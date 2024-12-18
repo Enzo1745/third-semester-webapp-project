@@ -28,7 +28,8 @@ class DysfunctionnalFunctionnalTest extends WebTestCase
     private function createFunctionalSa(): Sa
     {
         $sa = new Sa();
-        $sa->setState(SAState::Functional);
+        $sa->setId(1);
+        $sa->setState(SAState::Installed);
         $this->entityManager->persist($sa);
         $this->entityManager->flush();
 
@@ -114,7 +115,7 @@ class DysfunctionnalFunctionnalTest extends WebTestCase
 
     public function testRehabilitateSa(): void
     {
-        // Create a new functioanl SA
+        // Create a new functional SA
         $sa = $this->createFunctionalSa();
         $down = $this->createDown($sa, 'Température élevée', true);
 
@@ -126,7 +127,7 @@ class DysfunctionnalFunctionnalTest extends WebTestCase
 
         // Check if the sa' state is now "Functional"
         $updatedSa = $this->entityManager->getRepository(Sa::class)->find($sa->getId());
-        $this->assertEquals(SAState::Functional, $updatedSa->getState(), 'Le SA n\'a pas été réhabilité.');
+        $this->assertEquals(SAState::Installed, $updatedSa->getState(), 'Le SA n\'a pas été réhabilité.');
     }
 
     public function testLastDownSa(): void
@@ -160,7 +161,7 @@ class DysfunctionnalFunctionnalTest extends WebTestCase
 
         // Check if the selected sa is no longer in the list of functionals sa
         $saRepository = $this->entityManager->getRepository(Sa::class);
-        $functionalSa = $saRepository->findBy(['state' => SAState::Functional]);
+        $functionalSa = $saRepository->findBy(['state' => SAState::Installed]);
         $this->assertNotContains($sa, $functionalSa, 'Le SA est toujours marqué comme fonctionnel.');
     }
 }

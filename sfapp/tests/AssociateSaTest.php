@@ -36,6 +36,7 @@ class AssociateSaTest extends WebTestCase
     {
         // Créer une SA disponible
         $sa = new Sa();
+        $sa->setId(1);
         $sa->setState(SaState::Available);
         $this->entityManager->persist($sa);
 
@@ -49,7 +50,7 @@ class AssociateSaTest extends WebTestCase
         $this->entityManager->flush();
 
         // Demander la page
-        $crawler = $this->client->request('GET', '/charge/sa_management/associer');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
         // Vérifier que la réponse est réussie
         $this->assertResponseIsSuccessful();
@@ -69,7 +70,7 @@ class AssociateSaTest extends WebTestCase
         $this->entityManager->flush();
 
         // Demander la page
-        $crawler = $this->client->request('GET', '/charge/sa_management/associer');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
         // Vérifier que la réponse est réussie
         $this->assertResponseIsSuccessful();
@@ -91,13 +92,14 @@ class AssociateSaTest extends WebTestCase
 
         // Créer une SA non disponible (état 'Functional')
         $saNotAvailable = new Sa();
+        $saNotAvailable->setId(1);
         $saNotAvailable->setState(SaState::Installed);
         $this->entityManager->persist($saNotAvailable);
 
         $this->entityManager->flush();
 
         // Demander la page
-        $crawler = $this->client->request('GET', '/charge/sa_management/associer');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
         // Vérifier que la réponse est réussie
         $this->assertResponseIsSuccessful();
@@ -113,6 +115,7 @@ class AssociateSaTest extends WebTestCase
     {
         // Créer une SA disponible
         $sa = new Sa();
+        $sa->setId(1);
         $sa->setState(SaState::Available);
         $this->entityManager->persist($sa);
 
@@ -126,7 +129,7 @@ class AssociateSaTest extends WebTestCase
         $this->entityManager->flush();
 
         // Demander la page pour afficher le formulaire
-        $crawler = $this->client->request('GET', '/charge/sa_management/associer');
+        $crawler = $this->client->request('GET', '/charge/gestion_sa/associer');
 
         // Sélectionner le formulaire et le soumettre
         $form = $crawler->selectButton('Associer')->form([
