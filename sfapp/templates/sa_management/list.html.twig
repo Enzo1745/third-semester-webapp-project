@@ -1,0 +1,97 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des systèmes d'acquisition{% endblock %}
+
+{% block body %}
+    {# Header section #}
+    <div class="container-fluid bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center">
+                <h1 class="h2 mb-0">
+                    <i class="fas fa-microchip me-2"></i>Systèmes d'acquisition
+                </h1>
+                <a href="/charge/salles" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Retour
+                </a>
+            </div>
+        </div>
+    </div>
+
+    {# Main content #}
+    <div class="container">
+        <div class="mb-4 d-grid gap-2 col-md-4 mx-auto">
+            <a href="./gestion_sa/associer" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Associer un nouveau système d'acquisition
+            </a>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body p-0">
+                {% if saList is empty %}
+                    <div class="alert alert-info m-4" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>Aucun système d'acquisition n'est disponible.
+                    </div>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 sa-table">
+                            <thead class="bg-primary text-white">
+                            <tr>
+                                <th class="idSa">Système d'acquisition</th>
+                                <th class="roomName">Salle associée</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for sa in saList %}
+                                <tr>
+                                    <td class="align-middle idSa">{{ sa.id }}</td>
+                                    <td class="align-middle roomName">
+                                        {% if sa.room is not null %}
+                                            {{ sa.room.roomName }}
+                                        {% else %}
+                                            <span class="text-muted">Aucune</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if sa.room is not null %}
+
+
+                                            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmDeleteModal{{ sa.id }}">
+                                                <i class="fas fa-unlink me-2"></i> Dissocier
+                                            </button>
+
+
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <!-- Modal de confirmation SA -->
+                                <div class="modal fade" id="confirmDeleteModal{{ sa.id }}" tabindex="-1" aria-labelledby="confirmDeleteModalLabel{{ sa.id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <form action="{{ path('app_sa_dissociate', {id: sa.id}) }}" method="post">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDeleteModalLabel{{ sa.id }}">Confirmation de dissociation</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Êtes-vous sûr de vouloir dissocier cette SA ?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                                    <button type="submit" class="btn btn-danger">Confirmer</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- Fin du modal de confirmation SA -->
+
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

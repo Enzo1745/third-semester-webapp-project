@@ -1,0 +1,224 @@
+
+{% extends 'base.html.twig' %}
+
+{% block title %}Normes des salles{% endblock %}
+
+{% block body %}
+
+    <header class="page-header">
+        <div class="container d-flex justify-content-between align-items-center">
+            <a href="/charge/salles" class="btn btn-outline-light me-2">
+                <i class="fas fa-arrow-left me-1"></i> Retour
+            </a>
+            <div class="text-center flex-grow-1">
+                <h1 class="h2 mb-0 fw-bold">
+                    <i class="fas fa-thermometer-half me-2"></i> Normes des salles
+                </h1>
+            </div>
+        </div>
+    </header>
+
+    {{ block('flash_messages') }}
+
+    <div class="container">
+
+        <div id="errorContainer" style="display: none;"></div>
+
+
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                <span class="fw-bold"><i class="fas fa-calendar-alt me-2"></i>Sélectionnez une saison</span>
+                <div>
+                    <button id="showSummer" class="btn btn-outline-light me-2">
+                        <i class="fas fa-sun me-1"></i> Été
+                    </button>
+                    <button id="showWinter" class="btn btn-outline-light">
+                        <i class="fas fa-snowflake me-1"></i> Hiver
+                    </button>
+
+                    <!-- Bouton pour ouvrir le modal de modification -->
+                    <button class="btn btn-outline-light ms-2" data-bs-toggle="modal" data-bs-target="#normsModal">
+                        <i class="fas fa-edit me-1"></i> Modifier les normes
+                    </button>
+                </div>
+            </div>
+
+            <div class="card-body">
+                <!-- summer norm section -->
+                <div id="normsSummer"> <!-- default show -->
+                    <h3 class="text-primary"><i class="fas fa-sun me-2"></i>Normes pour l'été</h3>
+                    <div class="row text-center mb-4">
+                        <div class="col-4">
+                            <h5 class="fw-bold">Humidité</h5>
+                            <p class="danger-text" id="humidity-max">Max : {{ summerNorm.humidityMaxNorm }}%</p>
+                            <p class="blue-text" id="humidity-min">Min : {{ summerNorm.humidityMinNorm }}%</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">Température</h5>
+                            <p class="danger-text" id="temperature-max">Max : {{ summerNorm.temperatureMaxNorm }}°C</p>
+                            <p class="blue-text" id="temperature-min">Min : {{ summerNorm.temperatureMinNorm }}°C</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">CO2</h5>
+                            <p class="danger-text" id="CO2-max">Max : {{ summerNorm.co2MaxNorm }}ppm</p>
+                            <p class="blue-text" id="CO2-min">Min : {{ summerNorm.co2MinNorm }}ppm</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Winter norm section -->
+                <div id="normsWinter" style="display: none;">  <!-- default hidden -->
+                    <h3 class="text-primary"><i class="fas fa-snowflake me-2"></i>Normes pour l'hiver</h3>
+                    <div class="row text-center mb-4">
+                        <div class="col-4">
+                            <h5 class="fw-bold">Humidité</h5>
+                            <p class="danger-text" id="humidity">Max : {{ winterNorm.humidityMaxNorm }}%</p>
+                            <p class="blue-text">Min : {{ winterNorm.humidityMinNorm }}%</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">Température</h5>
+                            <p class="danger-text" id="temperature">Max : {{ winterNorm.temperatureMaxNorm }}°C</p>
+                            <p class="blue-text">Min : {{ winterNorm.temperatureMinNorm }}°C</p>
+                        </div>
+                        <div class="col-4">
+                            <h5 class="fw-bold">CO2</h5>
+                            <p class="danger-text" id="CO2">Max : {{ winterNorm.co2MaxNorm }}ppm</p>
+                            <p class="blue-text">Min : {{ winterNorm.co2MinNorm }}ppm</p>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Bootstrap pour modifier les normes -->
+    <div class="modal fade" id="normsModal" tabindex="-1" aria-labelledby="normsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="normsModalLabel">Modifier les Normes</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Formulaire pour modifier les normes -->
+                    <form method="POST">
+                        <!-- Normes d'été (initialement masqué) -->
+                        <div id="formSummer" style="display: none;">
+                            <h5>Normes d'été</h5>
+                            <label for="humidityMinNormSummer" class="form-label">Humidité Min (Été)</label>
+                            <input type="number" class="form-control" id="humidityMinNormSummer" name="humidityMinNormSummer" value="{{ summerNorm.humidityMinNorm }}">
+
+                            <label for="humidityMaxNormSummer" class="form-label">Humidité Max (Été)</label>
+                            <input type="number" class="form-control" id="humidityMaxNormSummer" name="humidityMaxNormSummer" value="{{ summerNorm.humidityMaxNorm }}">
+
+                            <label for="temperatureMinNormSummer" class="form-label">Température Min (Été)</label>
+                            <input type="number" class="form-control" id="temperatureMinNormSummer" name="temperatureMinNormSummer" value="{{ summerNorm.temperatureMinNorm }}">
+
+                            <label for="temperatureMaxNormSummer" class="form-label">Température Max (Été)</label>
+                            <input type="number" class="form-control" id="temperatureMaxNormSummer" name="temperatureMaxNormSummer" value="{{ summerNorm.temperatureMaxNorm }}">
+
+                            <label for="co2MinNormSummer" class="form-label">CO2 Min (Été)</label>
+                            <input type="number" class="form-control" id="co2MinNormSummer" name="co2MinNormSummer" value="{{ summerNorm.co2MinNorm }}">
+
+                            <label for="co2MaxNormSummer" class="form-label">CO2 Max (Été)</label>
+                            <input type="number" class="form-control" id="co2MaxNormSummer" name="co2MaxNormSummer" value="{{ summerNorm.co2MaxNorm }}">
+                        </div>
+
+                        <!-- Normes d'hiver (initialement masqué) -->
+                        <div id="formWinter" style="display: none;">
+                            <h5>Normes d'hiver</h5>
+                            <label for="humidityMinNormWinter" class="form-label">Humidité Min (Hiver)</label>
+                            <input type="number" class="form-control" id="humidityMinNormWinter" name="humidityMinNormWinter" value="{{ winterNorm.humidityMinNorm }}">
+
+                            <label for="humidityMaxNormWinter" class="form-label">Humidité Max (Hiver)</label>
+                            <input type="number" class="form-control" id="humidityMaxNormWinter" name="humidityMaxNormWinter" value="{{ winterNorm.humidityMaxNorm }}">
+
+                            <label for="temperatureMinNormWinter" class="form-label">Température Min (Hiver)</label>
+                            <input type="number" class="form-control" id="temperatureMinNormWinter" name="temperatureMinNormWinter" value="{{ winterNorm.temperatureMinNorm }}">
+
+                            <label for="temperatureMaxNormWinter" class="form-label">Température Max (Hiver)</label>
+                            <input type="number" class="form-control" id="temperatureMaxNormWinter" name="temperatureMaxNormWinter" value="{{ winterNorm.temperatureMaxNorm }}">
+
+                            <label for="co2MinNormWinter" class="form-label">CO2 Min (Hiver)</label>
+                            <input type="number" class="form-control" id="co2MinNormWinter" name="co2MinNormWinter" value="{{ winterNorm.co2MinNorm }}">
+
+                            <label for="co2MaxNormWinter" class="form-label">CO2 Max (Hiver)</label>
+                            <input type="number" class="form-control" id="co2MaxNormWinter" name="co2MaxNormWinter" value="{{ winterNorm.co2MaxNorm }}">
+                        </div>
+
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal de confirmation -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Êtes-vous sûr de vouloir enregistrer ces modifications ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button id="confirmSave" type="button" class="btn btn-primary">Confirmer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal d'erreur -->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="errorModalLabel">Erreur de validation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="errorModalBody">
+                    <!-- Contenu des erreurs -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Injection des normes techniques pour validation
+        const technicalSummer = {
+            humidityMin: {{ summerNorm.humidityMinNorm }},
+            humidityMax: {{ summerNorm.humidityMaxNorm }},
+            temperatureMin: {{ summerNorm.temperatureMinNorm }},
+            temperatureMax: {{ summerNorm.temperatureMaxNorm }},
+            co2Min: {{ summerNorm.co2MinNorm }},
+            co2Max: {{ summerNorm.co2MaxNorm }}
+        };
+
+        const technicalWinter = {
+            humidityMin: {{ winterNorm.humidityMinNorm }},
+            humidityMax: {{ winterNorm.humidityMaxNorm }},
+            temperatureMin: {{ winterNorm.temperatureMinNorm }},
+            temperatureMax: {{ winterNorm.temperatureMaxNorm }},
+            co2Min: {{ winterNorm.co2MinNorm }},
+            co2Max: {{ winterNorm.co2MaxNorm }}
+        };
+    </script>
+
+    <script src="{{ asset('norm.js') }}"></script>
+
+
+{% endblock %}

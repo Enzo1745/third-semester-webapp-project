@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SA dysfonctionnels{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/declare_sa.css') }}">
+{% endblock %}
+
+{% block body %}
+    {# Main header section with gradient background #}
+    <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="h2 mb-0 fw-bold">
+                <i class="fas fa-exclamation-triangle me-2"></i> SA dysfonctionnels
+            </h1>
+        </div>
+    </header>
+
+    {{ block('flash_messages') }}
+    <div class="ms-3">
+        <a href="{{ path('app_technician_sa') }}" class="btn btn-primary d-inline-flex align-items-center">
+            <i class="fas fa-arrow-left me-2"></i>Retour à la liste des SA
+        </a>
+
+    </div>
+
+    <div class="container mb-4 text-center">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-center align-items-center mb-3">
+                    <i class="fas fa-exclamation-circle text-primary me-2"></i>
+                    <h5 class="card-title mb-0">Déclarer un SA dysfonctionnel</h5>
+                </div>
+                {% if nbSaFunctionnals > 0 %}
+                    {# Display the down form #}
+                    {{ form_start(saForm) }}
+                    <div class="mb-3">
+                        {{ form_widget(saForm) }}
+                    </div>
+                    <button type="submit" class="btn btn-danger btn-block mt-3">
+                        <i class="fas fa-exclamation-triangle me-1"></i> Déclarer dysfonctionnel
+                    </button>
+                    {{ form_end(saForm) }}
+                {% else %}
+                    {# Replace the form by an informative sentence #}
+                    <p>Aucun SA fonctionnel.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Liste des SA dysfonctionnels</h5>
+                <div class="resultTest">
+                    {% if saDownList is not null %}
+                        {# Display the list of down sa #}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered">
+                                <thead class="table-primary">
+                                <tr>
+                                    <th scope="col" class="text-center">SA</th>
+                                    <th scope="col" class="text-center">Remarque</th>
+                                    <th scope="col" class="text-center">Température</th>
+                                    <th scope="col" class="text-center">Humidité</th>
+                                    <th scope="col" class="text-center">CO2</th>
+                                    <th scope="col" class="text-center">Microcontrôleur</th>
+                                    <th scope="col" class="text-center">Action</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for saDown in saDownList %}
+                                <tr>
+                                    <td>{{ saDown.sa.id }}</td>
+
+                                    <td>
+                                        {% if saDown.reason is not null %}
+                                            {{ saDown.reason }}
+                                        {% else %}
+                                            Aucune remarque fournie.
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="text-center">
+                                        {% if saDown.temperature %}
+                                            <i class="fas fa-times text-danger"></i>
+                                        {% else %}
+                                            <i class="fas fa-check text-success"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if saDown.humidity %}
+                                            <i class="fas fa-times text-danger"></i>
+                                        {% else %}
+                                            <i class="fas fa-check text-success"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if saDown.CO2 %}
+                                            <i class="fas fa-times text-danger"></i>
+                                        {% else %}
+                                            <i class="fas fa-check text-success"></i>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-center">
+                                        {% if saDown.microcontroller %}
+                                            <i class="fas fa-times text-danger"></i>
+                                        {% else %}
+                                            <i class="fas fa-check text-success"></i>
+                                        {% endif %}
+                                    </td>
+
+                                    <td class="text-center">
+                                        <form method="post" action="{{ path('app_functionnal', {'id': saDown.sa.id}) }}">
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="fas fa-sync-alt me-1"></i> Réhabiliter
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        {# If there is no sa dysfunctional, display an informative sentence instead of the list #}
+                        <p class="text-muted">Aucun SA dysfonctionnel.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

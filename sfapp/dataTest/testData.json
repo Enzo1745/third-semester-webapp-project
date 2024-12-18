@@ -1,0 +1,245 @@
+[
+    {
+        "id": 1,
+        "nom": "temp",
+        "valeur": "20.2",
+        "dateCapture": "2022-10-24 11:33:59",
+        "localisation": "D205",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-001"
+    },
+    {
+        "id": 2,
+        "nom": "temp",
+        "valeur": "-5",
+        "dateCapture": "2022-10-24 11:35:11",
+        "localisation": "D204",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-002"
+    },
+    {
+        "id": 3,
+        "nom": "temp",
+        "valeur": "45.9",
+        "dateCapture": "2022-10-25 11:30:59",
+        "localisation": "D302",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-003"
+    },
+    {
+        "id": 4,
+        "nom": "temp",
+        "valeur": "-23.4",
+        "dateCapture": "2022-10-24 04:12:45",
+        "localisation": "D005",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-004"
+    },
+    {
+        "id": 5,
+        "nom": "hum",
+        "valeur": "2.6",
+        "dateCapture": "2022-10-24 16:51:32",
+        "localisation": "D205",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-001"
+    },
+    {
+        "id": 6,
+        "nom": "hum",
+        "valeur": "49.4",
+        "dateCapture": "2022-10-24 11:35:11",
+        "localisation": "D204",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-002"
+    },
+    {
+        "id": 7,
+        "nom": "hum",
+        "valeur": "96",
+        "dateCapture": "2022-10-25 11:30:59",
+        "localisation": "D302",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-003"
+    },
+    {
+        "id": 8,
+        "nom": "temp",
+        "valeur": "18.7",
+        "dateCapture": "2022-10-24 11:00:00",
+        "localisation": "D201",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-005"
+    },
+    {
+        "id": 9,
+        "nom": "temp",
+        "valeur": "22.3",
+        "dateCapture": "2022-10-24 12:00:00",
+        "localisation": "D202",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-006"
+    },
+    {
+        "id": 10,
+        "nom": "temp",
+        "valeur": "30.1",
+        "dateCapture": "2022-10-25 14:15:00",
+        "localisation": "D203",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-007"
+    },
+    {
+        "id": 11,
+        "nom": "temp",
+        "valeur": "-2.4",
+        "dateCapture": "2022-10-26 08:45:00",
+        "localisation": "D204",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-008"
+    },
+    {
+        "id": 12,
+        "nom": "temp",
+        "valeur": "28.6",
+        "dateCapture": "2022-10-27 16:00:00",
+        "localisation": "D205",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-009"
+    },
+    {
+        "id": 13,
+        "nom": "co2",
+        "valeur": "450",
+        "dateCapture": "2022-10-24 11:15:00",
+        "localisation": "D201",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-005"
+    },
+    {
+        "id": 14,
+        "nom": "co2",
+        "valeur": "520",
+        "dateCapture": "2022-10-24 12:30:00",
+        "localisation": "D302",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-006"
+    },
+    {
+        "id": 15,
+        "nom": "co2",
+        "valeur": "600",
+        "dateCapture": "2022-10-25 14:45:00",
+        "localisation": "D303",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-007"
+    },
+    {
+        "id": 16,
+        "nom": "co2",
+        "valeur": "370",
+        "dateCapture": "2022-10-26 09:30:00",
+        "localisation": "D304",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-008"
+    },
+    {
+        "id": 17,
+        "nom": "co2",
+        "valeur": "490",
+        "dateCapture": "2022-10-27 16:30:00",
+        "localisation": "D005",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-009"
+    },
+    {
+        "id": 18,
+        "nom": "hum",
+        "valeur": "55.3",
+        "dateCapture": "2022-10-24 10:30:00",
+        "localisation": "D001",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-005"
+    },
+    {
+        "id": 19,
+        "nom": "hum",
+        "valeur": "42.7",
+        "dateCapture": "2022-10-24 12:00:00",
+        "localisation": "D002",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-006"
+    },
+    {
+        "id": 20,
+        "nom": "hum",
+        "valeur": "78.4",
+        "dateCapture": "2022-10-25 13:30:00",
+        "localisation": "D003",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-007"
+    },
+    {
+        "id": 21,
+        "nom": "hum",
+        "valeur": "62.1",
+        "dateCapture": "2022-10-26 08:15:00",
+        "localisation": "D004",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-008"
+    },
+    {
+        "id": 22,
+        "nom": "hum",
+        "valeur": "60.9",
+        "dateCapture": "2022-10-27 17:00:00",
+        "localisation": "D005",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-009"
+    },
+    {
+        "id": 23,
+        "nom": "lum",
+        "valeur": "320",
+        "dateCapture": "2022-10-24 10:00:00",
+        "localisation": "D001",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-005"
+      },
+      {
+        "id": 24,
+        "nom": "lum",
+        "valeur": "1200",
+        "dateCapture": "2022-10-24 12:00:00",
+        "localisation": "D202",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-006"
+      },
+      {
+        "id": 25,
+        "nom": "lum",
+        "valeur": "800",
+        "dateCapture": "2022-10-25 14:00:00",
+        "localisation": "D203",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-007"
+      },
+      {
+        "id": 26,
+        "nom": "lum",
+        "valeur": "150",
+        "dateCapture": "2022-10-26 09:00:00",
+        "localisation": "D204",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-008"
+      },
+      {
+        "id": 27,
+        "nom": "lum",
+        "valeur": "500",
+        "dateCapture": "2022-10-27 17:30:00",
+        "localisation": "D205",
+        "descritpion": "test depuis esp",
+        "nomsa": "ESP-009"
+      }
+]
