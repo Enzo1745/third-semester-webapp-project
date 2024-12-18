@@ -24,7 +24,7 @@ class DisplaySaTest extends WebTestCase
 
     public function testListRoute(): void
     {
-        $this->client->request('GET', '/charge/gestion_sa');
+        $this->client->request('GET', '/charge/sa_management');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
@@ -45,7 +45,7 @@ class DisplaySaTest extends WebTestCase
         $this->entityManager->flush();
 
         // Make request
-        $crawler = $this->client->request('GET', '/charge/gestion_sa');
+        $crawler = $this->client->request('GET', '/charge/sa_management');
 
         // Assert response and content
         $this->assertResponseIsSuccessful();
@@ -62,7 +62,7 @@ class DisplaySaTest extends WebTestCase
         $this->entityManager->createQuery('DELETE FROM App\Entity\Room')->execute();
 
         // Make request
-        $crawler = $this->client->request('GET', '/charge/gestion_sa');
+        $crawler = $this->client->request('GET', '/charge/sa_management');
 
         // Assert response and content
         $this->assertResponseIsSuccessful();

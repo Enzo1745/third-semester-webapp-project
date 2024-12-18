@@ -47,7 +47,7 @@ class DissociateSaTest extends WebTestCase
         $saId = $sa->getId();
 
         // GET request to the desired page
-        $crawler = $this->client->request('GET', '/charge/gestion_sa');
+        $crawler = $this->client->request('GET', '/charge/sa_management');
 
         $this->assertResponseIsSuccessful();
 
@@ -91,7 +91,7 @@ class DissociateSaTest extends WebTestCase
 
 
         // GET request to the desired page
-        $crawler = $this->client->request('GET', '/charge/gestion_sa');
+        $crawler = $this->client->request('GET', '/charge/sa_management');
         $this->assertResponseIsSuccessful();
 
 

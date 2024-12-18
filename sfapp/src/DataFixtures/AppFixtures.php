@@ -15,9 +15,8 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
-    public function load(ObjectManager $manager): void
+    private function normFixtures(ObjectManager $manager): void
     {
-
         $norm = new Norm();
         $norm->setHumidityMinNorm(30);
         $norm->setHumidityMaxNorm(70);
@@ -63,21 +62,25 @@ class AppFixtures extends Fixture
         $manager->persist($technicalNorm2);
 
 
+    }
+
+    private function usersFixtures(ObjectManager $manager): void
+    {
         // Create Users
         $user1 = new User();
-        $user1->setUsername('charge')->setPassword(password_hash('1234', PASSWORD_BCRYPT))->setRole(UserRoles::Charge);
+        $user1->setUsername('charge')->setPassword('1234')->setRole(UserRoles::Charge);
         $manager->persist($user1);
 
         $user2 = new User();
-        $user2->setUsername('tech')->setPassword(password_hash('5678', PASSWORD_BCRYPT))->setRole(UserRoles::Technicien);
+        $user2->setUsername('tech')->setPassword('5678')->setRole(UserRoles::Technicien);
         $manager->persist($user2);
 
 
+    }
 
-
+    private function roomsSAFixtures(ObjectManager $manager): void
+    {
         // Create Room entities without SA associations
-
-
         $room1 = new Room();
         $room1->setRoomName("D205")->setNbWindows(2)->setNbRadiator(1);
         $manager->persist($room1);
@@ -140,11 +143,14 @@ class AppFixtures extends Fixture
         $room1->setSa($sa5);
         $manager->persist($sa5);
 
+    }
+    public function load(ObjectManager $manager): void
+    {
 
-
-
+        $this->normFixtures($manager);
+        $this->usersFixtures($manager);
+        $this->roomsSAFixtures($manager);
 
         $manager->flush();
     }
 }
-

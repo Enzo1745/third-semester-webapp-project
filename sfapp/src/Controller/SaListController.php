@@ -28,12 +28,12 @@ class SaListController extends AbstractController
      * @param SaRepository $saRepo
      * @return Response -> return the web page with the list of all sa
      */
-    #[Route('/charge/gestion_sa', name: 'app_gestion_sa')]
+    #[Route('/charge/gestion_sa', name: 'app_sa_management')]
     public function listSA(Request $request, SaRepository $saRepo): Response
     {
         $saList = $saRepo->findAll(); // Function used to return all the sa in the database.
 
-        return $this->render('gestion_sa/list.html.twig', [
+        return $this->render('sa_management/list.html.twig', [
             "saList" => $saList
         ]);
     }
@@ -140,7 +140,7 @@ class SaListController extends AbstractController
         }
 
         // Render the view with the form and SA list
-        return $this->render('gestion_sa/technicianList.html.twig', [
+        return $this->render('sa_management/technicianList.html.twig', [
             'form' => $form->createView(),
             'saList' => $saList,
         ]);

@@ -110,7 +110,7 @@ class RoomController extends AbstractController
         }
 
         // Render the list of rooms
-        return $this->render('room/list_rooms.html.twig', [
+        return $this->render('room/index.html.twig', [
             'form' => $form->createView(),
             'rooms' => $roomsWithDiagnostics,
         ]);
