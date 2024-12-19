@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page d'accueil{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/home_page.css') }}">
+{% endblock %}
+
+{% block body %}
+    <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="h2 mb-0 fw-bold">
+                <i class="fas fa-home me-2"></i> Page d'accueil
+            </h1>
+            <div>
+                <a href="{{ path('app_connexion') }}" class="btn btn-outline-light">
+                    <i class="fas fa-user me-1"></i> Se connecter
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container d-flex justify-content-center align-items-start min-vh-100">
+        <div class="card shadow-sm w-100" style="max-width: 800px; margin-top: 100px;">
+            <div class="card-body text-center">
+                <h1 class="fw-bold mb-3" style="font-size: 3rem;">Bienvenue sur la page d'accueil</h1>
+
+                <p class="lead text-muted">Cette page vous permet d'acceder au données colléctées dans les salles.</p>
+            </div>
+        </div>
+    </div>
+
+
+
+{% endblock %}
