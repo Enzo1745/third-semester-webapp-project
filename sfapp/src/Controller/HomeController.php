@@ -8,6 +8,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
+    /**
+     * @brief default page
+     */
     #[Route('/', name: 'app_home')]
     public function index(): Response
     {
