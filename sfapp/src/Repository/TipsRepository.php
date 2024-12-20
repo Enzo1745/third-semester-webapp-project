@@ -16,9 +16,9 @@ class TipsRepository extends ServiceEntityRepository
         parent::__construct($registry, Tips::class);
     }
 
-    public function findRandTips(): ?string
+    public function findRandTips(): ?string // return a random tips from database
     {
-        $maxId = $this->createQueryBuilder('t')
+        $maxId = $this->createQueryBuilder('t') // select all tips
             ->select('MAX(t.id)')
             ->getQuery()
             ->getSingleScalarResult();
@@ -27,13 +27,13 @@ class TipsRepository extends ServiceEntityRepository
             return null; // if not tips in database
         }
 
-        $randomId = random_int(1, $maxId);
+        $randomId = random_int(1, $maxId); // return a random int fom 1 to max of tip number
 
         $tip = $this->createQueryBuilder('t')
             ->select('t.content') // select content attribut
             ->where('t.id >= :randomId')
             ->setParameter('randomId', $randomId)
-            ->setMaxResults(1)
+            ->setMaxResults(1) // select only one result
             ->getQuery()
             ->getOneOrNullResult();
 

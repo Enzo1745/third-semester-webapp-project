@@ -12,7 +12,7 @@ class HomeController extends AbstractController
     #[Route('/', name: 'app_home')]
     public function index(TipsRepository $tipsRepo ): Response
     {
-        $tips = $tipsRepo->findRandTips();
+        $tips = $tipsRepo->findRandTips(); // return a random tips from database
 
         return $this->render('home/index.html.twig', [
             'tips' => $tips,
