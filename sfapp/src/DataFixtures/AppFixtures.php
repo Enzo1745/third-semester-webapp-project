@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
+use App\Entity\Tips;
 use App\Entity\User;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\NormType;
@@ -15,6 +16,30 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
+	private function tipsFixtures(ObjectManager $manager) : void
+	{
+
+		$tips1 = new Tips();
+		$tips1->setContent("Ouvre la porte quand il fait chaud");
+		$manager->persist($tips1);
+
+		$tips2 = new Tips();
+		$tips2->setContent("Utiliser la lumiere naturelle plutôt que la lumiere artificielle");
+		$manager->persist($tips2);
+
+		$tips3 = new Tips();
+		$tips3->setContent("Ouvrir la fenêtre quand il fait chaud");
+		$manager->persist($tips3);
+
+		$tips4 = new Tips();
+		$tips4->setContent("N'ouvre pas la fenêtre si il y a le chauffage");
+		$manager->persist($tips4);
+
+		$tips5 = new Tips();
+		$tips5->setContent("Éteignez vos objets electroniques lorsque vous ne vous en servez plus");
+		$manager->persist($tips5);
+
+	}
     private function normFixtures(ObjectManager $manager): void
     {
         $norm = new Norm();
@@ -147,6 +172,7 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
 
+		$this->tipsFixtures($manager);
         $this->normFixtures($manager);
         $this->usersFixtures($manager);
         $this->roomsSAFixtures($manager);
