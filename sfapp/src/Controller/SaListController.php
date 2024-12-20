@@ -60,7 +60,8 @@ class SaListController extends AbstractController
         // Retrieve filter choice from the form
         $choice = $form->get('filter')->getData();
 
-        // Filter the SA list based on the selected state
+
+	    // Filter the SA list based on the selected state
         if ($choice === 'SADown') {
             $saList = $saRepo->findBy(['state' => SAState::Down]);
         } elseif ($choice === 'SAWaiting') {
@@ -70,8 +71,10 @@ class SaListController extends AbstractController
         } elseif ($choice === 'SAAvailable') {
             $saList = $saRepo->findBy(['state' => SAState::Available]);
         } else {
-            $saList = $saRepo->findAll(); // Default: no filter applied
+	        $saList = $saRepo->findAllSortedByState(); // Default: no filter applied
         }
+
+
 
         // Retrieve the technical norms for summer
         $norm = $normRepository->findOneBy([

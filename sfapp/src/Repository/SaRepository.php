@@ -36,7 +36,34 @@ class SaRepository extends ServiceEntityRepository
     }
 
 
-    //    /**
+	public function findAllSortedByState(SAState $state): array
+	{
+		$order = [
+			SAState::Down->value,
+			SAState::Waiting->value,
+			SAState::Available->value,
+			SAState::Installed->value,
+		];
+
+		$results = $this->findAll();
+		usort($results, fn($a, $b) => array_search($a->getState()->value, $order) <=> array_search($b->getState()->value, $order));
+
+		return $results;
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//    /**
     //     * @return Sa[] Returns an array of Sa objects
     //     */
     //    public function findByExampleField($value): array
