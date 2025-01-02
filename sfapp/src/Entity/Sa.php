@@ -34,6 +34,19 @@ class Sa
     #[ORM\Column(nullable: true)]
     private ?int $CO2 = null;
 
+    private ?string $diagnosticStatus = null;
+
+    public function getDiagnosticStatus(): ?string
+    {
+        return $this->diagnosticStatus;
+    }
+
+    public function setDiagnosticStatus(?string $diagnosticStatus): self
+    {
+        $this->diagnosticStatus = $diagnosticStatus;
+        return $this;
+    }
+
     /**
      * @var Collection<int, Down>
      */

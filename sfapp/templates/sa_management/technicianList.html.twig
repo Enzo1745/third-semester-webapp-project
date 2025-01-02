@@ -33,14 +33,40 @@
         <div class="container mb-4">
             <div class="card shadow-sm">
                 <div class="card-body">
-                    <div class="d-flex align-items-center mb-3">
-                        <i class="fas fa-search text-primary me-2"></i>
-                        <h5 class="card-title mb-0">Filtres</h5>
+
+                    <div class="d-flex justify-content-between">
+
+                        <div>
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="fas fa-search text-primary me-2"></i>
+                                <h5 class="card-title mb-0">Filtres</h5>
+                            </div>
+
+                            {{ form_row(form.filter) }}
+                        </div>
+
+
+                        <div>
+                            <div class="d-flex align-items-center mb-2 ">
+                                <i class="fas fa-sort text-primary me-2"></i>
+                                <h5 class="card-title mb-0 ">Trier</h5>
+                            </div>
+                            {{ form_row(form.trier) }}
+                        </div>
                     </div>
-                    {{ form(form) }}
+
                 </div>
             </div>
         </div>
+
+
+
+
+
+        <div class="container mb-4">
+
+        </div>
+
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
@@ -126,7 +152,7 @@
 
                                     <td class="text-center">
                                         <div class="d-flex justify-content-center align-items-center">
-                                            {% set color = sa.diagnosticStatus|default('grey') %}
+                                            {% set color = sa.getDiagnosticStatus()|default('grey') %}
                                             <div style="width: 25px; height: 25px; background-color: {{ color }}; border-radius: 50%;"></div>
                                         </div>
                                     </td>

@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SearchSaASType extends AbstractType
+class FilterTrier extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -27,7 +27,22 @@ class SearchSaASType extends AbstractType
                     'onchange' => 'this.form.submit()', // Automatically submit the form on change
                 ],
                 'label' => 'Filtre : ',
+            ])
+            ->add('trier', ChoiceType::class, [
+                'choices' => [
+                    'Association' => 'Asso',
+                    'Diagnostic'  => 'Dia'
+                ],
+                'data' => 'Asso',
+                'required'    => false,
+                'placeholder' => 'Aucun tri',
+                'mapped'      => false,
+                'attr'        => [
+                    'onchange' => 'this.form.submit()'
+                ],
             ]);
+
+
     }
 
     public function configureOptions(OptionsResolver $resolver): void

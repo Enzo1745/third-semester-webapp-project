@@ -6,6 +6,7 @@ use App\Entity\Sa;
 use App\Repository\Model\SAState;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Service\DiagnocticService;
 
 /**
  * @extends ServiceEntityRepository<Sa>
@@ -36,21 +37,49 @@ class SaRepository extends ServiceEntityRepository
     }
 
 
-	public function findAllSortedByState(SAState $state): array
-	{
-		$order = [
-			SAState::Down->value,
-			SAState::Waiting->value,
-			SAState::Available->value,
-			SAState::Installed->value,
-		];
+    public function sortByState(array $saList,int $choice,
+                                NormRepository $normRepository,
+                                DiagnocticService $diagnosticService
+                                ): array
+    {
 
-		$results = $this->findAll();
-		usort($results, fn($a, $b) => array_search($a->getState()->value, $order) <=> array_search($b->getState()->value, $order));
 
-		return $results;
-	}
+        if ($choice === 1) {
+            $order = [
+                SAState::Down->value,
+                SAState::Waiting->value,
+                SAState::Available->value,
+                SAState::Installed->value,
+            ];
 
+            usort($saList, function($a, $b) use ($order) {
+                return array_search($a->getState()->value, $order)
+                    <=> array_search($b->getState()->value, $order);
+            });
+        }
+
+        elseif ($choice === 2) {
+            $order = [
+                 'red',
+                'yellow',
+                'green',
+                'grey'
+            ];
+
+
+
+            usort($saList, function($a, $b) use ($order) {
+                return array_search($a->getDiagnosticStatus(), $order)
+                    <=> array_search($b->getDiagnosticStatus(), $order);
+            });
+
+
+        }
+
+
+
+        return $saList;
+    }
 
 
 

@@ -4,10 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Room;
 use App\Entity\Sa;
-use App\Form\SearchSaASType;
+use App\Form\FilterTrier;
 use App\Form\SerchRoomASType;
+use App\Form\TrierFormType;
 use App\Repository\Model\NormSeason;
 use App\Repository\NormRepository;
+use App\Service\DiagnocticService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Repository\SaRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,17 +50,23 @@ class SaListController extends AbstractController
      */
     #[Route('/technicien/sa', name: 'app_technician_sa')]
     public function techListSa(
-        Request $request,
-        SaRepository $saRepo,
+        Request                $request,
+        SaRepository           $saRepo,
         EntityManagerInterface $entityManager,
-        NormRepository $normRepository
+        DiagnocticService      $diagnosticService,
+        NormRepository         $normRepository
+
     ): Response {
+
+
         // Create the search form and handle the request
-        $form = $this->createForm(SearchSaASType::class);
+        $form = $this->createForm(FilterTrier::class);
         $form->handleRequest($request);
+
 
         // Retrieve filter choice from the form
         $choice = $form->get('filter')->getData();
+        $trierChoice  = $form->get('trier')->getData();
 
 
 	    // Filter the SA list based on the selected state
@@ -71,59 +79,26 @@ class SaListController extends AbstractController
         } elseif ($choice === 'SAAvailable') {
             $saList = $saRepo->findBy(['state' => SAState::Available]);
         } else {
-	        $saList = $saRepo->findAllSortedByState(); // Default: no filter applied
+	        $saList = $saRepo->findAll(); // Default: no filter applied
         }
 
+                $summerNorms = $normRepository->findOneBy([
+                      'NormType'   => 'technique',
+                      'NormSeason' => 'été'
+                  ]);
 
+                  foreach ($saList as $sa) {
+                      $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa, $summerNorms);
+                      $sa->setDiagnosticStatus($diagnosticColor);
+                  }
 
-        // Retrieve the technical norms for summer
-        $norm = $normRepository->findOneBy([
-            'NormType' => 'technique',
-            'NormSeason' => 'été'
-        ]);
-
-        // Extract norms values for diagnostics
-        $temperatureMin = $norm->getTemperatureMinNorm();
-        $temperatureMax = $norm->getTemperatureMaxNorm();
-        $humidityMin = $norm->getHumidityMinNorm();
-        $humidityMax = $norm->getHumidityMaxNorm();
-        $co2Min = $norm->getCo2MinNorm();
-        $co2Max = $norm->getCo2MaxNorm();
-
-        // Assign diagnostic status to each SA
-        foreach ($saList as $sa) {
-            $diagnosticStatus = 'grey'; // Default color
-
-            if ($sa->getRoom()) {
-                $temperature = $sa->getTemperature();
-                $humidity = $sa->getHumidity();
-                $co2 = $sa->getCo2();
-
-                // Logic for diagnostic color
-                // Logic for diagnostic color
-                if ($temperature === null || $humidity === null || $co2 === null) {
-                    $diagnosticStatus = 'grey';
-                } elseif (
-                    $temperature < $temperatureMin || $temperature > $temperatureMax &&
-                    $humidity < $humidityMin || $humidity > $humidityMax &&
-                    $co2 < $co2Min || $co2 > $co2Max
-                ) {
-                    $diagnosticStatus = 'red';
-                } elseif (
-                    $temperature >= $temperatureMin && $temperature <= $temperatureMax &&
-                    $humidity >= $humidityMin && $humidity <= $humidityMax &&
-                    $co2 >= $co2Min && $co2 <= $co2Max
-                ) {
-                    $diagnosticStatus = 'green';
-                } else {
-                    $diagnosticStatus = 'yellow';
-                }
-
-
-            }
-
-            // Attach diagnostic status to the SA
-            $sa->diagnosticStatus = $diagnosticStatus;
+                                                                                                     //tri by association (down,waiting,installed,available)
+        if ($trierChoice === 'Asso') {
+            $saList = $saRepo->sortByState($saList,1,$normRepository,$diagnosticService);
+        }
+        //tri by diagnostic (red,yellow,green,grey)
+        elseif ($trierChoice === 'Dia') {
+            $saList = $saRepo->sortByState($saList,2,$normRepository,$diagnosticService);
         }
 
         // Render the view with the form and SA list
@@ -169,50 +144,5 @@ class SaListController extends AbstractController
         return $this->redirectToRoute('app_technician_sa');
 
 
-    }
-
-    public function getDiagnosticStatus(Room $room, Sa $sa, EntityManagerInterface $entityManager, NormRepository $normRepository): string
-    {
-        // Fetch the norms for summer season
-        $summerNorms = $this->$normRepository->findOneBy(['NormSeason' => NormSeason::Summer]);
-
-        $sa = null;
-        if ($room->getIdSA()) {
-            $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
-        }
-        if (!$sa or $sa->getCO2() == null or $sa->getTemperature() == null or $sa->getHumidity() == null or $sa->getState() == SAState::Waiting) {
-            return 'grey';  // No functional SA found for the room, so no diagnostic
-        }
-
-
-
-
-        $temperatureCompliant = $sa->getTemperature() >= $summerNorms->getTemperatureMinNorm() &&
-            $sa->getTemperature() <= $summerNorms->getTemperatureMaxNorm();
-        $humidityCompliant = $sa->getHumidity() >= $summerNorms->getHumidityMinNorm() &&
-            $sa->getHumidity() <= $summerNorms->getHumidityMaxNorm();
-        $co2Compliant = $sa->getCO2() >= $summerNorms->getCo2MinNorm() &&
-            $sa->getCO2() <= $summerNorms->getCo2MaxNorm();
-
-        // Determine the diagnostic status
-        $compliantCount = 0;
-        if ($temperatureCompliant) {
-            $compliantCount++;
-        }
-        if ($humidityCompliant) {
-            $compliantCount++;
-        }
-        if ($co2Compliant) {
-            $compliantCount++;
-        }
-
-        // Logic for diagnostic color
-        if ($compliantCount === 3) {
-            return 'green';
-        } elseif ($compliantCount === 0) {
-            return 'red';
-        } else {
-            return 'yellow';
-        }
     }
 }
