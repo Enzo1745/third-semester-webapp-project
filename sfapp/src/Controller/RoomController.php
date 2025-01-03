@@ -6,6 +6,7 @@ use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\AddRoomType;
+use App\Form\FilterTrierRoomsType;
 use App\Form\SerchRoomASType;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\SAState;
@@ -17,7 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use App\Form\FilterTrier;
+use App\Service\DiagnocticService;
 class RoomController extends AbstractController
 {
     /**
@@ -71,50 +73,76 @@ class RoomController extends AbstractController
             'formAddRoom' => $formAddRoom->createView(),
         ]);
     }
-
     /**
-     * Route: /charge/salles
-     * Name: app_room_list
-     * Description: Displays a list of all rooms.
+     * Displays a list of rooms, filtered and/or sorted based on user's selection.
      */
     #[Route('/charge/salles', name: 'app_room_list')]
-    public function listRooms(RoomRepository $roomRepository, NormRepository $normRepository, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        // Fetch all rooms ordered by room number
+    public function listRooms(
+        RoomRepository $roomRepository,
+        DiagnocticService $diagnosticService,
+        NormRepository $normRepository,
+        Request $request
+    ): Response {
 
-        $form = $this->createForm( SerchRoomASType::class);
+        $form = $this->createForm(FilterTrierRoomsType::class);
         $form->handleRequest($request);
 
-        //getting the active filter
-        $choice = $form->get('filter')->getData();
+        // filter tri choice
+        $filterChoice = $form->get('filter')->getData();
+        $sortChoice   = $form->get('trier')->getData();
 
-        // changing the content of the list depending on the selected filter
-        if ($choice === 'RoomsWithAS') {
-            $rooms = $roomRepository->findAllWithIdSa();
-        }
-        else if ($choice === 'RoomsWithoutAS') {
-            $rooms = $roomRepository->findAllWithoutIdSa();
-        }
-        else{
-            $rooms = $roomRepository->findAllOrderedByRoomNumber();
-        }
+        // room filter
+        $rooms = match ($filterChoice) {
+            'withSA' => $roomRepository->findAllWithIdSa(),
+            'withoutSA' => $roomRepository->findAllWithoutIdSa(),
+            default => $roomRepository->findAllOrderedByRoomName(),
+        };
 
-        // Creates the diagnostic and gives a status to each room
-        $roomsWithDiagnostics = [];
+        // summer norm
+        $summerNorms = $normRepository->findOneBy([
+            'NormType'   => 'confort',
+            'NormSeason' => 'été'
+        ]);
+
+        // add diagnostic status to room
         foreach ($rooms as $room) {
-            $diagnosticStatus = $this->getDiagnosticStatus($room, $entityManager, $normRepository);
-            $roomsWithDiagnostics[] = [
-                'room' => $room,
-                'diagnosticStatus' => $diagnosticStatus
-            ];
+            $sa = $room->getSa();
+            $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa, $room, $summerNorms);
+            $room->setDiagnosticStatus($diagnosticColor);
         }
 
-        // Render the list of rooms
+        //  trie
+        if (in_array($sortChoice, ['Asso', 'DiaGood', 'DiaBad'])) {
+            $choice = match ($sortChoice) {
+                'Asso'    => 1,
+                'DiaGood' => 2,
+                'DiaBad'  => 3,
+                default   => 0, // Valeur par défaut
+            };
+
+            $rooms = $roomRepository->sortRoomsByState($rooms, $choice);
+        }
+
+        // Préparer les données pour le template
+        $roomsWithDiagnostics = array_map(function(Room $room) {
+            return [
+                'room'             => $room,
+                'diagnosticStatus' => $room->getDiagnosticStatus(),
+            ];
+        }, $rooms);
+
         return $this->render('room/index.html.twig', [
-            'form' => $form->createView(),
+            'form'  => $form->createView(),
             'rooms' => $roomsWithDiagnostics,
         ]);
     }
+
+
+
+
+
+
+
 
     /**
      * Route: /charge/salles/{roomName}

@@ -6,7 +6,6 @@ use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\FilterTrier;
 use App\Form\SerchRoomASType;
-use App\Form\TrierFormType;
 use App\Repository\Model\NormSeason;
 use App\Repository\NormRepository;
 use App\Service\DiagnocticService;
@@ -88,7 +87,7 @@ class SaListController extends AbstractController
                   ]);
 
                   foreach ($saList as $sa) {
-                      $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa, $summerNorms);
+                      $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa,$sa->getRoom(), $summerNorms);
                       $sa->setDiagnosticStatus($diagnosticColor);
                   }
 

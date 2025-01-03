@@ -2,15 +2,21 @@
 
 namespace App\Service;
 
+use App\Entity\Room;
 use App\Entity\Sa;
 use App\Entity\Norm;
 use App\Repository\Model\SAState;
 
 class DiagnocticService
 {
-    public function getDiagnosticStatus(Sa $sa, Norm $summerNorms): string
+    public function getDiagnosticStatus(?Sa $sa,?Room $room, Norm $summerNorms): string
     {
         //check status
+        if (!$sa || !$room) {
+            // Par exemple, on renvoie 'grey'
+            return 'grey';
+        }
+
         if (
             $sa->getState() === SAState::Waiting ||
             $sa->getState() === SAState::Available

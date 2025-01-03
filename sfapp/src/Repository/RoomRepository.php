@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Room;
+use App\Repository\Model\SAState;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -89,4 +90,54 @@ class RoomRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Récupère toutes les salles dont le SA associé est dans un état donné
+     */
+    public function findBySaState(SAState $state): array
+    {
+        return $this->createQueryBuilder('r')
+            ->leftJoin('r.sa', 's')          // Jointure sur la propriété "sa"
+            ->addSelect('s')
+            ->andWhere('s.state = :state')   // Filtrer selon l'état du SA
+            ->setParameter('state', $state->value)
+            ->orderBy('r.roomName', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function sortRoomsByState(array $rooms, int $choice): array
+    {
+        $orderDiaRedFirst = ['red', 'yellow', 'green', 'grey'];
+        $orderDiaGreenFirst = ['green', 'yellow', 'red', 'grey'];
+
+        usort($rooms, function($roomA, $roomB) use ($rooms, $choice, $orderDiaGreenFirst, $orderDiaRedFirst) {
+
+
+
+
+                // Diagnostic
+                $colorA = $roomA->getDiagnosticStatus() ?: 'grey';
+                $colorB = $roomB->getDiagnosticStatus() ?: 'grey';
+
+                if ($choice === 2) {
+                    $indexA = in_array($colorA, $orderDiaGreenFirst) ? array_search($colorA, $orderDiaGreenFirst) : PHP_INT_MAX;
+                    $indexB = in_array($colorB, $orderDiaGreenFirst) !== false ? array_search($colorB, $orderDiaGreenFirst) : PHP_INT_MAX;
+                    $cmp = $indexA <=> $indexB;
+                } elseif ($choice === 3) {
+                    $indexA = in_array($colorA, $orderDiaRedFirst) !== false ? array_search($colorA, $orderDiaRedFirst) : PHP_INT_MAX;
+                    $indexB = in_array($colorB, $orderDiaRedFirst) !== false ? array_search($colorB, $orderDiaRedFirst) : PHP_INT_MAX;
+                    $cmp = $indexA <=> $indexB;
+                } else {
+                    return strcasecmp($roomA->getRoomName(), $roomB->getRoomName());
+                }
+
+
+            return $cmp;
+        });
+
+        return $rooms;
+    }
+
+
 }
