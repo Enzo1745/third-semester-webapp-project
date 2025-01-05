@@ -58,7 +58,7 @@ class RoomManagementTest extends WebTestCase
     {
         $client = static::createClient();
 
-        // add room to test
+        // Ajouter une salle pour le test
         $room = new Room();
         $room->setNbRadiator(2);
         $room->setNbWindows(4);
@@ -69,29 +69,28 @@ class RoomManagementTest extends WebTestCase
         $entityManager->persist($room);
         $entityManager->flush();
 
-        // going to list room
+        // Vérifier que la salle est bien ajoutée
+        $roomRepository = static::getContainer()->get(RoomRepository::class);
+        $this->assertNotNull($roomRepository->find($room->getId()), 'La salle n\'a pas été ajoutée dans la base de données.');
+
+        // Charger la page des salles
         $crawler = $client->request('GET', '/charge/salles');
 
-        // finf form to delete room 202
-        $deleteForm = $crawler->filter('form[action="/charge/salles/supprimer/' . $room->getId() . '"]');
+        // Localiser le bouton "Supprimer" associé à la salle
+        $deleteButton = $crawler->filter('button[data-bs-target="#confirmDeleteModal' . $room->getId() . '"]');
+        $this->assertCount(1, $deleteButton, 'Le bouton de suppression pour la salle n\'a pas été trouvé.');
 
-        $this->assertCount(1, $deleteForm);
-
-        // valid form
-        $form = $deleteForm->form();
-        $client->submit($form);
-
-        // check redirection form
+        // Simuler l'envoi du formulaire de suppression
+        $client->request('POST', '/charge/salles/supprimer/' . $room->getId());
         $this->assertResponseRedirects('/charge/salles');
+
+        // Suivre la redirection
         $client->followRedirect();
 
-        // check room delete from database
-        $roomRepository = static::getContainer()->get(RoomRepository::class);
+        // Vérifier que la salle a été supprimée
         $deletedRoom = $roomRepository->find($room->getId());
-
-        $this->assertNull($deletedRoom);
+        $this->assertNull($deletedRoom, 'La salle n\'a pas été supprimée de la base de données.');
     }
-
     /*
      * Test if deleting a non-existent room is handled gracefully
      */

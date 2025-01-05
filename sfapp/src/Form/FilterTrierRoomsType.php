@@ -32,7 +32,6 @@ class FilterTrierRoomsType extends AbstractType
                     'Diagnostic bon d\'abord'  => 'DiaGood',
                     'Diagnostic pas bon d\'abord' => 'DiaBad',
                 ],
-                'data' => 'Tri par nom',
                 'placeholder' => 'trie par nom',
                 'required'    => false,
                 'mapped'      => false,
