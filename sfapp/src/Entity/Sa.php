@@ -13,11 +13,8 @@ class Sa
 {
     #[ORM\Id]
     #[ORM\Column(type: 'integer')]
-    #[ORM\GeneratedValue(strategy: 'NONE')] // Désactiver l'auto-incrémentation par défaut
+    #[ORM\GeneratedValue]
     private ?int $id = null;
-
-
-
 
     #[ORM\Column(enumType: SAState::class)]
     private ?SAState $state = null;
@@ -40,9 +37,25 @@ class Sa
     #[ORM\OneToMany(targetEntity: Down::class, mappedBy: 'sa')]
     private Collection $Down;
 
+    /**
+     * @var Collection<int, Measure>
+     */
+    #[ORM\OneToMany(targetEntity: Measure::class, mappedBy: 'sa')]
+    private Collection $measures;
+
+    #[ORM\Column(length: 255)]
+    private ?string $name = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $lum = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $pres = null;
+
     public function __construct()
     {
         $this->Down = new ArrayCollection();
+        $this->measures = new ArrayCollection();
     }
 
 
@@ -64,7 +77,7 @@ class Sa
 
     public function getStateName(): string
     {
-        return $this->state->value; // Retourne la valeur sous forme de chaîne
+        return $this->state->value;
     }
 
     public function setState(SAState $state): static
@@ -95,7 +108,7 @@ class Sa
         return $this->Temperature;
     }
 
-    public function setTemperature(int $Temperature): static
+    public function setTemperature(?int $Temperature): static
     {
         $this->Temperature = $Temperature;
 
@@ -107,7 +120,7 @@ class Sa
         return $this->Humidity;
     }
 
-    public function setHumidity(int $Humidity): static
+    public function setHumidity(?int $Humidity): static
     {
         $this->Humidity = $Humidity;
 
@@ -119,7 +132,7 @@ class Sa
         return $this->CO2;
     }
 
-    public function setCO2(int $CO2): static
+    public function setCO2(?int $CO2): static
     {
         $this->CO2 = $CO2;
 
@@ -140,7 +153,6 @@ class Sa
             $this->Down->add($down);
             $down->setSa($this);
         }
-
         return $this;
     }
 
@@ -152,6 +164,71 @@ class Sa
                 $down->setSa(null);
             }
         }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Measure>
+     */
+    public function getMeasures(): Collection
+    {
+        return $this->measures;
+    }
+
+    public function addMeasure(Measure $measure): static
+    {
+        if (!$this->measures->contains($measure)) {
+            $this->measures->add($measure);
+            $measure->setSa($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMeasure(Measure $measure): static
+    {
+        if ($this->measures->removeElement($measure)) {
+            // set the owning side to null (unless already changed)
+            if ($measure->getSa() === $this) {
+                $measure->setSa(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getLum(): ?int
+    {
+        return $this->lum;
+    }
+
+    public function setLum(?int $lum): static
+    {
+        $this->lum = $lum;
+
+        return $this;
+    }
+
+    public function isPres(): ?bool
+    {
+        return $this->pres;
+    }
+
+    public function setPres(?bool $pres): static
+    {
+        $this->pres = $pres;
 
         return $this;
     }

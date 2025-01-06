@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Measure;
+use App\Repository\Model\SAState;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -12,17 +14,20 @@ use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Log\LoggerInterface;
-use App\Entity\SA; // Assurez-vous d'importer votre entité
+use App\Entity\Sa;
+use Doctrine\ORM\EntityManagerInterface;
 
 class ApiController extends AbstractController
 {
     private $client;
     private $logger;
+    private $entityManager;
 
-    public function __construct(HttpClientInterface $client, LoggerInterface $logger)
+    public function __construct(HttpClientInterface $client, LoggerInterface $logger, EntityManagerInterface $entityManager)
     {
         $this->client = $client;
         $this->logger = $logger;
+        $this->entityManager = $entityManager;
     }
 
     #[Route('/api/obtenir-donnees', name: 'api_obtenir_donnees')]
@@ -33,19 +38,16 @@ class ApiController extends AbstractController
         $dbname = getenv('API_DBNAME');
         $username = getenv('API_USERNAME');
         $userpass = getenv('API_USERPASS');
-        // $encryptionKey = getenv('API_ENCRYPTION_KEY');
-
-        // Déchiffrer le mot de passe
-        // $userpass = $this->decryptValue($encryptedUserpass, $encryptionKey);
 
         try {
             $response = $this->client->request('GET', $url, [
                 'headers' => [
                     'accept' => 'application/json',
-                    'dbname' => $dbname,
-                    'username' => $username,
-                    'userpass' => $userpass,
+                    'dbname' => "sae34bdm1eq3",
+                    'username' => "m1eq3",
+                    'userpass' => "wewnUw-zetwo7-mognov",
                 ],
+
             ]);
 
             $statusCode = $response->getStatusCode();
@@ -66,46 +68,59 @@ class ApiController extends AbstractController
         } catch (RedirectionExceptionInterface $e) {
         } catch (ServerExceptionInterface $e) {
         }
-    }
 
-    private function decryptValue($encryptedValue, $key)
-    {
-        $method = 'aes-256-cbc';
-        $decoded = base64_decode($encryptedValue);
-
-        if ($decoded === false) {
-            throw new \Exception('Failed to decode the encrypted value.');
-        }
-
-        $parts = explode('::', $decoded, 2);
-
-        if (count($parts) !== 2) {
-            throw new \Exception('Invalid encrypted value format.');
-        }
-
-        list($encryptedData, $iv) = $parts;
-
-        $decrypted = openssl_decrypt($encryptedData, $method, $key, 0, $iv);
-
-        if ($decrypted === false) {
-            throw new \Exception('Failed to decrypt the value.');
-        }
-
-        return $decrypted;
+        return new Response('Données non récupérées.');
     }
 
     private function storeDataInDatabase(array $data)
     {
-        $entityManager = $this->getDoctrine()->getManager();
-
         foreach ($data as $item) {
-            $sa = new SA();
-            $sa->setTemperature($item['temperature']);
-            $sa->setHumidity($item['humidity']);
+            // Trouver ou créer l'entité 'Sa'
+            $sa = $this->entityManager->getRepository(SA::class)->findOneBy(['name' => $item['nomsa']]);
 
-            $entityManager->persist($sa);
+            if (!$sa) {
+                $sa = new SA();
+                $sa->setName($item['nomsa']);
+                $sa->setState(SAState::Installed);
+                $sa->setTemperature(null);  // Par défaut à null
+                $sa->setHumidity(null);
+                $sa->setLum(null);
+                $sa->setPres(null);
+                $sa->setCO2(null);
+                $this->entityManager->persist($sa);
+            }
+
+            // Log de l'élément reçu
+            $this->logger->info('Traitement de l\'élément : ' . json_encode($item));
+
+            // Vérification de la validité des données avant insertion
+            if (isset($item['valeur']) && $item['valeur'] !== null) {
+                $measure = null;
+
+                if ($item['nom'] === 'temp') {
+                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
+                } elseif ($item['nom'] === 'hum') {
+                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
+                } elseif ($item['nom'] === 'co2') {
+                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
+                } elseif ($item['nom'] === 'lum') {
+                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
+                } elseif ($item['nom'] === 'pres') {
+                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
+                }
+
+                if ($measure) {
+                    $this->logger->info('Création de la mesure avec la valeur : ' . $measure->getValue());
+
+                    $this->entityManager->persist($measure);
+                    $sa->addMeasure($measure);
+                    $this->entityManager->persist($sa);
+                }
+            } else {
+                $this->logger->warning('Valeur manquante ou nulle pour ' . $item['nom']);
+            }
         }
 
-        $entityManager->flush();
+        $this->entityManager->flush();
     }
 }
