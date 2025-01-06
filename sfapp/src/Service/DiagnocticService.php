@@ -13,7 +13,6 @@ class DiagnocticService
     {
         //check status
         if (!$sa || !$room) {
-            // Par exemple, on renvoie 'grey'
             return 'grey';
         }
 
@@ -36,8 +35,7 @@ class DiagnocticService
             && $sa->getCO2() <= $summerNorms->getCo2MaxNorm() && $sa->getCO2() != null;
 
         // number of conformity
-        $compliantCount = 0
-            + ($tempOk ? 1 : 0)
+        $compliantCount = ($tempOk ? 1 : 0)
             + ($humOk  ? 1 : 0)
             + ($co2Ok  ? 1 : 0);
 

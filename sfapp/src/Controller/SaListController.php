@@ -86,12 +86,12 @@ class SaListController extends AbstractController
                       'NormSeason' => 'été'
                   ]);
 
-                  foreach ($saList as $sa) {
+                  foreach ($saList as $sa) { //get and set diagnostic color
                       $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa,$sa->getRoom(), $summerNorms);
                       $sa->setDiagnosticStatus($diagnosticColor);
                   }
 
-                                                                                                     //tri by association (down,waiting,installed,available)
+        //tri by association (down,waiting,installed,available)
         if ($trierChoice === 'Asso') {
             $saList = $saRepo->sortByState($saList,1,$normRepository,$diagnosticService);
         }

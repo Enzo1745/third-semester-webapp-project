@@ -33,9 +33,7 @@ class FilterTrier extends AbstractType
                     'Association' => 'Asso',
                     'Diagnostic'  => 'Dia'
                 ],
-                'data' => 'Asso',
-                'required'    => false,
-                'placeholder' => 'Aucun tri',
+                'required'    => true,
                 'mapped'      => false,
                 'attr'        => [
                     'onchange' => 'this.form.submit()'

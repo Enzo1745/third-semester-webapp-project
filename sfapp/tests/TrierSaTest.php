@@ -47,14 +47,14 @@ class TrierSaTest extends WebTestCase
 
         // (grey > red > yellow > green)
         usort($rooms, function ($a, $b) {
-            $order = ['grey' => 4, 'red' => 3, 'yellow' => 2, 'green' => 1];
+            $order = [ 'red' => 3, 'yellow' => 2, 'green' => 1,'grey' => 4,];
             return $order[$b['diagnosticStatus']] <=> $order[$a['diagnosticStatus']];
         });
 
         $sortedNames = array_column($rooms, 'name');
 
         //check order
-        $expectedOrder = ['Room E', 'Room C', 'Room D', 'Room A', 'Room B'];
+        $expectedOrder = ['Room E', 'Room C', 'Room D', 'Room A', 'Room B',];
         $this->assertSame($expectedOrder, $sortedNames, 'The rooms are not sorted correctly for diagnostic "bad".');
     }
 
@@ -166,7 +166,7 @@ class TrierSaTest extends WebTestCase
             ],
         ];
 
-        // Ajout du diagnostic status
+        //  add diagnostic status
         foreach ($rooms as &$room) {
             $room['diagnosticStatus'] = $diagnosticService->getDiagnosticStatus($room['sa'], new Room(), $norm);
         }

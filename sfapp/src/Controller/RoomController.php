@@ -111,13 +111,13 @@ class RoomController extends AbstractController
             $room->setDiagnosticStatus($diagnosticColor);
         }
 
-        //  trie
+        //  tri
         if (in_array($sortChoice, ['Asso', 'DiaGood', 'DiaBad'])) {
             $choice = match ($sortChoice) {
                 'Asso'    => 1,
                 'DiaGood' => 2,
                 'DiaBad'  => 3,
-                default   => 0, // Valeur par défaut
+                default   => 0,
             };
 
             $rooms = $roomRepository->sortRoomsByState($rooms, $choice);
@@ -199,37 +199,37 @@ class RoomController extends AbstractController
         EntityManagerInterface $entityManager,
         DownRepository $downRepo
     ): Response {
-        // 1. Récupération de la salle par son nom
+        // get room name
         $room = $roomRepository->findByRoomName($roomName);
 
-        // 2. Initialisation des variables par défaut
+
         $sa = null;
         $down = null;
         $norms = null;
 
-        // 3. Récupération des normes de type 'confort' pour la saison 'été'
+
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
             'NormSeason' => 'été'
         ]);
 
-        // 4. Vérification de l'existence d'une SA associée à la salle
+        // 4. check if a sa is associate with room
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
 
-            // Si l'état de la SA est 'En panne', récupérer les détails de la panne
+            // if sa down get details
             if ($sa && $sa->getState() === SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
             }
         }
 
-        // 5. Passage des données au template
+
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
             'sa' => $sa,
             'down' => $down,
-            'norms' => $norms, // Normes récupérées
+            'norms' => $norms,
             'origin' => 'technicien',
         ]);
     }
