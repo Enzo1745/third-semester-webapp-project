@@ -47,7 +47,10 @@ class HomeController extends AbstractController
             }
         }
 
-        $room = $roomRepository->findByRoomName($roomName);
+        $room = null;
+        if (!empty($roomName)) {
+            $room = $roomRepository->findByRoomNameWithSA($roomName);
+        }
         $down = null;
 
         $normRepository = $entityManager->getRepository(Norm::class);

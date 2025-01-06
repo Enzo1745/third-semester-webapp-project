@@ -7,6 +7,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Doctrine\ORM\EntityRepository;
 
 class SearchRoomsType extends AbstractType
 {
@@ -19,6 +20,14 @@ class SearchRoomsType extends AbstractType
                 'placeholder' => 'Sélectionner une salle',
                 'label' => 'Choisir une salle :',
                 'required' => true,
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('r')
+                        ->innerJoin('r.sa', 's')
+                        ->andWhere('s.Temperature IS NOT NULL')
+                        ->andWhere('s.Humidity IS NOT NULL')
+                        ->andWhere('s.state = :state')
+                        ->setParameter('state', \App\Repository\Model\SAState::Installed);
+                },
                 'attr' => [
                     'onchange' => 'this.form.submit()',
                 ],

@@ -27,7 +27,7 @@
             </div>
             <div class="card-body text-center">
                 <h2>TIPS : {{ tips }}</h2>
-                <p class="lead text-muted">Cette page vous permet d'acceder aux données collectées dans les salles.</p>
+                <p class="lead text-muted">Cette page vous permet d'accéder aux données collectées dans les salles.</p>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
                 <div class="card-body mt-2 ms-0 p-0">
                     {{ form_start(form) }}
                     <div class="d-flex justify-content-start align-items-start">
-                        {{ form_row(form.salle) }}
+                        {{ form_row(form.salle, {'attr': {'class': 'm-1'}}) }}
                     </div>
                     {{ form_end(form) }}
                 </div>

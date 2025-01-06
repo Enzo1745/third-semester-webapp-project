@@ -33,6 +33,21 @@ class RoomRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
+    public function findByRoomNameWithSA(string $roomName): ?Room
+    {
+        return $this->createQueryBuilder('r')
+            ->innerJoin('r.sa', 's')
+            ->addSelect('s')
+            ->andWhere('r.roomName = :roomName')
+            ->andWhere('s.Temperature IS NOT NULL')
+            ->andWhere('s.CO2 IS NOT NULL')
+            ->andWhere('s.Humidity IS NOT NULL')
+            ->setParameter('roomName', $roomName)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
     /**
      * @brief function to return the number of room without SA
      * @return int|null
