@@ -98,16 +98,20 @@ class RoomController extends AbstractController
             default => $roomRepository->findAllOrderedByRoomName(),
         };
 
-        // summer norm
         $summerNorms = $normRepository->findOneBy([
             'NormType'   => 'confort',
             'NormSeason' => 'été'
         ]);
 
+        $winterNorms = $normRepository->findOneBy([
+            'NormType'   => 'confort',
+            'NormSeason' => 'hiver'
+        ]);
+
         // add diagnostic status to room
         foreach ($rooms as $room) {
             $sa = $room->getSa();
-            $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa, $room, $summerNorms);
+            $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa, $room, $summerNorms, $winterNorms);
             $room->setDiagnosticStatus($diagnosticColor);
         }
 
