@@ -17,6 +17,24 @@ class DownRepository extends ServiceEntityRepository
         parent::__construct($registry, Down::class);
     }
 
+    public function countPannesBySa(int $saId): int
+    {
+        return $this->createQueryBuilder('d')
+            ->select('COUNT(d.id)')
+            ->where('d.sa = :sa')
+            ->setParameter('sa', $saId)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countPannes(): int
+    {
+        return $this->createQueryBuilder('d')
+            ->select('COUNT(d.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Down[] Returns an array of Down objects
     //     */

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Down;
 use App\Entity\Sa;
+use App\Form\DownHistoryType;
 use App\Form\SaDownType;
 use App\Form\SaManagementType;
 use App\Repository\DownRepository;
@@ -212,7 +213,7 @@ class SaManagementController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/technicien/sa/panne/{id}', name: 'app_functionnal')]
+   /* #[Route('/technicien/sa/panne/{id}', name: 'app_functionnal')]
     public function setFunctionnal(Sa $sa, EntityManagerInterface $entityManager, Request $request): Response
     {
         // Set the selected sa' state to functional
@@ -225,5 +226,59 @@ class SaManagementController extends AbstractController
         $this->addFlash('success', 'Le SA a été réhabilité avec succès.');
 
         return $this->redirectToRoute('app_down');
+    }*/
+
+    #[Route('/technicien/sa/panne/historique', name: 'app_history')]
+    public function showhistory(DownRepository $downRepository, Request $request): Response
+    {
+        // Création du formulaire
+        $form = $this->createForm(DownHistoryType::class);
+        $form->handleRequest($request);
+
+        // Récupérer le SA sélectionné via le formulaire
+        $sa = $form->get('filtrer')->getData();
+
+        // Initialiser la requête de base pour récupérer les pannes
+        $queryBuilder = $downRepository->createQueryBuilder('d')
+            ->leftJoin('d.sa', 'sa')
+            ->orderBy('d.date', 'DESC'); // Tri par date décroissante par défaut
+
+        // Appliquer les filtres si les valeurs sont renseignées
+        if ($sa) {
+            $queryBuilder->andWhere('d.sa = :sa')
+                ->setParameter('sa', $sa);
+        }
+
+        $dateBeg = $form->get('dateBeg')->getData();
+        $dateEnd = $form->get('dateEnd')->getData();
+
+        if ($dateBeg) {
+            $queryBuilder->andWhere('d.date >= :dateBeg')
+                ->setParameter('dateBeg', $dateBeg->format('Y-m-d'));
+        }
+
+        if ($dateEnd) {
+            // Pour inclure toute la journée, mettez l'heure à 23:59:59
+            $dateEnd->setTime(23, 59, 59);
+            $queryBuilder->andWhere('d.date <= :dateEnd')
+                ->setParameter('dateEnd', $dateEnd->format('Y-m-d H:i:s'));
+        }
+
+        // Exécuter la requête pour obtenir les résultats filtrés
+        $down = $queryBuilder->getQuery()->getResult();
+
+        // Calculer le nombre de pannes pour le SA sélectionné (si un SA est sélectionné)
+        $nbPannes = 0;
+        if ($sa) {
+            $nbPannes = count($downRepository->findBy(['sa' => $sa]));
+        }
+
+        // Retourner les résultats à la vue
+        return $this->render('sa_down/sa_history.html.twig', [
+            'down' => $down,
+            'form' => $form->createView(),
+            'nbPannes' => $nbPannes, // Passer le nombre de pannes à la vue
+            'sa' => $sa // Passer l'objet SA à la vue pour l'affichage
+        ]);
     }
 }

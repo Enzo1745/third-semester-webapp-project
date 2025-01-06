@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SA dysfonctionnels{% endblock %}
+
+{% block body %}
+    {# Main header section with gradient background #}
+    <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="h2 mb-0 fw-bold">
+                <i class="fas fa-exclamation-triangle me-2"></i> SA dysfonctionnels
+            </h1>
+            <div>
+                <a href="/charge/gestion_sa" class="btn btn-outline-light">
+                    <i class="fas fa-book me-1"></i> Historique
+                </a>
+                <a href="{{ path('app_technician_sa') }}" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à la liste des SA
+                </a>
+            </div>
+        </div>
+    </header>
+
+    {{ block('flash_messages') }}
+
+    <div class="container mb-4 text-center w-100" style="max-width: 1500px;">
+        <div class="card shadow-sm">
+            <div class="card-body">
+
+                {{ form_start(form) }}
+                <div class="column">
+                    <div class="col-sm-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-search text-primary me-2"></i>
+                            <h5 class="card-title mb-0">Filtres</h5>
+                        </div>
+                        <div class="d-flex flex-row align-items-center ">
+                            {{ form_row(form.filtrer, { 'label': false }) }}
+
+                            {# Affichage du message du nombre de pannes si un SA est sélectionné #}
+                            {% if sa %}
+                                <p5 class="mt-2">
+                                    <strong>Le SA numéro {{ sa.id }} a eu {{ nbPannes }} panne{{ nbPannes > 1 ? 's' : '' }}.</strong>
+                                </p5>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    <div class="col-sm-6 mb-3 d-flex justify-content-start flex-column">
+                        <div class="d-inline-flex align-items-center mb-2">
+                            <i class="fas fa-sort text-primary me-2"></i>
+                            <h5 class="card-title mb-0">Intervalle</h5>
+                        </div>
+                        <div class="col-sm-6 mb-3 d-flex justify-content-start flex-wrap">
+                            <div class="d-inline-flex align-items-center mb-2">
+                                <div class="d-flex flex-column">
+                                    <p>Debut : </p>
+                                    {{ form_row(form.dateBeg, { 'label': false }) }}
+                                </div>
+                                <div class="d-flex flex-column">
+                                    <p>Fin :</p>
+                                    {{ form_row(form.dateEnd, { 'label': false }) }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container mb-4 text-center w-100" style="max-width: 1500px;">
+        <div class="card shadow-sm">
+            {# Table header #}
+            <div class="card-header bg-primary text-white py-3">
+                <div class="row text-center">
+                    <div class="col-2 fw-bold d-flex align-items-center justify-content-center">
+                        <i class="fas fa-calendar-alt me-2"></i> Date
+                    </div>
+                    <div class="col-2 fw-bold d-flex align-items-center justify-content-center">
+                        <i class="fas fa-door-open me-2"></i> SA
+                    </div>
+                    <div class="col-1 fw-bold d-flex align-items-center justify-content-center">
+                        <i class="fas fa-chart-bar me-2"></i> Nombre de pannes
+                    </div>
+                    <div class="col-2 fw-bold d-flex align-items-center justify-content-center">
+                        <i class="fas fa-info-circle me-2"></i> Raison
+                    </div>
+                    <div class="col-1 fw-bold d-flex align-items-center justify-content-center">
+                        <i class="fas fa-thermometer-half me-2"></i> Temp.
+                    </div>
+                    <div class="col-1 fw-bold d-flex align-items-center justify-content-center">
+                        <i class="fas fa-tint me-2"></i> Humidité
+                    </div>
+                    <div class="col-1 fw-bold d-flex align-items-center justify-content-center">
+                        <i class="fas fa-smog me-2"></i> CO2
+                    </div>
+                    <div class="col-1 fw-bold d-flex align-items-center justify-content-center">
+                        <i class="fas fa-microchip me-2"></i> Microcontrôleur
+                    </div>
+                </div>
+            </div>
+
+            {# Table body #}
+            <div class="card-body p-0">
+                {% if down is empty %}
+                    <div class="text-center py-4 text-muted">
+                        <i class="fas fa-inbox fa-2x mb-3"></i>
+                        <p>Aucune panne disponible.</p>
+                    </div>
+                {% else %}
+                    {% for panne in down %}
+                        <div class="row p-3 border-bottom align-items-center hover-effect">
+                            <div class="col-2 text-center">
+                                {{ panne.date|date('Y-m-d H:i') }} {# Formatage de la date #}
+                            </div>
+                            <div class="col-2 text-center">
+                                {{ panne.sa.id }} {# Affichage de l'ID du SA, tu peux le remplacer par un autre attribut de Sa si nécessaire #}
+                            </div>
+                            <div class="col-1 text-center">
+                                {% set panneCount = panne.sa.down|length %}
+                                {{ panneCount }} {# Affiche le nombre de pannes pour ce SA #}
+                            </div>
+                            <div class="col-2 text-center">
+                                {{ panne.reason }} {# Raison de la panne #}
+                            </div>
+                            <div class="col-1 text-center">
+                                <i class="fas {{ panne.temperature ? 'fa-check-circle text-success' : 'fa-times-circle text-danger' }}"></i> {# Affichage de l'icône en fonction du statut de la température #}
+                            </div>
+                            <div class="col-1 text-center">
+                                <i class="fas {{ panne.humidity ? 'fa-check-circle text-success' : 'fa-times-circle text-danger' }}"></i> {# Idem pour l'humidité #}
+                            </div>
+                            <div class="col-1 text-center">
+                                <i class="fas {{ panne.CO2 ? 'fa-check-circle text-success' : 'fa-times-circle text-danger' }}"></i> {# Idem pour le CO2 #}
+                            </div>
+                            <div class="col-1 text-center">
+                                <i class="fas {{ panne.microcontroller ? 'fa-check-circle text-success' : 'fa-times-circle text-danger' }}"></i> {# Idem pour le microcontrôleur #}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
