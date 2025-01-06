@@ -20,11 +20,11 @@ class AppFixtures extends Fixture
 	{
 
 		$tips1 = new Tips();
-		$tips1->setContent("Ouvre la porte quand il fait chaud");
+		$tips1->setContent("Ouvrir la porte quand il fait chaud");
 		$manager->persist($tips1);
 
 		$tips2 = new Tips();
-		$tips2->setContent("Utiliser la lumiere naturelle plutôt que la lumiere artificielle");
+		$tips2->setContent("Utiliser la lumière naturelle plutôt que la lumiere artificielle");
 		$manager->persist($tips2);
 
 		$tips3 = new Tips();
@@ -32,11 +32,11 @@ class AppFixtures extends Fixture
 		$manager->persist($tips3);
 
 		$tips4 = new Tips();
-		$tips4->setContent("N'ouvre pas la fenêtre si il y a le chauffage");
+		$tips4->setContent("Ne pas ouvrir pas la fenêtre si le chauffage est en marche");
 		$manager->persist($tips4);
 
 		$tips5 = new Tips();
-		$tips5->setContent("Éteignez vos objets electroniques lorsque vous ne vous en servez plus");
+		$tips5->setContent("Éteindre vos objets éléctroniques lorsque vous ne vous en servez plus");
 		$manager->persist($tips5);
 
 	}
