@@ -28,6 +28,19 @@ class Room
     #[ORM\Column]
     private ?int $NbWindows = null;
 
+    private ?string $diagnosticStatus = null;
+
+    public function getDiagnosticStatus(): ?string
+    {
+        return $this->diagnosticStatus;
+    }
+
+    public function setDiagnosticStatus(?string $diagnosticStatus): self
+    {
+        $this->diagnosticStatus = $diagnosticStatus;
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

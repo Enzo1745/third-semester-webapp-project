@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class SearchSaASType extends AbstractType
+class FilterAndSortTechnician extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -27,6 +27,18 @@ class SearchSaASType extends AbstractType
                     'onchange' => 'this.form.submit()', // Automatically submit the form on change
                 ],
                 'label' => 'Filtre : ',
+            ])
+            ->add('trier', ChoiceType::class, [
+                'choices' => [
+                    'SA' => 'SA',
+                    'Association' => 'Asso',
+                    'Diagnostic'  => 'Dia'
+                ],
+                'required'    => true,
+                'mapped'      => false,
+                'attr'        => [
+                    'onchange' => 'this.form.submit()'
+                ],
             ]);
     }
 
