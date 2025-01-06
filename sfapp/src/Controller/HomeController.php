@@ -9,13 +9,13 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route('/{roomName}', name: 'app_home_room_info')]
-    public function index(string $roomName, RoomRepository $roomRepository): Response
+    #[Route('/', name: 'app_home_room_info')]
+    public function index(RoomRepository $roomRepository): Response
     {
-        $room = $roomRepository->findByRoomName($roomName);
+//        $room = $roomRepository->findByRoomName($roomName);
 
         return $this->render('home/room.html.twig', [
-            'room' => $room
+//            'room' => $room
         ]);
     }
 }
