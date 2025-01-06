@@ -30,6 +30,7 @@ class FilterAndSortTechnician extends AbstractType
             ])
             ->add('trier', ChoiceType::class, [
                 'choices' => [
+                    'SA' => 'SA',
                     'Association' => 'Asso',
                     'Diagnostic'  => 'Dia'
                 ],
