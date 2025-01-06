@@ -74,53 +74,81 @@ class ApiController extends AbstractController
 
     private function storeDataInDatabase(array $data)
     {
+        // Group data by 'nomsa' to ensure we process all measures for the same SA together
+        $groupedData = [];
         foreach ($data as $item) {
-            // Trouver ou créer l'entité 'Sa'
-            $sa = $this->entityManager->getRepository(SA::class)->findOneBy(['name' => $item['nomsa']]);
+            $saName = $item['nomsa'];
+            if (!isset($groupedData[$saName])) {
+                $groupedData[$saName] = [];
+            }
+            $groupedData[$saName][] = $item;
+        }
+
+        foreach ($groupedData as $saName => $items) {
+            // Sort items by capture date in descending order
+            usort($items, function($a, $b) {
+                return strtotime($b['dateCapture']) - strtotime($a['dateCapture']);
+            });
+
+            $sa = $this->entityManager->getRepository(Sa::class)->findOneBy(['name' => $saName]);
 
             if (!$sa) {
-                $sa = new SA();
-                $sa->setName($item['nomsa']);
+                $sa = new Sa();
+                $sa->setName($saName);
                 $sa->setState(SAState::Installed);
-                $sa->setTemperature(null);  // Par défaut à null
-                $sa->setHumidity(null);
-                $sa->setLum(null);
-                $sa->setPres(null);
-                $sa->setCO2(null);
                 $this->entityManager->persist($sa);
             }
 
-            // Log de l'élément reçu
-            $this->logger->info('Traitement de l\'élément : ' . json_encode($item));
+            // Track the latest measure for each type
+            $latestMeasures = [];
 
-            // Vérification de la validité des données avant insertion
-            if (isset($item['valeur']) && $item['valeur'] !== null) {
-                $measure = null;
-
-                if ($item['nom'] === 'temp') {
-                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
-                } elseif ($item['nom'] === 'hum') {
-                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
-                } elseif ($item['nom'] === 'co2') {
-                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
-                } elseif ($item['nom'] === 'lum') {
-                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
-                } elseif ($item['nom'] === 'pres') {
-                    $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $sa);
-                }
-
+            foreach ($items as $item) {
+                $measure = $this->updateOrCreateMeasure($item, $sa);
                 if ($measure) {
-                    $this->logger->info('Création de la mesure avec la valeur : ' . $measure->getValue());
-
+                    $this->logger->info('Création ou mise à jour de la mesure avec la valeur : ' . $measure->getValue());
                     $this->entityManager->persist($measure);
                     $sa->addMeasure($measure);
-                    $this->entityManager->persist($sa);
+
+                    // Update the latest measure for this type
+                    if (!isset($latestMeasures[$item['nom']]) || strtotime($item['dateCapture']) > strtotime($latestMeasures[$item['nom']]['dateCapture'])) {
+                        $latestMeasures[$item['nom']] = $item;
+                    }
                 }
-            } else {
-                $this->logger->warning('Valeur manquante ou nulle pour ' . $item['nom']);
             }
+
+            // Update the SA with the latest measure values
+            foreach ($latestMeasures as $item) {
+                if ($item['nom'] === 'temp') {
+                    $sa->setTemperature($item['valeur']);
+                } elseif ($item['nom'] === 'hum') {
+                    $sa->setHumidity($item['valeur']);
+                } elseif ($item['nom'] === 'co2') {
+                    $sa->setCO2($item['valeur']);
+                } elseif ($item['nom'] === 'lum') {
+                    $sa->setLum($item['valeur']);
+                } elseif ($item['nom'] === 'pres') {
+                    $sa->setPres($item['valeur']);
+                }
+            }
+
+            $this->entityManager->persist($sa);
         }
 
         $this->entityManager->flush();
+    }
+
+    private function updateOrCreateMeasure(array $item, Sa $sa)
+    {
+        // Check if a measure with the same type and capture date already exists
+        $existingMeasure = $sa->getMeasures()->filter(function(Measure $measure) use ($item) {
+            return $measure->getType() === $item['nom'] && $measure->getCaptureDate()->format('Y-m-d H:i:s') === date('Y-m-d H:i:s', strtotime($item['dateCapture']));
+        })->first();
+
+        if ($existingMeasure) {
+            return $existingMeasure;
+        }
+
+        $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $item['description'], $sa);
+        return $measure;
     }
 }

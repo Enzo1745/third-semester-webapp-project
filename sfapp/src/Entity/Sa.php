@@ -9,6 +9,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SaRepository::class)]
+/**
+ * @ORM\Table(name="sa", uniqueConstraints={@ORM\UniqueConstraint(name="sa_name_unique", columns={"name"})})
+*/
 class Sa
 {
     #[ORM\Id]

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\MeasureRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Sa;
 
 #[ORM\Entity(repositoryClass: MeasureRepository::class)]
 class Measure
@@ -27,12 +28,15 @@ class Measure
     #[ORM\JoinColumn(nullable: false)]
     private ?Sa $sa = null;
 
-    public function __construct(int $id, float $valeur, string $type, \DateTime $dateCapture, SA $sa)
+    #[ORM\Column(length: 255)]
+    private ?string $description = null;
+
+    public function __construct(int $id, float $valeur, string $type, \DateTime $dateCapture, string $description, Sa $sa)
     {
-        $this->id = $id;
-        $this->valeur = $valeur;
+        $this->value = $valeur;
         $this->type = $type;
-        $this->dateCapture = $dateCapture;
+        $this->captureDate = $dateCapture;
+        $this->description = $description;
         $this->sa = $sa;
     }
 
@@ -85,6 +89,18 @@ class Measure
     public function setSa(?Sa $sa): static
     {
         $this->sa = $sa;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }
