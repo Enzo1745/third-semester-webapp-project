@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FilterTrierRoomsType extends AbstractType
+class FilterAndSort extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -29,10 +29,9 @@ class FilterTrierRoomsType extends AbstractType
             ])
             ->add('trier', ChoiceType::class, [
                 'choices' => [
-                    'Diagnostic bon d\'abord'  => 'DiaGood',
-                    'Diagnostic pas bon d\'abord' => 'DiaBad',
+                    'Diagnostic' => 'Dia',
                 ],
-                'placeholder' => 'trie par nom',
+                'placeholder' => 'Nom',
                 'required'    => false,
                 'mapped'      => false,
                 'attr'        => [

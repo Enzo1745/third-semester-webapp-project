@@ -120,11 +120,7 @@ class RoomRepository extends ServiceEntityRepository
                 $colorA = $roomA->getDiagnosticStatus() ?: 'grey';
                 $colorB = $roomB->getDiagnosticStatus() ?: 'grey';
 
-                if ($choice === 2) {
-                    $indexA = in_array($colorA, $orderDiaGreenFirst) ? array_search($colorA, $orderDiaGreenFirst) : PHP_INT_MAX;
-                    $indexB = in_array($colorB, $orderDiaGreenFirst) !== false ? array_search($colorB, $orderDiaGreenFirst) : PHP_INT_MAX;
-                    $cmp = $indexA <=> $indexB;
-                } elseif ($choice === 3) {
+                if ($choice === 1) {
                     $indexA = in_array($colorA, $orderDiaRedFirst) !== false ? array_search($colorA, $orderDiaRedFirst) : PHP_INT_MAX;
                     $indexB = in_array($colorB, $orderDiaRedFirst) !== false ? array_search($colorB, $orderDiaRedFirst) : PHP_INT_MAX;
                     $cmp = $indexA <=> $indexB;

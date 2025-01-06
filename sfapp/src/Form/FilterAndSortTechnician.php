@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FilterTrier extends AbstractType
+class FilterAndSortTechnician extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -39,8 +39,6 @@ class FilterTrier extends AbstractType
                     'onchange' => 'this.form.submit()'
                 ],
             ]);
-
-
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -6,7 +6,7 @@ use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\AddRoomType;
-use App\Form\FilterTrierRoomsType;
+use App\Form\FilterAndSort;
 use App\Form\SerchRoomASType;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\SAState;
@@ -18,7 +18,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Form\FilterTrier;
+use App\Form\FilterAndSortTechnician;
 use App\Service\DiagnocticService;
 class RoomController extends AbstractController
 {
@@ -84,7 +84,7 @@ class RoomController extends AbstractController
         Request $request
     ): Response {
 
-        $form = $this->createForm(FilterTrierRoomsType::class);
+        $form = $this->createForm(FilterAndSort::class);
         $form->handleRequest($request);
 
         // filter tri choice
@@ -111,19 +111,17 @@ class RoomController extends AbstractController
             $room->setDiagnosticStatus($diagnosticColor);
         }
 
-        //  tri
-        if (in_array($sortChoice, ['Asso', 'DiaGood', 'DiaBad'])) {
+        // sort
+        if (in_array($sortChoice, ['Dia'])) {
             $choice = match ($sortChoice) {
-                'Asso'    => 1,
-                'DiaGood' => 2,
-                'DiaBad'  => 3,
-                default   => 0,
+                'Dia' => 1,
+                default => 0,
             };
 
             $rooms = $roomRepository->sortRoomsByState($rooms, $choice);
         }
 
-        // Préparer les données pour le template
+        // Prepare data for the template
         $roomsWithDiagnostics = array_map(function(Room $room) {
             return [
                 'room'             => $room,

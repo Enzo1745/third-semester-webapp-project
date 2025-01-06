@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Room;
 use App\Entity\Sa;
-use App\Form\FilterTrier;
+use App\Form\FilterAndSortTechnician;
 use App\Form\SerchRoomASType;
 use App\Repository\Model\NormSeason;
 use App\Repository\NormRepository;
@@ -59,7 +59,7 @@ class SaListController extends AbstractController
 
 
         // Create the search form and handle the request
-        $form = $this->createForm(FilterTrier::class);
+        $form = $this->createForm(FilterAndSortTechnician::class);
         $form->handleRequest($request);
 
 
@@ -86,16 +86,16 @@ class SaListController extends AbstractController
                       'NormSeason' => 'été'
                   ]);
 
-                  foreach ($saList as $sa) { //get and set diagnostic color
+                  foreach ($saList as $sa) { // get and set diagnostic color
                       $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa,$sa->getRoom(), $summerNorms);
                       $sa->setDiagnosticStatus($diagnosticColor);
                   }
 
-        //tri by association (down,waiting,installed,available)
+        // sort by association (down,waiting,installed,available)
         if ($trierChoice === 'Asso') {
             $saList = $saRepo->sortByState($saList,1,$normRepository,$diagnosticService);
         }
-        //tri by diagnostic (red,yellow,green,grey)
+        // sort by diagnostic (red,yellow,green,grey)
         elseif ($trierChoice === 'Dia') {
             $saList = $saRepo->sortByState($saList,2,$normRepository,$diagnosticService);
         }
