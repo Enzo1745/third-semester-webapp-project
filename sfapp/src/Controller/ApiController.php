@@ -202,7 +202,6 @@ class ApiController extends AbstractController
     #[Route('/api/donnees_actuelles', name: 'api_refresh_data')]
     public function refreshData(SaRepository $saRepository): Response
     {
-        // Récupérer tous les SA avec l'état "Installed"
         $installedSA = $saRepository->findBy(['state' => SAState::Installed]);
 
         if (empty($installedSA)) {
@@ -215,7 +214,6 @@ class ApiController extends AbstractController
             $name = $sa->getName();
 
             try {
-                // Appeler la route pour récupérer les dernières données pour ce SA
                 $url = $this->generateUrl('api_get_last_measures', ['name' => $name], UrlGeneratorInterface::ABSOLUTE_URL);
 
                 $response = $this->client->request('GET', $url);
