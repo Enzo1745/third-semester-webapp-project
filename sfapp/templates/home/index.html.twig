@@ -92,7 +92,7 @@
                                         <i class="fas fa-thermometer-half fa-2x text-primary mb-2"></i>
                                         <h5 class="card-title">Température</h5>
                                         <p class="card-text value temp
-                                            {% if sa.temperature >= norms.temperatureMinNorm and sa.temperature <= norms.temperatureMaxNorm %}
+                                            {% if norms is not null and sa.temperature >= norms.temperatureMinNorm and sa.temperature <= norms.temperatureMaxNorm %}
                                                 good-text
                                             {% else %}
                                                 danger-text
@@ -108,7 +108,7 @@
                                         <i class="fas fa-tint fa-2x text-primary mb-2"></i>
                                         <h5 class="card-title">Humidité</h5>
                                         <p class="card-text value humidity
-                                            {% if sa.humidity >= norms.humidityMinNorm and sa.humidity <= norms.humidityMaxNorm %}
+                                            {% if norms is not null and sa.humidity >= norms.humidityMinNorm and sa.humidity <= norms.humidityMaxNorm %}
                                                 good-text
                                             {% else %}
                                                 danger-text
@@ -124,7 +124,7 @@
                                         <i class="fas fa-cloud fa-2x text-primary mb-2"></i>
                                         <h5 class="card-title">CO<sub>2</sub></h5>
                                         <p class="card-text value co2
-                                            {% if sa.CO2 >= norms.co2MinNorm and sa.CO2 <= norms.co2MaxNorm %}
+                                            {% if norms is not null and sa.CO2 >= norms.co2MinNorm and sa.CO2 <= norms.co2MaxNorm %}
                                                 good-text
                                             {% else %}
                                                 danger-text

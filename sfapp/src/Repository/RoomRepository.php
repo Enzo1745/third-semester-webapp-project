@@ -43,6 +43,7 @@ class RoomRepository extends ServiceEntityRepository
             ->andWhere('s.CO2 IS NOT NULL')
             ->andWhere('s.Humidity IS NOT NULL')
             ->setParameter('roomName', $roomName)
+            ->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }
