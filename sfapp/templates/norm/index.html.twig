@@ -79,6 +79,53 @@
                     </div>
                 </div>
             </div>
+
+                {% if origin == 'technical' %}
+                    <div id="comfortSummer" class="mt-4" style="display: none;">
+                        <h3 class="text-success"><i class="fas fa-sun me-2"></i>Normes de Confort (Été)</h3>
+                        <div class="row text-center mb-4">
+                            <div class="col-4">
+                                <strong>Humidité</strong>
+                                <p class="red-text">Max : {{ comfortSummerNorm.humidityMaxNorm }}%</p>
+                                <p class="blue-text">Min : {{ comfortSummerNorm.humidityMinNorm }}%</p>
+                            </div>
+                            <div class="col-4">
+                                <strong>Température</strong>
+                                <p class="red-text">Max : {{ comfortSummerNorm.temperatureMaxNorm }}°C</p>
+                                <p class="blue-text">Min : {{ comfortSummerNorm.temperatureMinNorm }}°C</p>
+                            </div>
+                            <div class="col-4">
+                                <strong>CO2</strong>
+                                <p class="red-text">Max : {{ comfortSummerNorm.co2MaxNorm }} ppm</p>
+                                <p class="blue-text">Min : {{ comfortSummerNorm.co2MinNorm }} ppm</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="comfortWinter" class="mt-4" style="display: none;">
+                        <h3 class="text-success"><i class="fas fa-snowflake me-2"></i>Normes de Confort (Hiver)</h3>
+                        <div class="row text-center mb-4">
+                            <div class="col-4">
+                                <strong>Humidité</strong>
+                                <p class="red-text">Max : {{ comfortWinterNorm.humidityMaxNorm }}%</p>
+                                <p class="blue-text">Min : {{ comfortWinterNorm.humidityMinNorm }}%</p>
+                            </div>
+                            <div class="col-4">
+                                <strong>Température</strong>
+                                <p class="red-text">Max : {{ comfortWinterNorm.temperatureMaxNorm }}°C</p>
+                                <p class="blue-text">Min : {{ comfortWinterNorm.temperatureMinNorm }}°C</p>
+                            </div>
+                            <div class="col-4">
+                                <strong>CO2</strong>
+                                <p class="red-text">Max : {{ comfortWinterNorm.co2MaxNorm }} ppm</p>
+                                <p class="blue-text">Min : {{ comfortWinterNorm.co2MinNorm }} ppm</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+
+
         </div>
     </div>
 

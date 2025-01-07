@@ -42,6 +42,9 @@ class NormController extends AbstractController
         $summerNorm = $normRepository->findBySeason(NormSeason::Summer, NormType::Technical);
         $winterNorm = $normRepository->findBySeason(NormSeason::Winter, NormType::Technical);
 
+        $comfortSummerNorm = $normRepository->findBySeason(NormSeason::Summer, NormType::Comfort);
+        $comfortWinterNorm = $normRepository->findBySeason(NormSeason::Winter, NormType::Comfort);
+
         $this->updateNorms($request, $summerNorm, $winterNorm, $normRepository, $entityManager);
 
 
@@ -53,6 +56,8 @@ class NormController extends AbstractController
             'winterNorm' => $winterNorm,
             'activeSeason' => $activeSeason,
             'origin' => 'technical',
+            'comfortSummerNorm' => $comfortSummerNorm,
+            'comfortWinterNorm' => $comfortWinterNorm,
         ]);
     }
 
@@ -63,80 +68,87 @@ class NormController extends AbstractController
             $origin = $request->request->get('origin', 'comfort');
             $errors = [];
 
-            if ($origin === 'comfort') {
-                $technicalSummer = $normRepository->findTechnicalLimitsBySeason(NormSeason::Summer, NormType::Technical);
-                $technicalWinter = $normRepository->findTechnicalLimitsBySeason(NormSeason::Winter, NormType::Technical);
+            // get technical limit if confort norm
+            $technicalSummer = $origin === 'comfort' ? $normRepository->findTechnicalLimitsBySeason(NormSeason::Summer, NormType::Technical) : null;
+            $technicalWinter = $origin === 'comfort' ? $normRepository->findTechnicalLimitsBySeason(NormSeason::Winter, NormType::Technical) : null;
 
-                if (!$technicalSummer || !$technicalWinter) {
-                    $this->addFlash('danger', 'Les normes techniques ne sont pas définies.');
-                    return;
-                }
+            if ($origin === 'comfort' && (!$technicalSummer || !$technicalWinter)) {
+                $this->addFlash('danger', 'Les normes techniques ne sont pas définies.');
+                return;
+            }
 
-                if ($request->request->has('humidityMinNormSummer') && $request->request->has('humidityMaxNormSummer')) {
-                    $humidityMinSummer = $request->request->get('humidityMinNormSummer');
-                    $humidityMaxSummer = $request->request->get('humidityMaxNormSummer');
-                    if ($humidityMinSummer < $technicalSummer->getHumidityMinNorm() || $humidityMaxSummer > $technicalSummer->getHumidityMaxNorm()) {
-                        $errors[] = "Humidité pour l'été doit être entre {$technicalSummer->getHumidityMinNorm()}% et {$technicalSummer->getHumidityMaxNorm()}%.";
-                    }
-                    if ($humidityMinSummer > $humidityMaxSummer) {
-                        $errors[] = "Humidité pour l'été : la valeur minimale doit être inférieure ou égale à la valeur maximale.";
+            // Fonction to validate  min/maxx using and not using technical limits
+            $validateMinMax = function ($min, $max, $label, $minLimit = null, $maxLimit = null) use (&$errors) {
+                if (!is_null($minLimit) && !is_null($maxLimit)) {
+                    if ($min < $minLimit || $max > $maxLimit) {
+                        $errors[] = "$label doit être entre $minLimit et $maxLimit.";
                     }
                 }
-
-                if ($request->request->has('temperatureMinNormSummer') && $request->request->has('temperatureMaxNormSummer')) {
-                    $temperatureMinSummer = $request->request->get('temperatureMinNormSummer');
-                    $temperatureMaxSummer = $request->request->get('temperatureMaxNormSummer');
-                    if ($temperatureMinSummer < $technicalSummer->getTemperatureMinNorm() || $temperatureMaxSummer > $technicalSummer->getTemperatureMaxNorm()) {
-                        $errors[] = "Température pour l'été doit être entre {$technicalSummer->getTemperatureMinNorm()}°C et {$technicalSummer->getTemperatureMaxNorm()}°C.";
-                    }
-                    if ($temperatureMinSummer > $temperatureMaxSummer) {
-                        $errors[] = "Température pour l'été : la valeur minimale doit être inférieure ou égale à la valeur maximale.";
-                    }
+                if ($min > $max) {
+                    $errors[] = "$label : la valeur minimale doit être inférieure ou égale à la valeur maximale.";
                 }
+            };
 
-                if ($request->request->has('co2MinNormSummer') && $request->request->has('co2MaxNormSummer')) {
-                    $co2MinSummer = $request->request->get('co2MinNormSummer');
-                    $co2MaxSummer = $request->request->get('co2MaxNormSummer');
-                    if ($co2MinSummer < $technicalSummer->getCo2MinNorm() || $co2MaxSummer > $technicalSummer->getCo2MaxNorm()) {
-                        $errors[] = "CO2 pour l'été doit être entre {$technicalSummer->getCo2MinNorm()} ppm et {$technicalSummer->getCo2MaxNorm()} ppm.";
-                    }
-                    if ($co2MinSummer > $co2MaxSummer) {
-                        $errors[] = "CO2 pour l'été : la valeur minimale doit être inférieure ou égale à la valeur maximale.";
-                    }
-                }
+            // Validation pour l'été
+            if ($request->request->has('humidityMinNormSummer') && $request->request->has('humidityMaxNormSummer')) {
+                $validateMinMax(
+                    $request->request->get('humidityMinNormSummer'),
+                    $request->request->get('humidityMaxNormSummer'),
+                    'Humidité pour l’été',
+                    $technicalSummer?->getHumidityMinNorm(),
+                    $technicalSummer?->getHumidityMaxNorm()
+                );
+            }
 
-                if ($request->request->has('humidityMinNormWinter') && $request->request->has('humidityMaxNormWinter')) {
-                    $humidityMinWinter = $request->request->get('humidityMinNormWinter');
-                    $humidityMaxWinter = $request->request->get('humidityMaxNormWinter');
-                    if ($humidityMinWinter < $technicalWinter->getHumidityMinNorm() || $humidityMaxWinter > $technicalWinter->getHumidityMaxNorm()) {
-                        $errors[] = "Humidité pour l'hiver doit être entre {$technicalWinter->getHumidityMinNorm()}% et {$technicalWinter->getHumidityMaxNorm()}%.";
-                    }
-                    if ($humidityMinWinter > $humidityMaxWinter) {
-                        $errors[] = "Humidité pour l'hiver : la valeur minimale doit être inférieure ou égale à la valeur maximale.";
-                    }
-                }
+            if ($request->request->has('temperatureMinNormSummer') && $request->request->has('temperatureMaxNormSummer')) {
+                $validateMinMax(
+                    $request->request->get('temperatureMinNormSummer'),
+                    $request->request->get('temperatureMaxNormSummer'),
+                    'Température pour l’été',
+                    $technicalSummer?->getTemperatureMinNorm(),
+                    $technicalSummer?->getTemperatureMaxNorm()
+                );
+            }
 
-                if ($request->request->has('temperatureMinNormWinter') && $request->request->has('temperatureMaxNormWinter')) {
-                    $temperatureMinWinter = $request->request->get('temperatureMinNormWinter');
-                    $temperatureMaxWinter = $request->request->get('temperatureMaxNormWinter');
-                    if ($temperatureMinWinter < $technicalWinter->getTemperatureMinNorm() || $temperatureMaxWinter > $technicalWinter->getTemperatureMaxNorm()) {
-                        $errors[] = "Température pour l'hiver doit être entre {$technicalWinter->getTemperatureMinNorm()}°C et {$technicalWinter->getTemperatureMaxNorm()}°C.";
-                    }
-                    if ($temperatureMinWinter > $temperatureMaxWinter) {
-                        $errors[] = "Température pour l'hiver : la valeur minimale doit être inférieure ou égale à la valeur maximale.";
-                    }
-                }
+            if ($request->request->has('co2MinNormSummer') && $request->request->has('co2MaxNormSummer')) {
+                $validateMinMax(
+                    $request->request->get('co2MinNormSummer'),
+                    $request->request->get('co2MaxNormSummer'),
+                    'CO2 pour l’été',
+                    $technicalSummer?->getCo2MinNorm(),
+                    $technicalSummer?->getCo2MaxNorm()
+                );
+            }
 
-                if ($request->request->has('co2MinNormWinter') && $request->request->has('co2MaxNormWinter')) {
-                    $co2MinWinter = $request->request->get('co2MinNormWinter');
-                    $co2MaxWinter = $request->request->get('co2MaxNormWinter');
-                    if ($co2MinWinter < $technicalWinter->getCo2MinNorm() || $co2MaxWinter > $technicalWinter->getCo2MaxNorm()) {
-                        $errors[] = "CO2 pour l'hiver doit être entre {$technicalWinter->getCo2MinNorm()} ppm et {$technicalWinter->getCo2MaxNorm()} ppm.";
-                    }
-                    if ($co2MinWinter > $co2MaxWinter) {
-                        $errors[] = "CO2 pour l'hiver : la valeur minimale doit être inférieure ou égale à la valeur maximale.";
-                    }
-                }
+            // Validation pour l'hiver
+            if ($request->request->has('humidityMinNormWinter') && $request->request->has('humidityMaxNormWinter')) {
+                $validateMinMax(
+                    $request->request->get('humidityMinNormWinter'),
+                    $request->request->get('humidityMaxNormWinter'),
+                    'Humidité pour l’hiver',
+                    $technicalWinter?->getHumidityMinNorm(),
+                    $technicalWinter?->getHumidityMaxNorm()
+                );
+            }
+
+            if ($request->request->has('temperatureMinNormWinter') && $request->request->has('temperatureMaxNormWinter')) {
+                $validateMinMax(
+                    $request->request->get('temperatureMinNormWinter'),
+                    $request->request->get('temperatureMaxNormWinter'),
+                    'Température pour l’hiver',
+                    $technicalWinter?->getTemperatureMinNorm(),
+                    $technicalWinter?->getTemperatureMaxNorm()
+                );
+            }
+
+            if ($request->request->has('co2MinNormWinter') && $request->request->has('co2MaxNormWinter')) {
+                $validateMinMax(
+                    $request->request->get('co2MinNormWinter'),
+                    $request->request->get('co2MaxNormWinter'),
+                    'CO2 pour l’hiver',
+                    $technicalWinter?->getCo2MinNorm(),
+                    $technicalWinter?->getCo2MaxNorm()
+                );
             }
 
             if (!empty($errors)) {
@@ -146,6 +158,7 @@ class NormController extends AbstractController
                 return;
             }
 
+            // summer norm
             if ($request->request->has('humidityMinNormSummer')) {
                 $summerNorm->setHumidityMinNorm($request->request->get('humidityMinNormSummer'))
                     ->setHumidityMaxNorm($request->request->get('humidityMaxNormSummer'))
@@ -155,6 +168,7 @@ class NormController extends AbstractController
                     ->setCo2MaxNorm($request->request->get('co2MaxNormSummer'));
             }
 
+            // winter norm
             if ($request->request->has('humidityMinNormWinter')) {
                 $winterNorm->setHumidityMinNorm($request->request->get('humidityMinNormWinter'))
                     ->setHumidityMaxNorm($request->request->get('humidityMaxNormWinter'))
@@ -168,6 +182,7 @@ class NormController extends AbstractController
             $this->addFlash('success', 'Les normes ont été mises à jour avec succès.');
         }
     }
+
 
 
 
