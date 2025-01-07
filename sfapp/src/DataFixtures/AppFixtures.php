@@ -132,40 +132,48 @@ class AppFixtures extends Fixture
 
         // Create SA entities
 
+        // Test: temperature ok summer not winter
         $sa1 = new Sa();
         $sa1->setId(1);
-        $sa1->setTemperature(22)->setHumidity(50)->setCO2(800)
-            ->setState(SAState::Waiting)
-            ->setRoom($room2);
-        $room2->setSa($sa1);
+        $sa1->setTemperature(23)->setHumidity(50)->setCO2(800)
+            ->setState(SAState::Installed)
+            ->setRoom($room1);
+        $room1->setSa($sa1);
         $manager->persist($sa1);
 
-
+        // Test: temperature ok winter not summer
         $sa2 = new Sa();
         $sa2->setId(2);
-        $sa2->setTemperature(25)->setHumidity(45)->setCO2(1200)
-            ->setState(SAState::Available);
+        $sa2->setTemperature(5)->setHumidity(50)->setCO2(800)
+            ->setState(SAState::Installed)
+            ->setRoom($room2);
+        $room2->setSa($sa2);
         $manager->persist($sa2);
 
-
+        // Test: humidity ok winter not summer
         $sa3 = new Sa();
         $sa3->setId(3);
-        $sa3->setState(SAState::Available);
+        $sa3->setTemperature(18)->setHumidity(75)->setCO2(800)
+            ->setState(SAState::Installed)
+            ->setRoom($room3);
+        $room3->setSa($sa3);
         $manager->persist($sa3);
 
-
+        // Test: humidity ok summer not winter
         $sa4 = new Sa();
         $sa4->setId(4);
-        $sa4->setState(SAState::Available);
-        $sa4->setTemperature(20)->setHumidity(40)->setCO2(1000);
+        $sa4->setTemperature(18)->setHumidity(35)->setCO2(800)
+            ->setState(SAState::Installed)
+            ->setRoom($room4);
+        $room4->setSa($sa4);
         $manager->persist($sa4);
-
 
         $sa5 = new Sa();
         $sa5->setId(5);
-        $sa5->setState(SAState::Installed);
-        $sa5->setRoom($room1);
-        $room1->setSa($sa5);
+        $sa5->setTemperature(18)->setHumidity(50)->setCO2(800)
+            ->setState(SAState::Installed)
+            ->setRoom($room5);
+        $room5->setSa($sa5);
         $manager->persist($sa5);
 
     }
