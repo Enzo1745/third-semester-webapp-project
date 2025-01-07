@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Measure;
 use App\Repository\Model\SAState;
+use App\Repository\SaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
 use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
@@ -30,7 +32,7 @@ class ApiController extends AbstractController
         $this->entityManager = $entityManager;
     }
 
-    #[Route('/api/obtenir-donnees', name: 'api_obtenir_donnees')]
+    #[Route('/api/obtenir_donnees', name: 'api_obtenir_donnees')]
     public function getDatasFromApi(): Response
     {
         $url = 'https://sae34.k8s.iut-larochelle.fr/api/captures?page=1';
@@ -144,11 +146,95 @@ class ApiController extends AbstractController
             return $measure->getType() === $item['nom'] && $measure->getCaptureDate()->format('Y-m-d H:i:s') === date('Y-m-d H:i:s', strtotime($item['dateCapture']));
         })->first();
 
-        if ($existingMeasure) {
-            return $existingMeasure;
+        if (!$existingMeasure) {
+            $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $item['description'], $sa);
+            return $measure;
+        }
+        else{
+            return null;
+        }
+    }
+
+
+    #[Route('/api/dernieres_donnees/{name}', name: 'api_get_last_measures')]
+    public function getLastMeasures(string $name, SaRepository $saRepository): Response
+    {
+        // Rechercher le SA dans la base de données
+        $sa = $saRepository->findOneBy(['name' => $name]);
+
+        if (!$sa) {
+            return new Response("Aucun SA trouvé pour le nom : {$name}", 404);
         }
 
-        $measure = new Measure($item['id'], $item['valeur'], $item['nom'], new \DateTime($item['dateCapture']), $item['description'], $sa);
-        return $measure;
+        try {
+            // Construire l'URL de l'API pour récupérer les dernières données
+            $url = "https://sae34.k8s.iut-larochelle.fr/api/captures/last?nomsa={$name}&limit=5&page=1";
+
+            // Faire la requête API
+            $response = $this->client->request('GET', $url, [
+                'headers' => [
+                    'accept' => 'application/json',
+                    'dbname' => "sae34bdm1eq3",
+                    'username' => "m1eq3",
+                    'userpass' => "wewnUw-zetwo7-mognov",
+                ],
+            ]);
+
+            // Vérifier le statut de la réponse
+            $statusCode = $response->getStatusCode();
+            $this->logger->info('API Response Status Code: ' . $statusCode);
+
+            // Traiter les données de la réponse
+            $data = $response->toArray();
+            $this->logger->info('API Response Data: ' . json_encode($data));
+
+            $this->storeDataInDatabase($data);
+
+
+            return $this->json($data, 200);
+        } catch (TransportExceptionInterface | ClientExceptionInterface | DecodingExceptionInterface |
+        RedirectionExceptionInterface | ServerExceptionInterface $e) {
+            $this->logger->error('Erreur lors de la récupération des données: ' . $e->getMessage());
+            return new Response('Erreur lors de la récupération des données: ' . $e->getMessage(), 500);
+        }
+    }
+
+    #[Route('/api/donnees_actuelles', name: 'api_refresh_data')]
+    public function refreshData(SaRepository $saRepository): Response
+    {
+        // Récupérer tous les SA avec l'état "Installed"
+        $installedSA = $saRepository->findBy(['state' => SAState::Installed]);
+
+        if (empty($installedSA)) {
+            return new Response('Aucun SA installé trouvé.', 404);
+        }
+
+        $results = [];
+
+        foreach ($installedSA as $sa) {
+            $name = $sa->getName();
+
+            try {
+                // Appeler la route pour récupérer les dernières données pour ce SA
+                $url = $this->generateUrl('api_get_last_measures', ['name' => $name], UrlGeneratorInterface::ABSOLUTE_URL);
+
+                $response = $this->client->request('GET', $url);
+                $statusCode = $response->getStatusCode();
+
+                if ($statusCode === 200) {
+                    $data = $response->toArray();
+                    $results[$name] = $data;
+
+                    $this->logger->info("Données mises à jour pour le SA : {$name}");
+                } else {
+                    $this->logger->warning("Impossible de récupérer les données pour le SA : {$name}. Code HTTP : {$statusCode}");
+                }
+            } catch (TransportExceptionInterface | ClientExceptionInterface | DecodingExceptionInterface |
+            RedirectionExceptionInterface | ServerExceptionInterface $e) {
+                $this->logger->error("Erreur lors de la récupération des données pour le SA : {$name}. Message : " . $e->getMessage());
+            }
+        }
+
+        return $this->json(['message' => "Données mises à jour pour les SAs installés.", 'results' => $results], 200);
     }
 }
