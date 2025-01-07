@@ -28,22 +28,22 @@ class DownHistoryType extends AbstractType
                 ],
             ])
             ->add('dateBeg', DateType::class, [
-                'widget' => 'single_text', // Utilisation d'un seul champ pour la date
-                'input'  => 'datetime',  // Format d'entrée
-                'required' => true, // Date obligatoire
+                'widget' => 'single_text',
+                'input'  => 'datetime',
+                'required' => true,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Choisissez une date', // Texte d’aide
+                    'placeholder' => 'Choisissez une date',
                     'onchange' => 'this.form.submit()',
                 ],
             ])
             ->add('dateEnd', DateType::class, [
-                'widget' => 'single_text', // Utilisation d'un seul champ pour la date
-                'input'  => 'datetime',  // Format d'entrée
-                'required' => true, // Date obligatoire
+                'widget' => 'single_text',
+                'input'  => 'datetime',
+                'required' => true,
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Choisissez une date', // Texte d’aide
+                    'placeholder' => 'Choisissez une date',
                     'onchange' => 'this.form.submit()',
                 ],
             ]);
@@ -51,8 +51,6 @@ class DownHistoryType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver): void
     {
-        $resolver->setDefaults([
-            // Configure your form options here
-        ]);
+        $resolver->setDefaults([]);
     }
 }

@@ -205,22 +205,25 @@ class SaManagementController extends AbstractController
         ]);
     }
 
+    /**
+     * @param DownRepository $downRepository
+     * @param Request $request
+     * @return Response
+     */
    #[Route('/technicien/sa/panne/historique', name: 'app_history')]
     public function showhistory(DownRepository $downRepository, Request $request): Response
     {
-        // Création du formulaire
         $form = $this->createForm(DownHistoryType::class);
         $form->handleRequest($request);
 
-        // Récupérer le SA sélectionné via le formulaire
         $sa = $form->get('filtrer')->getData();
 
-        // Initialiser la requête de base pour récupérer les pannes
+        // Request to get all the down Sa
         $queryBuilder = $downRepository->createQueryBuilder('d')
             ->leftJoin('d.sa', 'sa')
-            ->orderBy('d.date', 'DESC'); // Tri par date décroissante par défaut
+            ->orderBy('d.date', 'DESC');
 
-        // Appliquer les filtres si les valeurs sont renseignées
+        // filter by sa if filter is used
         if ($sa) {
             $queryBuilder->andWhere('d.sa = :sa')
                 ->setParameter('sa', $sa);
@@ -235,27 +238,25 @@ class SaManagementController extends AbstractController
         }
 
         if ($dateEnd) {
-            // Pour inclure toute la journée, mettez l'heure à 23:59:59
+            // date to 23:59:59 to have the day for the end day filter
             $dateEnd->setTime(23, 59, 59);
             $queryBuilder->andWhere('d.date <= :dateEnd')
                 ->setParameter('dateEnd', $dateEnd->format('Y-m-d H:i:s'));
         }
 
-        // Exécuter la requête pour obtenir les résultats filtrés
         $down = $queryBuilder->getQuery()->getResult();
 
-        // Calculer le nombre de pannes pour le SA sélectionné (si un SA est sélectionné)
-        $nbPannes = 0;
+        $nbDown = 0;
         if ($sa) {
-            $nbPannes = count($downRepository->findBy(['sa' => $sa]));
+            $nbDown = count($downRepository->findBy(['sa' => $sa]));
         }
 
         // Retourner les résultats à la vue
         return $this->render('sa_down/sa_history.html.twig', [
             'down' => $down,
             'form' => $form->createView(),
-            'nbPannes' => $nbPannes, // Passer le nombre de pannes à la vue
-            'sa' => $sa // Passer l'objet SA à la vue pour l'affichage
+            'nbPannes' => $nbDown,
+            'sa' => $sa
         ]);
     }
 

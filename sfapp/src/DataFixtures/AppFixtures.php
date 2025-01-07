@@ -169,7 +169,8 @@ class AppFixtures extends Fixture
         $room1->setSa($sa5);
         $manager->persist($sa5);
 
-        // SA 1 avec 1 down
+        //Temporary down fixture
+        // SA 1
         $down1 = new Down();
         $down1->setId(1);
         $down1->setSa($sa1);
@@ -181,7 +182,7 @@ class AppFixtures extends Fixture
         $down1->setDate(new \DateTime('2024-12-01 08:00:00'));
         $manager->persist($down1);
 
-        // SA 2 avec plusieurs downs
+        // SA 2
         $down2 = new Down();
         $down2->setId(2);
         $down2->setSa($sa2);
@@ -204,9 +205,7 @@ class AppFixtures extends Fixture
         $down3->setDate(new \DateTime('2024-12-10 11:45:00'));
         $manager->persist($down3);
 
-        // SA 3 sans down
-
-        // SA 4 avec 1 down
+        // SA 4
         $down4 = new Down();
         $down4->setId(4);
         $down4->setSa($sa4);
@@ -218,7 +217,7 @@ class AppFixtures extends Fixture
         $down4->setDate(new \DateTime('2024-12-15 09:20:00'));
         $manager->persist($down4);
 
-        // SA 5 avec plusieurs downs
+        // SA 5
         $down5 = new Down();
         $down5->setId(5);
         $down5->setSa($sa5);
