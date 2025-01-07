@@ -51,7 +51,6 @@ class SaListController extends AbstractController
     public function techListSa(
         Request                $request,
         SaRepository           $saRepo,
-        EntityManagerInterface $entityManager,
         DiagnocticService      $diagnosticService,
         NormRepository         $normRepository
 
@@ -81,15 +80,20 @@ class SaListController extends AbstractController
 	        $saList = $saRepo->findAll(); // Default: no filter applied
         }
 
-                $summerNorms = $normRepository->findOneBy([
-                      'NormType'   => 'technique',
-                      'NormSeason' => 'été'
-                  ]);
+        $summerNorms = $normRepository->findOneBy([
+              'NormType'   => 'technique',
+              'NormSeason' => 'été'
+          ]);
 
-                  foreach ($saList as $sa) { // get and set diagnostic color
-                      $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa,$sa->getRoom(), $summerNorms);
-                      $sa->setDiagnosticStatus($diagnosticColor);
-                  }
+        $winterNorms = $normRepository->findOneBy([
+            'NormType'   => 'technique',
+            'NormSeason' => 'hiver'
+        ]);
+
+        foreach ($saList as $sa) { // get and set diagnostic color
+            $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa,$sa->getRoom(), $summerNorms, $winterNorms);
+            $sa->setDiagnosticStatus($diagnosticColor);
+        }
 
         // sort by association (down,waiting,installed,available)
         if ($trierChoice === 'Asso') {
