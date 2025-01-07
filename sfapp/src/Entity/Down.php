@@ -41,6 +41,12 @@ class Down
         return $this->id;
     }
 
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
+    }
+
     public function getReason(): ?string
     {
         return $this->reason;

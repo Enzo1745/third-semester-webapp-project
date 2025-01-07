@@ -10,11 +10,8 @@
                 <i class="fas fa-exclamation-triangle me-2"></i> SA dysfonctionnels
             </h1>
             <div>
-                <a href="/charge/gestion_sa" class="btn btn-outline-light">
-                    <i class="fas fa-book me-1"></i> Historique
-                </a>
-                <a href="{{ path('app_technician_sa') }}" class="btn btn-outline-light">
-                    <i class="fas fa-arrow-left me-2"></i>Retour à la liste des SA
+                <a href="{{ path('app_down') }}" class="btn btn-outline-light">
+                    <i class="fas fa-arrow-left me-2"></i>Retour à la declaration de panne
                 </a>
             </div>
         </div>
@@ -33,15 +30,28 @@
                             <i class="fas fa-search text-primary me-2"></i>
                             <h5 class="card-title mb-0">Filtres</h5>
                         </div>
-                        <div class="d-flex flex-row align-items-center ">
+                        <div class="d-flex flex-row align-items-center">
                             {{ form_row(form.filtrer, { 'label': false }) }}
 
                             {# Affichage du message du nombre de pannes si un SA est sélectionné #}
                             {% if sa %}
-                                <p5 class="mt-2">
-                                    <strong>Le SA numéro {{ sa.id }} a eu {{ nbPannes }} panne{{ nbPannes > 1 ? 's' : '' }}.</strong>
-                                </p5>
+                                <div class="ms-3">
+                                    {% if nbPannes == 0 %}
+                                        <p5 class="mt-2">
+                                            <strong>Le SA numéro {{ sa.id }} n'a eu aucune panne.</strong>
+                                        </p5>
+                                    {% elseif nbPannes == 1 %}
+                                        <p5 class="mt-2 text-danger">
+                                            <strong>Le SA numéro {{ sa.id }} a eu une seule panne.</strong>
+                                        </p5>
+                                    {% else %}
+                                        <p5 class="mt-2 text-danger">
+                                            <strong>Le SA numéro {{ sa.id }} a eu {{ nbPannes }} pannes.</strong>
+                                        </p5>
+                                    {% endif %}
+                                </div>
                             {% endif %}
+
                         </div>
 
                     </div>

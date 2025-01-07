@@ -11,9 +11,7 @@ use App\Repository\DownRepository;
 use App\Repository\Model\SAState;
 use App\Repository\SaRepository;
 use App\Repository\RoomRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -207,28 +205,7 @@ class SaManagementController extends AbstractController
         ]);
     }
 
-    /**
-     * @param Sa $sa
-     * @param EntityManagerInterface $entityManager
-     * @param Request $request
-     * @return Response
-     */
-   /* #[Route('/technicien/sa/panne/{id}', name: 'app_functionnal')]
-    public function setFunctionnal(Sa $sa, EntityManagerInterface $entityManager, Request $request): Response
-    {
-        // Set the selected sa' state to functional
-        $sa->setState(SAState::Available);
-
-        // Update the database
-        $entityManager->flush();
-
-        // Display a success message
-        $this->addFlash('success', 'Le SA a été réhabilité avec succès.');
-
-        return $this->redirectToRoute('app_down');
-    }*/
-
-    #[Route('/technicien/sa/panne/historique', name: 'app_history')]
+   #[Route('/technicien/sa/panne/historique', name: 'app_history')]
     public function showhistory(DownRepository $downRepository, Request $request): Response
     {
         // Création du formulaire
@@ -280,5 +257,26 @@ class SaManagementController extends AbstractController
             'nbPannes' => $nbPannes, // Passer le nombre de pannes à la vue
             'sa' => $sa // Passer l'objet SA à la vue pour l'affichage
         ]);
+    }
+
+    /**
+     * @param Sa $sa
+     * @param EntityManagerInterface $entityManager
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/technicien/sa/panne/{id}', name: 'app_functionnal')]
+    public function setFunctionnal(Sa $sa, EntityManagerInterface $entityManager, Request $request): Response
+    {
+        // Set the selected sa' state to functional
+        $sa->setState(SAState::Available);
+
+        // Update the database
+        $entityManager->flush();
+
+        // Display a success message
+        $this->addFlash('success', 'Le SA a été réhabilité avec succès.');
+
+        return $this->redirectToRoute('app_down');
     }
 }

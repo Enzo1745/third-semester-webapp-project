@@ -2,6 +2,7 @@
 
 namespace App\DataFixtures;
 
+use App\Entity\Down;
 use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
@@ -168,7 +169,91 @@ class AppFixtures extends Fixture
         $room1->setSa($sa5);
         $manager->persist($sa5);
 
+        // SA 1 avec 1 down
+        $down1 = new Down();
+        $down1->setId(1);
+        $down1->setSa($sa1);
+        $down1->setReason("Raison 1 pour SA 1");
+        $down1->setTemperature(true);
+        $down1->setHumidity(false);
+        $down1->setCO2(true);
+        $down1->setMicrocontroller(true);
+        $down1->setDate(new \DateTime('2024-12-01 08:00:00'));
+        $manager->persist($down1);
+
+        // SA 2 avec plusieurs downs
+        $down2 = new Down();
+        $down2->setId(2);
+        $down2->setSa($sa2);
+        $down2->setReason("Raison 1 pour SA 2");
+        $down2->setTemperature(false);
+        $down2->setHumidity(true);
+        $down2->setCO2(false);
+        $down2->setMicrocontroller(true);
+        $down2->setDate(new \DateTime('2024-12-05 14:30:00'));
+        $manager->persist($down2);
+
+        $down3 = new Down();
+        $down3->setId(3);
+        $down3->setSa($sa2);
+        $down3->setReason("Raison 2 pour SA 2");
+        $down3->setTemperature(true);
+        $down3->setHumidity(false);
+        $down3->setCO2(true);
+        $down3->setMicrocontroller(false);
+        $down3->setDate(new \DateTime('2024-12-10 11:45:00'));
+        $manager->persist($down3);
+
+        // SA 3 sans down
+
+        // SA 4 avec 1 down
+        $down4 = new Down();
+        $down4->setId(4);
+        $down4->setSa($sa4);
+        $down4->setReason("Raison 1 pour SA 4");
+        $down4->setTemperature(false);
+        $down4->setHumidity(false);
+        $down4->setCO2(true);
+        $down4->setMicrocontroller(true);
+        $down4->setDate(new \DateTime('2024-12-15 09:20:00'));
+        $manager->persist($down4);
+
+        // SA 5 avec plusieurs downs
+        $down5 = new Down();
+        $down5->setId(5);
+        $down5->setSa($sa5);
+        $down5->setReason("Raison 1 pour SA 5");
+        $down5->setTemperature(true);
+        $down5->setHumidity(false);
+        $down5->setCO2(true);
+        $down5->setMicrocontroller(false);
+        $down5->setDate(new \DateTime('2024-12-20 16:00:00'));
+        $manager->persist($down5);
+
+        $down6 = new Down();
+        $down6->setId(6);
+        $down6->setSa($sa5);
+        $down6->setReason("Raison 2 pour SA 5");
+        $down6->setTemperature(false);
+        $down6->setHumidity(true);
+        $down6->setCO2(false);
+        $down6->setMicrocontroller(true);
+        $down6->setDate(new \DateTime('2024-12-25 10:15:00'));
+        $manager->persist($down6);
+
+        $down6 = new Down();
+        $down6->setId(7);
+        $down6->setSa($sa5);
+        $down6->setReason("Raison 3 pour SA 5");
+        $down6->setTemperature(true);
+        $down6->setHumidity(true);
+        $down6->setCO2(true);
+        $down6->setMicrocontroller(false);
+        $down6->setDate(new \DateTime('2025-01-03 16:34:56'));
+        $manager->persist($down6);
+
     }
+
     public function load(ObjectManager $manager): void
     {
 

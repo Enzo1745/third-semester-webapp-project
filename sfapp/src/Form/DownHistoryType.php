@@ -23,6 +23,7 @@ class DownHistoryType extends AbstractType
                 'choice_label' => 'id',
                 'placeholder' => 'Filter par un SA',
                 'attr' => [
+                    'class' => 'form-select',
                     'onchange' => 'this.form.submit()',
                 ],
             ])

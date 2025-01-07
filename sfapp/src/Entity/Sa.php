@@ -16,9 +16,6 @@ class Sa
     #[ORM\GeneratedValue(strategy: 'NONE')] // Désactiver l'auto-incrémentation par défaut
     private ?int $id = null;
 
-
-
-
     #[ORM\Column(enumType: SAState::class)]
     private ?SAState $state = null;
 
