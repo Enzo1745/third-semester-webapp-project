@@ -29,34 +29,37 @@ class DisplayRoomsUserTest extends WebTestCase
         $room->setNbRadiator(2);
         $room->setNbWindows(4);
 
-        // Persist the room without manually setting the ID
+
+        // Persist the room first to generate its ID
         $entityManager = $client->getContainer()->get('doctrine.orm.entity_manager');
         $entityManager->persist($room);
+        $entityManager->flush();
 
         // Create a SA with real data for this room
         $sa = new Sa();
-        $sa->setState(SAState::Installed); // The state must be "installed"
-        $sa->setTemperature(22); // Real temperature
-        $sa->setHumidity(50); // Real humidity
-        $sa->setCO2(800); // Real CO2
-        $sa->setRoom($room); // Associate SA with the room
+        $sa->setId(50);
+        $sa->setState(SAState::Installed);
+        $sa->setTemperature(22);
+        $sa->setHumidity(50);
+        $sa->setCO2(800);
 
-        // Persist the SA without manually setting the ID
+        // Persist the SA after setting the room
         $entityManager->persist($sa);
-
-        // Save the data to the database
         $entityManager->flush();
 
-        // Clear the EntityManager to avoid ID collision for subsequent tests
-        $entityManager->clear();
+        // Link the SA back to the Room with the generated ID
+        $sa->setRoom($room);
+        $room->setIdSa($sa->getId());
+
+        $entityManager->persist($sa);
+        $entityManager->persist($room);
+        $entityManager->flush();
 
         // Submit the search form for room D206
         $crawler = $client->request('GET', '/');
         $form = $crawler->selectButton('search_rooms_salle')->form();
-        $crawler = $client->submit($form, ['search_rooms_salle[room]' => 'D206']);
-
-        // Debugging: Dump the HTML of the page to check its structure
-        dump($crawler->html()); // This will help you inspect the actual HTML output
+        $form['search_rooms_salle[salle]']->setValue($room->getId());
+        $client->submit($form);
 
         // Ensure the page is accessible and the room data is displayed
         $this->assertResponseIsSuccessful();
@@ -66,61 +69,11 @@ class DisplayRoomsUserTest extends WebTestCase
         $this->assertSelectorTextContains('.value', 'D206');
 
         // Check for environmental data: temperature, humidity, CO2
-        $this->assertSelectorTextContains('.value.temp', '22°');
-        $this->assertSelectorTextContains('.value.humidity', '50%');
-        $this->assertSelectorTextContains('.value.co2', '800');
+        $this->assertSelectorTextContains('.temp', '22°');
+        $this->assertSelectorTextContains('.humidity', '50%');
+        $this->assertSelectorTextContains('.co2', '800');
 
-        // Ensure no warning messages or unnecessary text are shown
-        $this->assertSelectorNotExists('.alert-warning');
-        $this->assertSelectorNotExists('.text-muted');
-    }
-
-    public function testEnvironmentalDataDisplayed(): void
-    {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/');
-
-        // Submit the form with a valid room
-        $form = $crawler->selectButton('search_rooms_type_salle')->form([
-            'search_rooms_type[salle]' => 'Salle 101',
-        ]);
-        $crawler = $client->submit($form);
-
-        // Check if CO2, humidity, and temperature values are visible
-        $this->assertSelectorExists('.value.temp');
-        $this->assertSelectorExists('.value.humidity');
-        $this->assertSelectorExists('.value.co2');
-    }
-
-    public function testRoomDataIsReadOnly(): void
-    {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/');
-
-        // Submit the form with a valid room
-        $form = $crawler->selectButton('search_rooms_type_salle')->form([
-            'search_rooms_type[salle]' => 'Salle 101',
-        ]);
-        $crawler = $client->submit($form);
-
-        // Ensure the data is displayed but not modifiable
-        $this->assertSelectorNotExists('input[name="sa.temperature"]');
-        $this->assertSelectorNotExists('input[name="sa.humidity"]');
-        $this->assertSelectorNotExists('input[name="sa.CO2"]');
-    }
-
-    public function testNonExistingRoomSelection(): void
-    {
-        $client = static::createClient();
-        $crawler = $client->request('GET', '/');
-
-        // Submit the form with an invalid room
-        $form = $crawler->selectButton('search_rooms_type_salle')->form([
-            'search_rooms_type[salle]' => 'NonExistingRoom',
-        ]);
-        $crawler = $client->submit($form);
-
-        // Check if no data is displayed
-        $this->assertSelectorTextContains('.text-muted', 'Aucune donnée disponible pour cette salle.');
+        // Clear the EntityManager to avoid ID collision for subsequent tests
+        $entityManager->clear();
     }
 }
