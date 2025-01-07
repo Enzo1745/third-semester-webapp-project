@@ -18,9 +18,15 @@ class NormRepository extends ServiceEntityRepository
         parent::__construct($registry, Norm::class);
     }
 
-    public function findBySeason(NormSeason $season): ?Norm
+    public function findBySeason(NormSeason $season, NormType $type = NormType::Comfort): ?Norm
     {
-        return $this->findOneBy(['NormSeason' => $season]);
+        return $this->createQueryBuilder('n')
+            ->andWhere('n.NormSeason = :season')
+            ->andWhere('n.NormType = :type')
+            ->setParameter('season', $season)
+            ->setParameter('type', $type)
+            ->getQuery()
+            ->getOneOrNullResult();
     }
 
     public function findByType(NormType $type): ?Norm
@@ -29,16 +35,17 @@ class NormRepository extends ServiceEntityRepository
     }
 
 
-    public function findTechnicalLimitsBySeason(NormSeason $season): ?Norm
+    public function findTechnicalLimitsBySeason(NormSeason $season, NormType $type): ?Norm
     {
         return $this->createQueryBuilder('n')
             ->where('n.NormSeason = :season')
             ->andWhere('n.NormType = :type')
-            ->setParameter('season', $season->value) // Utiliser la valeur de l'enum (Hiver/Été)
-            ->setParameter('type', NormType::Technical->value) // Technique
+            ->setParameter('season', $season->value)
+            ->setParameter('type', $type->value)
             ->getQuery()
             ->getOneOrNullResult();
     }
+
 
 
     //    /**
