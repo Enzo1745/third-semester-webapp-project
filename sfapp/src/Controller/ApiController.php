@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Measure;
+use App\Entity\Room;
 use App\Repository\Model\SAState;
 use App\Repository\SaRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -24,12 +25,20 @@ class ApiController extends AbstractController
     private $client;
     private $logger;
     private $entityManager;
+    private $dbList;
 
     public function __construct(HttpClientInterface $client, LoggerInterface $logger, EntityManagerInterface $entityManager)
     {
         $this->client = $client;
         $this->logger = $logger;
         $this->entityManager = $entityManager;
+        $this->dbList = [
+            "sae34bdk1eq1", "sae34bdk1eq2", "sae34bdk1eq3",
+            "sae34bdk2eq1", "sae34bdk2eq2", "sae34bdk2eq3",
+            "sae34bdl1eq1", "sae34bdl1eq2", "sae34bdl1eq3",
+            "sae34bdl2eq1", "sae34bdl2eq2", "sae34bdl2eq3",
+            "sae34bdm1eq1", "sae34bdm1eq2", "sae34bdm1eq3",
+        ];
     }
 
     #[Route('/api/obtenir_donnees', name: 'api_obtenir_donnees')]
@@ -37,40 +46,39 @@ class ApiController extends AbstractController
     {
         $url = 'https://sae34.k8s.iut-larochelle.fr/api/captures?page=1';
 
-        $dbname = getenv('API_DBNAME');
         $username = getenv('API_USERNAME');
         $userpass = getenv('API_USERPASS');
 
-        try {
-            $response = $this->client->request('GET', $url, [
-                'headers' => [
-                    'accept' => 'application/json',
-                    'dbname' => "sae34bdm1eq3",
-                    'username' => "m1eq3",
-                    'userpass' => "wewnUw-zetwo7-mognov",
-                ],
+        foreach ($this->dbList as $dbname) {
+            try {
+                $response = $this->client->request('GET', $url, [
+                    'headers' => [
+                        'accept' => 'application/json',
+                        'dbname' => $dbname,
+                        'username' => $username,
+                        'userpass' => $userpass,
+                    ],
+                ]);
 
-            ]);
+                $statusCode = $response->getStatusCode();
+                $this->logger->info('API Response Status Code: ' . $statusCode);
 
-            $statusCode = $response->getStatusCode();
-            $this->logger->info('API Response Status Code: ' . $statusCode);
+                $data = $response->toArray();
+                $this->logger->info('API Response Data: ' . json_encode($data));
 
-            $data = $response->toArray();
-            $this->logger->info('API Response Data: ' . json_encode($data));
+                $this->storeDataInDatabase($data);
 
-            $this->storeDataInDatabase($data);
-
-            return new Response('Données récupérées et stockées avec succès');
-        } catch (\Exception $e) {
-            $this->logger->error('Erreur lors de la récupération des données: ' . $e->getMessage());
-            return new Response('Erreur lors de la récupération des données: ' . $e->getMessage(), 500);
-        } catch (TransportExceptionInterface $e) {
-        } catch (ClientExceptionInterface $e) {
-        } catch (DecodingExceptionInterface $e) {
-        } catch (RedirectionExceptionInterface $e) {
-        } catch (ServerExceptionInterface $e) {
+                return new Response('Données récupérées et stockées avec succès');
+            } catch (\Exception $e) {
+                $this->logger->error('Erreur lors de la récupération des données: ' . $e->getMessage());
+                return new Response('Erreur lors de la récupération des données: ' . $e->getMessage(), 500);
+            } catch (TransportExceptionInterface $e) {
+            } catch (ClientExceptionInterface $e) {
+            } catch (DecodingExceptionInterface $e) {
+            } catch (RedirectionExceptionInterface $e) {
+            } catch (ServerExceptionInterface $e) {
+            }
         }
-
         return new Response('Données non récupérées.');
     }
 
@@ -98,6 +106,7 @@ class ApiController extends AbstractController
                 $sa = new Sa();
                 $sa->setName($saName);
                 $sa->setState(SAState::Installed);
+                $sa->setRoom($items['localisation']);
                 $this->entityManager->persist($sa);
             }
 
@@ -114,6 +123,7 @@ class ApiController extends AbstractController
                     // Update the latest measure for this type
                     if (!isset($latestMeasures[$item['nom']]) || strtotime($item['dateCapture']) > strtotime($latestMeasures[$item['nom']]['dateCapture'])) {
                         $latestMeasures[$item['nom']] = $item;
+                        $latestMeasures[$item['localisation']] = $item['localisation'];
                     }
                 }
             }
@@ -131,6 +141,10 @@ class ApiController extends AbstractController
                 } elseif ($item['nom'] === 'pres') {
                     $sa->setPres($item['valeur']);
                 }
+                $roomRepository = $this->entityManager->getRepository(Room::class);
+                $room = $roomRepository->findOneBy(['name' => $item['localisation']]);
+
+                $sa->setRoom($room);
             }
 
             $this->entityManager->persist($sa);
@@ -153,86 +167,5 @@ class ApiController extends AbstractController
         else{
             return null;
         }
-    }
-
-
-    #[Route('/api/dernieres_donnees/{name}', name: 'api_get_last_measures')]
-    public function getLastMeasures(string $name, SaRepository $saRepository): Response
-    {
-        // Rechercher le SA dans la base de données
-        $sa = $saRepository->findOneBy(['name' => $name]);
-
-        if (!$sa) {
-            return new Response("Aucun SA trouvé pour le nom : {$name}", 404);
-        }
-
-        try {
-            // Construire l'URL de l'API pour récupérer les dernières données
-            $url = "https://sae34.k8s.iut-larochelle.fr/api/captures/last?nomsa={$name}&limit=5&page=1";
-
-            // Faire la requête API
-            $response = $this->client->request('GET', $url, [
-                'headers' => [
-                    'accept' => 'application/json',
-                    'dbname' => "sae34bdm1eq3",
-                    'username' => "m1eq3",
-                    'userpass' => "wewnUw-zetwo7-mognov",
-                ],
-            ]);
-
-            // Vérifier le statut de la réponse
-            $statusCode = $response->getStatusCode();
-            $this->logger->info('API Response Status Code: ' . $statusCode);
-
-            // Traiter les données de la réponse
-            $data = $response->toArray();
-            $this->logger->info('API Response Data: ' . json_encode($data));
-
-            $this->storeDataInDatabase($data);
-
-
-            return $this->json($data, 200);
-        } catch (TransportExceptionInterface | ClientExceptionInterface | DecodingExceptionInterface |
-        RedirectionExceptionInterface | ServerExceptionInterface $e) {
-            $this->logger->error('Erreur lors de la récupération des données: ' . $e->getMessage());
-            return new Response('Erreur lors de la récupération des données: ' . $e->getMessage(), 500);
-        }
-    }
-
-    #[Route('/api/donnees_actuelles', name: 'api_refresh_data')]
-    public function refreshData(SaRepository $saRepository): Response
-    {
-        $installedSA = $saRepository->findBy(['state' => SAState::Installed]);
-
-        if (empty($installedSA)) {
-            return new Response('Aucun SA installé trouvé.', 404);
-        }
-
-        $results = [];
-
-        foreach ($installedSA as $sa) {
-            $name = $sa->getName();
-
-            try {
-                $url = $this->generateUrl('api_get_last_measures', ['name' => $name], UrlGeneratorInterface::ABSOLUTE_URL);
-
-                $response = $this->client->request('GET', $url);
-                $statusCode = $response->getStatusCode();
-
-                if ($statusCode === 200) {
-                    $data = $response->toArray();
-                    $results[$name] = $data;
-
-                    $this->logger->info("Données mises à jour pour le SA : {$name}");
-                } else {
-                    $this->logger->warning("Impossible de récupérer les données pour le SA : {$name}. Code HTTP : {$statusCode}");
-                }
-            } catch (TransportExceptionInterface | ClientExceptionInterface | DecodingExceptionInterface |
-            RedirectionExceptionInterface | ServerExceptionInterface $e) {
-                $this->logger->error("Erreur lors de la récupération des données pour le SA : {$name}. Message : " . $e->getMessage());
-            }
-        }
-
-        return $this->json(['message' => "Données mises à jour pour les SAs installés.", 'results' => $results], 200);
     }
 }
