@@ -61,6 +61,9 @@ class SaListController extends AbstractController
         $form = $this->createForm(FilterAndSortTechnician::class);
         $form->handleRequest($request);
 
+        //Verify the current date
+        $currentDate = new \DateTime();
+        $season = $this->getSeason($currentDate);
 
         // Retrieve filter choice from the form
         $choice = $form->get('filter')->getData();
@@ -108,10 +111,24 @@ class SaListController extends AbstractController
         return $this->render('sa_management/technicianList.html.twig', [
             'form' => $form->createView(),
             'saList' => $saList,
+            'season' => $season,
         ]);
     }
 
+    /**
+     * Description: Verify if the current date is in the summer period. Return 'été' if it is, 'hiver' if not.
+     */
+    private function getSeason(\DateTime $date)
+    {
+        $startSummer = new \DateTime('March 20');
+        $endSummer = new \DateTime('September 22');
 
+        if ($date >= $startSummer && $date <= $endSummer) {
+            return 'été';
+        }
+
+        return 'hiver';
+    }
 
 
     /**

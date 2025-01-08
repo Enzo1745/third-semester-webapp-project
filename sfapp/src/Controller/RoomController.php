@@ -87,6 +87,10 @@ class RoomController extends AbstractController
         $form = $this->createForm(FilterAndSort::class);
         $form->handleRequest($request);
 
+        //Verify the current date
+        $currentDate = new \DateTime();
+        $season = $this->getSeason($currentDate);
+
         // filter tri choice
         $filterChoice = $form->get('filter')->getData();
         $sortChoice   = $form->get('trier')->getData();
@@ -136,15 +140,24 @@ class RoomController extends AbstractController
         return $this->render('room/index.html.twig', [
             'form'  => $form->createView(),
             'rooms' => $roomsWithDiagnostics,
+            'season' => $season,
         ]);
     }
 
+    /**
+    * Description: Verify if the current date is in the summer period. Return 'été' if it is, 'hiver' if not.
+    */
+    private function getSeason(\DateTime $date)
+    {
+        $startSummer = new \DateTime('March 20');
+        $endSummer = new \DateTime('September 22');
 
+        if ($date >= $startSummer && $date <= $endSummer) {
+            return 'été';
+        }
 
-
-
-
-
+        return 'hiver';
+    }
 
     /**
      * Route: /charge/salles/{roomName}
@@ -194,6 +207,11 @@ class RoomController extends AbstractController
         ]);
     }
 
+    /**
+     * Route: /technicien/salles/{roomName}
+     * Name: app_room_info_technicien
+     * Description: Displays detailed information about a specific room.
+     */
     #[Route('/technicien/salles/{roomName}', name: 'app_room_info_technicien')]
     public function roomInfoTech(
         string $roomName,

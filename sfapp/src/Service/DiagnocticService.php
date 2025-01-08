@@ -33,6 +33,7 @@ class DiagnocticService
             $springStart = new DateTime("$currentYear-03-20");
             $summerEnd = new DateTime("$currentYear-09-22");
 
+            //check if the current date is compliant to Winter or Summer norms
             $currentNorms = $currentDate >= $springStart && $currentDate <= $summerEnd
                 ? $summerNorms
                 : $winterNorms;
