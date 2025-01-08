@@ -163,7 +163,8 @@ class AppFixtures extends Fixture
 
         $sa5 = new Sa();
         $sa5->setId(5);
-        $sa5->setState(SAState::Installed);
+        $sa5->setState(SAState::Installed)
+            ->setTemperature(25)->setHumidity(45)->setCO2(1200);
         $sa5->setRoom($room1);
         $room1->setSa($sa5);
         $manager->persist($sa5);
