@@ -40,6 +40,7 @@ class HomeController extends AbstractController
 
         $roomName = '';
 
+        // Get selected room name
         if ($form->isSubmitted() && $form->isValid()) {
             $selectedRoom = $form->get('salle')->getData();
             if ($selectedRoom) {
@@ -47,18 +48,21 @@ class HomeController extends AbstractController
             }
         }
 
+        // Get the room from the room name
         $room = null;
         if (!empty($roomName)) {
             $room = $roomRepository->findByRoomNameWithSA($roomName);
         }
         $down = null;
 
+        // Get the norms
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
             'NormSeason' => 'été'
         ]);
 
+        // Get the room SA
         $sa = null;
         if ($room and $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());

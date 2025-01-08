@@ -20,11 +20,12 @@ class SearchRoomsType extends AbstractType
                 'placeholder' => 'Sélectionner une salle',
                 'label' => 'Choisir une salle :',
                 'required' => true,
-                'query_builder' => function (EntityRepository $er) {
+                'query_builder' => function (EntityRepository $er) { // Selects the room that have at least one working data collector
                     return $er->createQueryBuilder('r')
                         ->innerJoin('r.sa', 's')
                         ->andWhere('s.Temperature IS NOT NULL')
                         ->andWhere('s.Humidity IS NOT NULL')
+                        ->andWhere('s.CO2 IS NOT NULL')
                         ->andWhere('s.state = :state')
                         ->setParameter('state', \App\Repository\Model\SAState::Installed);
                 },
