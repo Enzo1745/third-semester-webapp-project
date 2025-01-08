@@ -21,8 +21,6 @@ class HomeController extends AbstractController
     /**
      * @brief default page
      */
-
-
     #[Route('/', name: 'app_home')]
     public function roomInfo(
         Request $request,

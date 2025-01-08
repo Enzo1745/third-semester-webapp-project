@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ComfortInstructionRoomRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ComfortInstructionRoomRepository::class)]
@@ -20,6 +21,9 @@ class ComfortInstructionRoom
     #[ORM\ManyToOne(targetEntity: ComfortInstruction::class)]
     #[ORM\JoinColumn(nullable: false)]
     private ?ComfortInstruction $comfortInstruction = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTimeInterface $DoneByUserDate = null;
 
     public function getId(): ?int
     {
@@ -45,6 +49,18 @@ class ComfortInstructionRoom
     public function setComfortInstruction(?ComfortInstruction $comfortInstruction): static
     {
         $this->comfortInstruction = $comfortInstruction;
+        return $this;
+    }
+
+    public function getDoneByUserDate(): ?\DateTimeInterface
+    {
+        return $this->DoneByUserDate;
+    }
+
+    public function setDoneByUserDate(?\DateTimeInterface $DoneByUserDate): static
+    {
+        $this->DoneByUserDate = $DoneByUserDate;
+
         return $this;
     }
 }

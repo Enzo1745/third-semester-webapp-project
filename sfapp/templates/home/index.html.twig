@@ -92,11 +92,11 @@
                                         <i class="fas fa-thermometer-half fa-2x text-primary mb-2"></i>
                                         <h5 class="card-title">Température</h5>
                                         <p class="card-text value temp
-                                            {% if norms is not null and sa.temperature >= norms.temperatureMinNorm and sa.temperature <= norms.temperatureMaxNorm %}
-                                                good-text
-                                            {% else %}
-                                                danger-text
-                                            {% endif %}">
+                                        {% if norms is not null and sa.temperature >= norms.temperatureMinNorm and sa.temperature <= norms.temperatureMaxNorm %}
+                                            good-text
+                                        {% else %}
+                                            danger-text
+                                        {% endif %}">
                                             {{ sa.temperature|default('N/A') }}°
                                         </p>
                                     </div>
@@ -108,11 +108,11 @@
                                         <i class="fas fa-tint fa-2x text-primary mb-2"></i>
                                         <h5 class="card-title">Humidité</h5>
                                         <p class="card-text value humidity
-                                            {% if norms is not null and sa.humidity >= norms.humidityMinNorm and sa.humidity <= norms.humidityMaxNorm %}
-                                                good-text
-                                            {% else %}
-                                                danger-text
-                                            {% endif %}">
+                                        {% if norms is not null and sa.humidity >= norms.humidityMinNorm and sa.humidity <= norms.humidityMaxNorm %}
+                                            good-text
+                                        {% else %}
+                                            danger-text
+                                        {% endif %}">
                                             {{ sa.humidity|default('N/A') }}%
                                         </p>
                                     </div>
@@ -124,11 +124,11 @@
                                         <i class="fas fa-cloud fa-2x text-primary mb-2"></i>
                                         <h5 class="card-title">CO<sub>2</sub></h5>
                                         <p class="card-text value co2
-                                            {% if norms is not null and sa.CO2 >= norms.co2MinNorm and sa.CO2 <= norms.co2MaxNorm %}
-                                                good-text
-                                            {% else %}
-                                                danger-text
-                                            {% endif %}">
+                                        {% if norms is not null and sa.CO2 >= norms.co2MinNorm and sa.CO2 <= norms.co2MaxNorm %}
+                                            good-text
+                                        {% else %}
+                                            danger-text
+                                        {% endif %}">
                                             {{ sa.CO2|default('N/A') }}
                                         </p>
                                     </div>
@@ -146,11 +146,96 @@
                 {% else %}
                     <div class="text-center py-4">
                         <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
-                        <p class="text-muted">Aucune salle selectionnée.</p>
+                        <p class="text-muted">Aucune salle sélectionnée.</p>
                     </div>
                 {% endif %}
             </div>
         </div>
+
+        <!-- Tasks to do by the user -->
+        <div class="container mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white py-3">
+                    <h5 class="mb-0">Actions à faire</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled" id="actions-list">
+                        {% for i in 1..4 %}
+                            <li class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <label for="message{{ i }}" class="form-check-label mb-0">
+                                        Action {{ i }}
+                                    </label>
+                                    <input type="checkbox" id="message{{ i }}" class="form-check-input action-checkbox">
+                                </div>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    <button class="btn btn-primary disabled" id="confirmButton" data-bs-toggle="modal" data-bs-target="#confirmationModal" disabled>
+                        Confirmer
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <!-- Modal to confirm the tasks are done -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Avez-vous réalisé les actions sélectionnées ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
+                    <button type="button" class="btn btn-primary" id="confirmActions">Oui</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Retrieve all checkboxes and the confirmation button
+        const confirmButton = document.getElementById('confirmButton');
+
+        // Function to enable/disable the button
+        function updateButtonState() {
+            // Check if any checkbox is selected
+            const anyChecked = document.querySelectorAll('.action-checkbox:checked').length > 0;
+            confirmButton.disabled = !anyChecked; // Enable or disable the button
+            confirmButton.classList.toggle('disabled', !anyChecked); // Add or remove the "disabled" class
+        }
+
+        // Add event listener to each checkbox dynamically
+        document.getElementById('actions-list').addEventListener('change', function (event) {
+            if (event.target.classList.contains('action-checkbox')) {
+                updateButtonState();
+            }
+        });
+
+        // Remove checked items when the user confirms
+        document.getElementById('confirmActions').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('.action-checkbox:checked');
+
+            // Loop through the checked checkboxes and remove their parent list items
+            checkboxes.forEach(checkbox => {
+                const listItem = checkbox.closest('li');
+                if (listItem) {
+                    listItem.remove();
+                }
+            });
+
+            // Update the button state after removing tasks
+            updateButtonState();
+
+            // Close the modal
+            const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
+            confirmationModal.hide();
+        });
+    </script>
 
 {% endblock %}
