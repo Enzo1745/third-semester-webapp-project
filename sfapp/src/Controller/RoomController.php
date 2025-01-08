@@ -6,6 +6,7 @@ use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\AddRoomType;
+use App\Form\FilterAndSort;
 use App\Form\SerchRoomASType;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\SAState;
@@ -17,7 +18,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use App\Form\FilterAndSortTechnician;
+use App\Service\DiagnocticService;
 class RoomController extends AbstractController
 {
     /**
@@ -71,50 +73,74 @@ class RoomController extends AbstractController
             'formAddRoom' => $formAddRoom->createView(),
         ]);
     }
-
     /**
-     * Route: /charge/salles
-     * Name: app_room_list
-     * Description: Displays a list of all rooms.
+     * Displays a list of rooms, filtered and/or sorted based on user's selection.
      */
     #[Route('/charge/salles', name: 'app_room_list')]
-    public function listRooms(RoomRepository $roomRepository, NormRepository $normRepository, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        // Fetch all rooms ordered by room number
+    public function listRooms(
+        RoomRepository $roomRepository,
+        DiagnocticService $diagnosticService,
+        NormRepository $normRepository,
+        Request $request
+    ): Response {
 
-        $form = $this->createForm( SerchRoomASType::class);
+        $form = $this->createForm(FilterAndSort::class);
         $form->handleRequest($request);
 
-        //getting the active filter
-        $choice = $form->get('filter')->getData();
+        // filter tri choice
+        $filterChoice = $form->get('filter')->getData();
+        $sortChoice   = $form->get('trier')->getData();
 
-        // changing the content of the list depending on the selected filter
-        if ($choice === 'RoomsWithAS') {
-            $rooms = $roomRepository->findAllWithIdSa();
-        }
-        else if ($choice === 'RoomsWithoutAS') {
-            $rooms = $roomRepository->findAllWithoutIdSa();
-        }
-        else{
-            $rooms = $roomRepository->findAllOrderedByRoomNumber();
-        }
+        // room filter
+        $rooms = match ($filterChoice) {
+            'withSA' => $roomRepository->findAllWithIdSa(),
+            'withoutSA' => $roomRepository->findAllWithoutIdSa(),
+            default => $roomRepository->findAllOrderedByRoomName(),
+        };
 
-        // Creates the diagnostic and gives a status to each room
-        $roomsWithDiagnostics = [];
+        // summer norm
+        $summerNorms = $normRepository->findOneBy([
+            'NormType'   => 'confort',
+            'NormSeason' => 'été'
+        ]);
+
+        // add diagnostic status to room
         foreach ($rooms as $room) {
-            $diagnosticStatus = $this->getDiagnosticStatus($room, $entityManager, $normRepository);
-            $roomsWithDiagnostics[] = [
-                'room' => $room,
-                'diagnosticStatus' => $diagnosticStatus
-            ];
+            $sa = $room->getSa();
+            $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa, $room, $summerNorms);
+            $room->setDiagnosticStatus($diagnosticColor);
         }
 
-        // Render the list of rooms
+        // sort
+        if (in_array($sortChoice, ['Dia'])) {
+            $choice = match ($sortChoice) {
+                'Dia' => 1,
+                default => 0,
+            };
+
+            $rooms = $roomRepository->sortRoomsByState($rooms, $choice);
+        }
+
+        // Prepare data for the template
+        $roomsWithDiagnostics = array_map(function(Room $room) {
+            return [
+                'room'             => $room,
+                'diagnosticStatus' => $room->getDiagnosticStatus(),
+            ];
+        }, $rooms);
+
         return $this->render('room/index.html.twig', [
-            'form' => $form->createView(),
+            'form'  => $form->createView(),
             'rooms' => $roomsWithDiagnostics,
         ]);
     }
+
+
+
+
+
+
+
 
     /**
      * Route: /charge/salles/{roomName}
@@ -171,37 +197,37 @@ class RoomController extends AbstractController
         EntityManagerInterface $entityManager,
         DownRepository $downRepo
     ): Response {
-        // 1. Récupération de la salle par son nom
+        // get room name
         $room = $roomRepository->findByRoomName($roomName);
 
-        // 2. Initialisation des variables par défaut
+
         $sa = null;
         $down = null;
         $norms = null;
 
-        // 3. Récupération des normes de type 'confort' pour la saison 'été'
+
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
             'NormSeason' => 'été'
         ]);
 
-        // 4. Vérification de l'existence d'une SA associée à la salle
+        // 4. check if a sa is associate with room
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
 
-            // Si l'état de la SA est 'En panne', récupérer les détails de la panne
+            // if sa down get details
             if ($sa && $sa->getState() === SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
             }
         }
 
-        // 5. Passage des données au template
+
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
             'sa' => $sa,
             'down' => $down,
-            'norms' => $norms, // Normes récupérées
+            'norms' => $norms,
             'origin' => 'technicien',
         ]);
     }
@@ -242,50 +268,4 @@ class RoomController extends AbstractController
         return $this->redirectToRoute('app_room_list');
     }
 
-    public function getDiagnosticStatus(Room $room, EntityManagerInterface $entityManager, NormRepository $normRepository): string
-    {
-        $this->normRepository = $normRepository;
-
-        // Fetch the norms for summer season
-        $summerNorms = $this->normRepository->findOneBy(['NormSeason' => NormSeason::Summer]);
-
-        $sa = null;
-        if ($room->getIdSA()) {
-            $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
-        }
-        if (!$sa or $sa->getCO2() == null or $sa->getTemperature() == null or $sa->getHumidity() == null or $sa->getState() == SAState::Waiting) {
-            return 'grey';  // No functional SA found for the room, so no diagnostic
-        }
-
-
-
-
-        $temperatureCompliant = $sa->getTemperature() >= $summerNorms->getTemperatureMinNorm() &&
-            $sa->getTemperature() <= $summerNorms->getTemperatureMaxNorm();
-        $humidityCompliant = $sa->getHumidity() >= $summerNorms->getHumidityMinNorm() &&
-            $sa->getHumidity() <= $summerNorms->getHumidityMaxNorm();
-        $co2Compliant = $sa->getCO2() >= $summerNorms->getCo2MinNorm() &&
-            $sa->getCO2() <= $summerNorms->getCo2MaxNorm();
-
-        // Determine the diagnostic status
-        $compliantCount = 0;
-        if ($temperatureCompliant) {
-            $compliantCount++;
-        }
-        if ($humidityCompliant) {
-            $compliantCount++;
-        }
-        if ($co2Compliant) {
-            $compliantCount++;
-        }
-
-        // Logic for diagnostic color
-        if ($compliantCount === 3) {
-            return 'green';
-        } elseif ($compliantCount === 0) {
-            return 'red';
-        } else {
-            return 'yellow';
-        }
-    }
 }

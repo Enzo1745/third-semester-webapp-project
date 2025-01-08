@@ -1,0 +1,156 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page d'accueil{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/home_page.css') }}">
+{% endblock %}
+
+{% block body %}
+    <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="h2 mb-0 fw-bold">
+                <i class="fas fa-home me-2"></i> Page d'accueil
+            </h1>
+            <div>
+                <a href="{{ path('app_connexion') }}" class="btn btn-outline-light">
+                    <i class="fas fa-user me-1"></i> Se connecter
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container d-flex flex-column justify-content-start align-items-center py-4" style="min-height: 100vh;">
+        <div class="card shadow-sm mb-4 w-100" style="max-width: 1500px;">
+            <div class="card-header d-flex justify-content-center align-items-center py-3 bg-primary bg-gradient text-white">
+                <h1 class="fw-bold mb-0" style="font-size: 2rem;">Bienvenue sur la page d'accueil</h1>
+            </div>
+            <div class="card-body text-center">
+                <h2>TIPS : {{ tips }}</h2>
+                <p class="lead text-muted">Cette page vous permet d'accéder aux données collectées dans les salles.</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm w-100" style="max-width: 1500px;">
+            <div class="card-header d-flex flex-column bg-primary bg-gradient text-white py-3">
+                <h5 class="mb-0">Informations de la salle</h5>
+                <div class="card-body mt-2 ms-0 p-0">
+                    {{ form_start(form) }}
+                    <div class="d-flex justify-content-start align-items-start">
+                        {{ form_row(form.salle, {'attr': {'class': 'm-1'}}) }}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            <div class="card-body">
+                {% if room is not null %}
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-door-open fa-2x text-primary mb-2"></i>
+                                    <h5 class="card-title">Numéro de la salle</h5>
+                                    <p class="card-text value">{{ room.roomName }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-radiator fa-2x text-primary mb-2"></i>
+                                    <h5 class="card-title">Nombre de radiateurs</h5>
+                                    <p class="card-text value">{{ room.nbRadiator|default('N/A') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-window-maximize fa-2x text-primary mb-2"></i>
+                                    <h5 class="card-title">Nombre de fenêtres</h5>
+                                    <p class="card-text value">{{ room.nbWindows|default('N/A') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if sa is null %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                            <p>Aucune donnée disponible pour cette salle.</p>
+                        </div>
+                    {% elseif sa.state.value == 'En attente' %}
+                        <div class="text-center">
+                            <i class="fas fa-clock fa-2x mb-3"></i>
+                            <p>Le système d'acquisition est en attente d'activation.</p>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-thermometer-half fa-2x text-primary mb-2"></i>
+                                        <h5 class="card-title">Température</h5>
+                                        <p class="card-text value temp
+                                            {% if norms is not null and sa.temperature >= norms.temperatureMinNorm and sa.temperature <= norms.temperatureMaxNorm %}
+                                                good-text
+                                            {% else %}
+                                                danger-text
+                                            {% endif %}">
+                                            {{ sa.temperature|default('N/A') }}°
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-tint fa-2x text-primary mb-2"></i>
+                                        <h5 class="card-title">Humidité</h5>
+                                        <p class="card-text value humidity
+                                            {% if norms is not null and sa.humidity >= norms.humidityMinNorm and sa.humidity <= norms.humidityMaxNorm %}
+                                                good-text
+                                            {% else %}
+                                                danger-text
+                                            {% endif %}">
+                                            {{ sa.humidity|default('N/A') }}%
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-cloud fa-2x text-primary mb-2"></i>
+                                        <h5 class="card-title">CO<sub>2</sub></h5>
+                                        <p class="card-text value co2
+                                            {% if norms is not null and sa.CO2 >= norms.co2MinNorm and sa.CO2 <= norms.co2MaxNorm %}
+                                                good-text
+                                            {% else %}
+                                                danger-text
+                                            {% endif %}">
+                                            {{ sa.CO2|default('N/A') }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if down is not null %}
+                        <div class="alert alert-warning mt-4">
+                            <h5 class="alert-heading">Panne en cours</h5>
+                            <p>{{ down.reason }}</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
+                        <p class="text-muted">Aucune salle selectionnée.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
