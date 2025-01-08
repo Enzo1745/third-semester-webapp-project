@@ -76,25 +76,45 @@
                             <th class="text-center"><i class="fas fa-microchip me-2"></i>Système d'acquisition</th>
                             <th class="text-center"><i class="fas fa-door-open me-2"></i>Salle associée</th>
                             <th class="text-center"><i class="fas fa-eye me-2"></i>Détails Salle</th>
-                            <th class="text-center"><i class="fas fa-heartbeat me-2"></i>État associé</th>
+                            <th class="text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-heartbeat me-2"></i>État associé
+                                    <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-white border-0"
+                                            type="button"
+                                            data-bs-toggle="popover"
+                                            data-bs-placement="right"
+                                            data-bs-content="
+                                                        <div style='text-align: left;'>
+                                                            <strong>Explication des couleurs :</strong><br>
+                                                            <span class='text-secondary'><strong>Disponible :</strong> Le SA est fonctionnel mais n'est pas associée a une salle.</span><br>
+                                                            <span class='text-success'><strong>Installé :</strong> Le SA fontionne et est associé a une salle</span><br>
+                                                            <span class='risky-text'><strong>En attente :</strong> Le SA est associé mais un technicien doit valider son association.(norme technique)</span><br>
+                                                            <span class='text-danger'><strong>En panne :</strong> Le SA est en panne</span>
+                                                        </div>"
+                                            data-bs-html="true"
+                                            style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
+                                        <i class="fas fa-question text-primary"></i>
+                                    </button>
+                                </div>
+                            </th>
                             <th class="text-center">
                                 <div class="d-flex align-items-center justify-content-center">
                                     <i class="fas fa-stethoscope me-2"></i>Diagnostic
-                                    <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center"
+                                    <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-white border-0"
                                             type="button"
-                                            data-bs-toggle="tooltip"
-                                            data-bs-placement="top"
-                                            title="
-            <div style='text-align: left;'>
-                <strong>Explication des couleurs :</strong><br>
-                <span style='color: grey;'><strong>Gris :</strong> Aucun diagnostic effectuable.</span><br>
-                <span style='color: green;'><strong>Vert :</strong> Toutes les normes sont respectées.(norme technique)</span><br>
-                <span style='color: #ffc107;'><strong>Jaune :</strong> Une ou plusieurs normes ne sont pas respectées.(norme technique)</span><br>
-                <span style='color: red;'><strong>Rouge :</strong> Aucune norme n'est respectée.(norme technique)</span>
-            </div>"
+                                            data-bs-toggle="popover"
+                                            data-bs-placement="right"
+                                            data-bs-content="
+                                                        <div style='text-align: left;'>
+                                                            <strong>Explication des couleurs :</strong><br>
+                                                            <span class='text-secondary'><strong>Gris :</strong> Aucun diagnostic effectuable.</span><br>
+                                                            <span class='text-success'><strong>Vert :</strong> Toutes les normes sont respectées.(norme technique)</span><br>
+                                                            <span class='text-warning'><strong>Jaune :</strong> Une ou plusieurs normes ne sont pas respectées.(norme technique)</span><br>
+                                                            <span class='text-danger'><strong>Rouge :</strong> Aucune norme n'est respectée.(norme technique)</span>
+                                                        </div>"
                                             data-bs-html="true"
                                             style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
-                                        <i class="fas fa-question text-white"></i>
+                                        <i class="fas fa-question text-primary"></i>
                                     </button>
                                 </div>
                             </th>
