@@ -40,6 +40,13 @@ class DiagnosticSaisonTest extends WebTestCase
             ->setNormSeason(NormSeason::Winter)
             ->setNormType(NormType::Comfort);
     }
+
+    /**
+     * @uses externally calculate the compliant count to be able to change the season type
+     * @param Norm $seasonNorm
+     * @param Sa $sa
+     * @return int
+     */
     private function calculateCompliantCount(Norm $seasonNorm, Sa $sa): int
     {
         $tempOk = $sa->getTemperature() >= $seasonNorm->getTemperatureMinNorm()
@@ -75,12 +82,6 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $status = $diagnosticService->getDiagnosticStatus($sa, $room, $this->summerNorms, $this->winterNorms, $compliantCount);
         $this->assertEquals('green', $status);
-
-        $backtrace = debug_backtrace();
-        $testName = $backtrace[0]['function'];
-
-        dump("Test function name: " . $testName);
-        dump("Compliant Count: " . $compliantCount);
     }
 
     public function testDiagnosticStatusSummerYellow1(): void
@@ -89,7 +90,7 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $sa = new Sa();
         $sa->setState(SAState::Installed);
-        $sa->setTemperature(5); // Température trop basse pour l'été
+        $sa->setTemperature(5);
         $sa->setHumidity(50);
         $sa->setCO2(800);
 
@@ -100,12 +101,6 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $status = $diagnosticService->getDiagnosticStatus($sa, $room, $this->summerNorms, $this->winterNorms, $compliantCount);
         $this->assertEquals('yellow', $status);
-
-        $backtrace = debug_backtrace();
-        $testName = $backtrace[0]['function'];
-
-        dump("Test function name: " . $testName);
-        dump("Compliant Count: " . $compliantCount);
     }
 
     public function testDiagnosticStatusSummerYellow2(): void
@@ -115,7 +110,7 @@ class DiagnosticSaisonTest extends WebTestCase
         $sa = new Sa();
         $sa->setState(SAState::Installed);
         $sa->setTemperature(27);
-        $sa->setHumidity(75); // Humidité trop élevée pour l'été
+        $sa->setHumidity(75);
         $sa->setCO2(800);
 
         $room = new Room();
@@ -125,12 +120,6 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $status = $diagnosticService->getDiagnosticStatus($sa, $room, $this->summerNorms, $this->winterNorms, $compliantCount);
         $this->assertEquals('yellow', $status);
-
-        $backtrace = debug_backtrace();
-        $testName = $backtrace[0]['function'];
-
-        dump("Test function name: " . $testName);
-        dump("Compliant Count: " . $compliantCount);
     }
 
     public function testDiagnosticStatusSummerRed(): void
@@ -139,7 +128,7 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $sa = new Sa();
         $sa->setState(SAState::Installed);
-        $sa->setTemperature(35); // Température trop élevée pour l'été
+        $sa->setTemperature(35);
         $sa->setHumidity(85);
         $sa->setCO2(2800); // CO2 trop élevé
 
@@ -150,12 +139,6 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $status = $diagnosticService->getDiagnosticStatus($sa, $room, $this->summerNorms, $this->winterNorms, $compliantCount);
         $this->assertEquals('red', $status);
-
-        $backtrace = debug_backtrace();
-        $testName = $backtrace[0]['function'];
-
-        dump("Test function name: " . $testName);
-        dump("Compliant Count: " . $compliantCount);
     }
 
     public function testDiagnosticStatusWinterGreen(): void
@@ -164,7 +147,7 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $sa = new Sa();
         $sa->setState(SAState::Installed);
-        $sa->setTemperature(15); // Température correcte pour l'hiver
+        $sa->setTemperature(15);
         $sa->setHumidity(50);
         $sa->setCO2(800);
 
@@ -175,12 +158,6 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $status = $diagnosticService->getDiagnosticStatus($sa, $room, $this->summerNorms, $this->winterNorms, $compliantCount);
         $this->assertEquals('green', $status);
-
-        $backtrace = debug_backtrace();
-        $testName = $backtrace[0]['function'];
-
-        dump("Test function name: " . $testName);
-        dump("Compliant Count: " . $compliantCount);
     }
 
     public function testDiagnosticStatusWinterYellow1(): void
@@ -189,7 +166,7 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $sa = new Sa();
         $sa->setState(SAState::Installed);
-        $sa->setTemperature(-10); // Température trop basse pour l'hiver
+        $sa->setTemperature(-10);
         $sa->setHumidity(50);
         $sa->setCO2(800);
 
@@ -200,12 +177,6 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $status = $diagnosticService->getDiagnosticStatus($sa, $room, $this->summerNorms, $this->winterNorms, $compliantCount);
         $this->assertEquals('yellow', $status);
-
-        $backtrace = debug_backtrace();
-        $testName = $backtrace[0]['function'];
-
-        dump("Test function name: " . $testName);
-        dump("Compliant Count: " . $compliantCount);
     }
 
     public function testDiagnosticStatusWinterYellow2(): void
@@ -215,7 +186,7 @@ class DiagnosticSaisonTest extends WebTestCase
         $sa = new Sa();
         $sa->setState(SAState::Installed);
         $sa->setTemperature(23);
-        $sa->setHumidity(85); // Humidité trop élevée pour l'hiver
+        $sa->setHumidity(85);
         $sa->setCO2(800);
 
         $room = new Room();
@@ -225,12 +196,6 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $status = $diagnosticService->getDiagnosticStatus($sa, $room, $this->summerNorms, $this->winterNorms, $compliantCount);
         $this->assertEquals('yellow', $status);
-
-        $backtrace = debug_backtrace();
-        $testName = $backtrace[0]['function'];
-
-        dump("Test function name: " . $testName);
-        dump("Compliant Count: " . $compliantCount);
     }
 
     public function testDiagnosticStatusWinterRed(): void
@@ -239,9 +204,9 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $sa = new Sa();
         $sa->setState(SAState::Installed);
-        $sa->setTemperature(50); // Température trop basse pour l'hiver
-        $sa->setHumidity(90); // Humidité trop élevée pour l'hiver
-        $sa->setCO2(2100); // CO2 trop élevé
+        $sa->setTemperature(50);
+        $sa->setHumidity(90);
+        $sa->setCO2(2100);
 
         $room = new Room();
         $room->setRoomName("Room1");
@@ -250,12 +215,6 @@ class DiagnosticSaisonTest extends WebTestCase
 
         $status = $diagnosticService->getDiagnosticStatus($sa, $room, $this->summerNorms, $this->winterNorms, $compliantCount);
         $this->assertEquals('red', $status);
-
-        $backtrace = debug_backtrace();
-        $testName = $backtrace[0]['function'];
-
-        dump("Test function name: " . $testName);
-        dump("Compliant Count: " . $compliantCount);
     }
 
     private function createNorm(NormSeason $season, NormType $type): Norm
