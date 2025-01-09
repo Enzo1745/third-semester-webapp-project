@@ -15,7 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use App\Controller\RoomController;
 class HomeController extends AbstractController
 {
     /**
@@ -34,6 +34,7 @@ class HomeController extends AbstractController
     {
         $tips = $tipsRepo->findRandTips(); // return a random tips from database
 
+        $controller = new RoomController();
         $form = $this->createForm(SearchRoomsType::class);
 
         $form->handleRequest($request);
@@ -55,11 +56,13 @@ class HomeController extends AbstractController
         }
         $down = null;
 
+        $currentDate = new \DateTime();
+        $season = $controller->getSeason($currentDate);
         // Get the norms
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
-            'NormSeason' => 'été'
+            'NormSeason' => $season
         ]);
 
         // Get the room SA
