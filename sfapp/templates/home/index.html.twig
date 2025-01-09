@@ -90,14 +90,32 @@
                                 <div class="card text-center">
                                     <div class="card-body">
                                         <i class="fas fa-thermometer-half fa-2x text-primary mb-2"></i>
-                                        <h5 class="card-title">Température</h5>
-                                        <p class="card-text value temp
+                                        <div class="d-flex flex-row justify-content-center">
+                                            <h5 class="card-title">Température</h5>
+                                            <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-primary bg-gradient border-0"
+                                                    type="button"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-placement="right"
+                                                    data-bs-content="
+                                                        <div style='text-align: left;'>
+                                                            <strong>Temperature :</strong><br>
+                                                            <span>La température est exprimée en °C</span><br>
+                                                            <span>Elle prend comme couleur:</span><br>
+                                                            <span class='good-text'><strong>Vert </strong>si les normes sont respectées</span><br>
+                                                            <span class='danger-text'><strong>Rouge </strong>si les normes ne sont pas respectées</span>
+                                                        </div>"
+                                                    data-bs-html="true"
+                                                    style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
+                                                <i class="fas fa-question text-white"></i>
+                                            </button>
+                                        </div>
+                                        <p class="card-text value temp fs-3
                                             {% if norms is not null and sa.temperature >= norms.temperatureMinNorm and sa.temperature <= norms.temperatureMaxNorm %}
                                                 good-text
                                             {% else %}
                                                 danger-text
                                             {% endif %}">
-                                            {{ sa.temperature|default('N/A') }}°
+                                            {{ sa.temperature|default('N/A') }}°C
                                         </p>
                                     </div>
                                 </div>
@@ -106,8 +124,26 @@
                                 <div class="card text-center">
                                     <div class="card-body">
                                         <i class="fas fa-tint fa-2x text-primary mb-2"></i>
-                                        <h5 class="card-title">Humidité</h5>
-                                        <p class="card-text value humidity
+                                        <div class="d-flex flex-row justify-content-center">
+                                            <h5 class="card-title">Humidité</h5>
+                                            <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-primary bg-gradient border-0"
+                                                    type="button"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-placement="right"
+                                                    data-bs-content="
+                                                        <div style='text-align: left;'>
+                                                            <strong>Humidité :</strong><br>
+                                                            <span>L'humidité' est exprimée en %</span><br>
+                                                            <span>Elle prend comme couleur:</span><br>
+                                                            <span class='good-text'><strong>Vert </strong>si les normes sont respectées</span><br>
+                                                            <span class='danger-text'><strong>Rouge </strong>si les normes ne sont pas respectées</span>
+                                                        </div>"
+                                                    data-bs-html="true"
+                                                    style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
+                                                <i class="fas fa-question text-white"></i>
+                                            </button>
+                                        </div>
+                                        <p class="card-text value humidity fs-3
                                             {% if norms is not null and sa.humidity >= norms.humidityMinNorm and sa.humidity <= norms.humidityMaxNorm %}
                                                 good-text
                                             {% else %}
@@ -122,14 +158,33 @@
                                 <div class="card text-center">
                                     <div class="card-body">
                                         <i class="fas fa-cloud fa-2x text-primary mb-2"></i>
-                                        <h5 class="card-title">CO<sub>2</sub></h5>
-                                        <p class="card-text value co2
+                                        <div class="d-flex flex-row justify-content-center">
+                                            <h5 class="card-title">CO<sup>2</sup></h5>
+                                            <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-primary bg-gradient border-0"
+                                                    type="button"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-placement="right"
+                                                    data-bs-content="
+                                                        <div style='text-align: left;'>
+                                                            <strong>CO<sup>2</sup> :</strong><br>
+                                                            <span>Le CO<sup>2</sup> est exprimée en ppm</span><br>
+                                                            <span>Le ppm (parti par miliers) est une unité de mesure utilisée pour exprimer des concentrations très faibles de gazs.</span><br>
+                                                            <span>Il prend comme couleur:</span><br>
+                                                            <span class='good-text'><strong>Vert </strong>si les normes sont respectées</span><br>
+                                                            <span class='danger-text'><strong>Rouge </strong>si les normes ne sont pas respectées</span>
+                                                        </div>"
+                                                    data-bs-html="true"
+                                                    style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
+                                                <i class="fas fa-question text-white"></i>
+                                            </button>
+                                        </div>
+                                        <p class="card-text value co2 fs-3
                                             {% if norms is not null and sa.CO2 >= norms.co2MinNorm and sa.CO2 <= norms.co2MaxNorm %}
                                                 good-text
                                             {% else %}
                                                 danger-text
                                             {% endif %}">
-                                            {{ sa.CO2|default('N/A') }}
+                                            {{ sa.CO2|default('N/A') }} ppm
                                         </p>
                                     </div>
                                 </div>
@@ -152,5 +207,4 @@
             </div>
         </div>
     </div>
-
 {% endblock %}

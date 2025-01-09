@@ -76,21 +76,21 @@
                     </div>
                     <div class="col-3 fw-bold d-flex align-items-center justify-content-center">
                         <i class="fas fa-stethoscope me-2"></i>Diagnostiques
-                        <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center"
+                        <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-white border-0"
                                 type="button"
-                                data-bs-toggle="tooltip"
-                                data-bs-placement="top"
-                                title="
-                            <div style='text-align: left;'>
-                                <strong>Explication des couleurs :</strong><br>
-                                <span style='color: grey;'><strong>Gris :</strong> Aucun diagnostic effectuable.</span><br>
-                                <span style='color: green;'><strong>Vert :</strong> Toutes les normes sont respectées.</span><br>
-                                <span style='color: #ffc107;'><strong>Jaune :</strong> Une ou plusieurs normes ne sont pas respectées.</span><br>
-                                <span style='color: red;'><strong>Rouge :</strong> Aucune norme n'est respectée.</span>
-                            </div>"
+                                data-bs-toggle="popover"
+                                data-bs-placement="right"
+                                data-bs-content="
+                                    <div style='text-align: left;'>
+                                        <strong>Explication des couleurs :</strong><br>
+                                        <span class='text-secondary'><strong>Gris :</strong> Aucun diagnostic effectuable.</span><br>
+                                        <span class='text-success'><strong>Vert :</strong> Toutes les normes sont respectées.(norme comfort)</span><br>
+                                        <span class='text-warning'><strong>Jaune :</strong> Une ou plusieurs normes ne sont pas respectées.(norme comfort)</span><br>
+                                        <span class='text-danger'><strong>Rouge :</strong> Aucune norme n'est respectée.(norme comfort)</span>
+                                    </div>"
                                 data-bs-html="true"
-                                style="padding: 5px 10px; border-radius: 50%; cursor: pointer;">
-                            <i class="fas fa-question text-white"></i>
+                                style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
+                            <i class="fas fa-question text-primary"></i>
                         </button>
                     </div>
                     <div class="col-3 fw-bold d-flex align-items-center justify-content-center">
