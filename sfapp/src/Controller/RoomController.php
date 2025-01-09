@@ -83,6 +83,7 @@ class RoomController extends AbstractController
         NormRepository $normRepository,
         Request $request
     ): Response {
+        $this->denyAccessUnlessGranted('ROLE_CHARGE');
 
         $form = $this->createForm(FilterAndSort::class);
         $form->handleRequest($request);
