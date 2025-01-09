@@ -87,6 +87,10 @@ class RoomController extends AbstractController
         $form = $this->createForm(FilterAndSort::class);
         $form->handleRequest($request);
 
+        //Verify the current date
+        $currentDate = new \DateTime();
+        $season = $this->getSeason($currentDate);
+
         // filter tri choice
         $filterChoice = $form->get('filter')->getData();
         $sortChoice   = $form->get('trier')->getData();
@@ -98,16 +102,20 @@ class RoomController extends AbstractController
             default => $roomRepository->findAllOrderedByRoomName(),
         };
 
-        // summer norm
         $summerNorms = $normRepository->findOneBy([
             'NormType'   => 'confort',
             'NormSeason' => 'été'
         ]);
 
+        $winterNorms = $normRepository->findOneBy([
+            'NormType'   => 'confort',
+            'NormSeason' => 'hiver'
+        ]);
+
         // add diagnostic status to room
         foreach ($rooms as $room) {
             $sa = $room->getSa();
-            $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa, $room, $summerNorms);
+            $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa, $room, $summerNorms, $winterNorms);
             $room->setDiagnosticStatus($diagnosticColor);
         }
 
@@ -132,15 +140,24 @@ class RoomController extends AbstractController
         return $this->render('room/index.html.twig', [
             'form'  => $form->createView(),
             'rooms' => $roomsWithDiagnostics,
+            'season' => $season,
         ]);
     }
 
+    /**
+    * Description: Verify if the current date is in the summer period. Return 'été' if it is, 'hiver' if not.
+    */
+    public function getSeason(\DateTime $date): string
+    {
+        $startSummer = new \DateTime('March 20');
+        $endSummer = new \DateTime('September 22');
 
+        if ($date >= $startSummer && $date <= $endSummer) {
+            return 'été';
+        }
 
-
-
-
-
+        return 'hiver';
+    }
 
     /**
      * Route: /charge/salles/{roomName}
@@ -164,10 +181,13 @@ class RoomController extends AbstractController
             ]);
         }
 
+        $currentDate = new \DateTime();
+        $season = $this->getSeason($currentDate);
+
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
-            'NormSeason' => 'été'
+            'NormSeason' => $season
         ]);
 
         // Find an SA if it exists
@@ -190,6 +210,11 @@ class RoomController extends AbstractController
         ]);
     }
 
+    /**
+     * Route: /technicien/salles/{roomName}
+     * Name: app_room_info_technicien
+     * Description: Displays detailed information about a specific room.
+     */
     #[Route('/technicien/salles/{roomName}', name: 'app_room_info_technicien')]
     public function roomInfoTech(
         string $roomName,
@@ -206,10 +231,13 @@ class RoomController extends AbstractController
         $norms = null;
 
 
+        $currentDate = new \DateTime();
+        $season = $this->getSeason($currentDate);
+
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
-            'NormSeason' => 'été'
+            'NormSeason' =>  $season
         ]);
 
         // 4. check if a sa is associate with room

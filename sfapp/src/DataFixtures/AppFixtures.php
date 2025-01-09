@@ -256,7 +256,6 @@ class AppFixtures extends Fixture
         $down6->setMicrocontroller(false);
         $down6->setDate(new \DateTime('2025-01-03 16:34:56'));
         $manager->persist($down6);
-
     }
 
     public function load(ObjectManager $manager): void
