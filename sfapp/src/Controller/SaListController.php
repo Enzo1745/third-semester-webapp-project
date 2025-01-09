@@ -80,7 +80,7 @@ class SaListController extends AbstractController
         } elseif ($choice === 'SAAvailable') {
             $saList = $saRepo->findBy(['state' => SAState::Available]);
         } else {
-	        $saList = $saRepo->findAll(); // Default: no filter applied
+	        $saList = $saRepo->findAllSortedByName();; // Default: no filter applied
         }
 
         $summerNorms = $normRepository->findOneBy([
@@ -118,7 +118,7 @@ class SaListController extends AbstractController
     /**
      * Description: Verify if the current date is in the summer period. Return 'été' if it is, 'hiver' if not.
      */
-    private function getSeason(\DateTime $date)
+    private function getSeason(\DateTime $date): string
     {
         $startSummer = new \DateTime('March 20');
         $endSummer = new \DateTime('September 22');

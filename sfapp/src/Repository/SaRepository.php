@@ -81,6 +81,13 @@ class SaRepository extends ServiceEntityRepository
         return $saList;
     }
 
+    public function findAllSortedByName(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->orderBy('s.name', 'ASC') // Tri ascendant par name
+            ->getQuery()
+            ->getResult();
+    }
 
 
 
@@ -92,7 +99,9 @@ class SaRepository extends ServiceEntityRepository
 
 
 
-	//    /**
+
+
+    //    /**
     //     * @return Sa[] Returns an array of Sa objects
     //     */
     //    public function findByExampleField($value): array

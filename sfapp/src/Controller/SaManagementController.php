@@ -84,20 +84,19 @@ class SaManagementController extends AbstractController
     #[Route('technicien/sa/ajouter', name: 'app_add_sa', methods: ['POST'])]
     public function addSa(Request $request, EntityManagerInterface $entityManager): Response
     {
-
-        $saId = $request->request->get('sa_id');
-
+        $saId = $request->request->get('sa_id'); // ID personnalisé (s'il est fourni)
 
         $newSa = new SA();
 
         if (!empty($saId)) {
-
+            // Si un ID personnalisé est fourni
             $existingSa = $entityManager->getRepository(SA::class)->find($saId);
             if ($existingSa) {
                 $this->addFlash('error', 'Un système d\'acquisition avec cet ID existe déjà.');
                 return $this->redirectToRoute('app_technician_sa');
             }
             $newSa->setId((int)$saId);
+            $newSa->setName('ESP-' . str_pad($saId, 3, '0', STR_PAD_LEFT));
         } else {
 
             $ids = $entityManager->createQueryBuilder()
@@ -105,7 +104,6 @@ class SaManagementController extends AbstractController
                 ->from(SA::class, 'sa')
                 ->getQuery()
                 ->getArrayResult();
-
 
             $allIds = array_column($ids, 'id');
             sort($allIds);
@@ -116,25 +114,25 @@ class SaManagementController extends AbstractController
                 if ($existingId === $newId) {
                     $newId++;
                 } elseif ($existingId > $newId) {
-
                     break;
                 }
             }
 
             $newSa->setId($newId);
+
+            $newSa->setName('ESP-' . str_pad($newId, 3, '0', STR_PAD_LEFT));
         }
 
-
         $newSa->setState(SAState::Available);
-
 
         $entityManager->persist($newSa);
         $entityManager->flush();
 
-        $this->addFlash('success', 'SA ajouté avec succès.');
+        $this->addFlash('success', 'Le nouveau système d\'acquisition a été ajouté avec succès.');
         return $this->redirectToRoute('app_technician_sa');
-
     }
+
+
 
     #[Route('/charge/gestion_sa/dissocier/{id}', name: 'app_sa_dissociate', methods: ['POST'])]
     public function dissociate(int $id, SaRepository $saRepo, EntityManagerInterface $entityManager): Response

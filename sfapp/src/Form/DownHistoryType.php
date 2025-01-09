@@ -20,7 +20,7 @@ class DownHistoryType extends AbstractType
             ->add('filtrer', EntityType::class, [
                 'class' => Sa::class,
                 'label' => 'SA',
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'placeholder' => 'Filter par un SA',
                 'attr' => [
                     'class' => 'form-select',

@@ -21,7 +21,7 @@ class SaDownType extends AbstractType
             ->add('sa', EntityType::class, [
                 'class' => Sa::class,
                 'label' => 'SA',
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'query_builder' => function (SaRepository $er) {
                     return $er->createQueryBuilder('s')
                         ->where('s.state = :state')

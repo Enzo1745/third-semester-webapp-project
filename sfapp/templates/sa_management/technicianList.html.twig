@@ -142,7 +142,7 @@
                         {% else %}
                             {% for sa in saList %}
                                 <tr>
-                                    <td class="text-center">{{ sa.id }}</td>
+                                    <td class="text-center">{{ sa.name}}</td>
                                     <td class="text-center">
                                         {% if sa.room is not null %}
                                             {{ sa.room.roomName }}
@@ -235,8 +235,8 @@
                 <div class="modal-body">
                     <form action="{{ path('app_add_sa') }}" method="post">
                         <div class="mb-3">
-                            <label for="saIdInput" class="form-label">ID du système d'acquisition (facultatif)</label>
-                            <input type="text" class="form-control" id="saIdInput" name="sa_id" placeholder="Laisser vide pour auto-incrémenter">
+                            <label for="saIdInput" class="form-label">ID du système d'acquisition (facultatif) <br> Le sa doit avoir trois chiffres</label>
+                            <input type="text" class="form-control" id="saIdInput" name="sa_id" placeholder="Laisser vide pour auto-incrémenter (ESP-XXX)">
                         </div>
                         <button type="submit" class="btn btn-primary">Ajouter</button>
                     </form>

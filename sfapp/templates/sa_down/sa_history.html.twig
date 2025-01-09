@@ -37,15 +37,15 @@
                                 <div class="ms-3">
                                     {% if nbPannes == 0 %}
                                         <p5 class="mt-2">
-                                            <strong>Le SA numéro {{ sa.id }} n'a eu aucune panne.</strong>
+                                            <strong>Le SA numéro {{ sa.name }} n'a eu aucune panne.</strong>
                                         </p5>
                                     {% elseif nbPannes == 1 %}
                                         <p5 class="mt-2 text-danger">
-                                            <strong>Le SA numéro {{ sa.id }} a eu une seule panne.</strong>
+                                            <strong>Le SA numéro {{ sa.name  }} a eu une seule panne.</strong>
                                         </p5>
                                     {% else %}
                                         <p5 class="mt-2 text-danger">
-                                            <strong>Le SA numéro {{ sa.id }} a eu {{ nbPannes }} pannes.</strong>
+                                            <strong>Le SA numéro {{ sa.name  }} a eu {{ nbPannes }} pannes.</strong>
                                         </p5>
                                     {% endif %}
                                 </div>
@@ -124,7 +124,7 @@
                                 {{ panne.date|date('Y-m-d H:i') }}
                             </div>
                             <div class="col-2 text-center">
-                                {{ panne.sa.id }}
+                                {{ panne.sa.name }}
                             </div>
                             <div class="col-1 text-center">
                                 {% set panneCount = panne.sa.down|length %}
