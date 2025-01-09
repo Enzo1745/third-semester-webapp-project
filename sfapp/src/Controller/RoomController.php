@@ -147,7 +147,7 @@ class RoomController extends AbstractController
     /**
     * Description: Verify if the current date is in the summer period. Return 'été' if it is, 'hiver' if not.
     */
-    private function getSeason(\DateTime $date)
+    private function getSeason(\DateTime $date): string
     {
         $startSummer = new \DateTime('March 20');
         $endSummer = new \DateTime('September 22');
@@ -181,10 +181,13 @@ class RoomController extends AbstractController
             ]);
         }
 
+        $currentDate = new \DateTime();
+        $season = $this->getSeason($currentDate);
+
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
-            'NormSeason' => 'été'
+            'NormSeason' => $season
         ]);
 
         // Find an SA if it exists
@@ -228,10 +231,13 @@ class RoomController extends AbstractController
         $norms = null;
 
 
+        $currentDate = new \DateTime();
+        $season = $this->getSeason($currentDate);
+
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
-            'NormSeason' => 'été'
+            'NormSeason' =>  $season
         ]);
 
         // 4. check if a sa is associate with room
