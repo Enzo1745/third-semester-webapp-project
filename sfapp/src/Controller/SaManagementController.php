@@ -4,15 +4,14 @@ namespace App\Controller;
 
 use App\Entity\Down;
 use App\Entity\Sa;
+use App\Form\DownHistoryType;
 use App\Form\SaDownType;
 use App\Form\SaManagementType;
 use App\Repository\DownRepository;
 use App\Repository\Model\SAState;
 use App\Repository\SaRepository;
 use App\Repository\RoomRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -203,6 +202,61 @@ class SaManagementController extends AbstractController
             "nbSaFunctionnals" => $nbSaFunctionnals,
             "saForm" => $form->createView(),
             "saDownList" => $saList,
+        ]);
+    }
+
+    /**
+     * @param DownRepository $downRepository
+     * @param Request $request
+     * @return Response
+     */
+   #[Route('/technicien/sa/panne/historique', name: 'app_history')]
+    public function showhistory(DownRepository $downRepository, Request $request): Response
+    {
+        $form = $this->createForm(DownHistoryType::class);
+        $form->handleRequest($request);
+
+        $sa = $form->get('filtrer')->getData();
+
+        // Request to get all the down Sa
+        $queryBuilder = $downRepository->createQueryBuilder('d')
+            ->leftJoin('d.sa', 'sa')
+            ->orderBy('d.date', 'DESC');
+
+        // filter by sa if filter is used
+        if ($sa) {
+            $queryBuilder->andWhere('d.sa = :sa')
+                ->setParameter('sa', $sa);
+        }
+
+        $dateBeg = $form->get('dateBeg')->getData();
+        $dateEnd = $form->get('dateEnd')->getData();
+
+        if ($dateBeg) {
+            $queryBuilder->andWhere('d.date >= :dateBeg')
+                ->setParameter('dateBeg', $dateBeg->format('Y-m-d'));
+        }
+
+        if ($dateEnd) {
+            // date to 23:59:59 to have the day for the end day filter
+            $dateEnd->setTime(23, 59, 59);
+            $queryBuilder->andWhere('d.date <= :dateEnd')
+                ->setParameter('dateEnd', $dateEnd->format('Y-m-d H:i:s'));
+        }
+
+        $down = $queryBuilder->getQuery()->getResult();
+
+        $nbDown = 0;
+        if ($sa) {
+            $nbDown = count($downRepository->findBy(['sa' => $sa]));
+        }
+
+        // Send results
+        return $this->render('sa_down/sa_history.html.twig', [
+            'down' => $down,
+            'form' => $form->createView(),
+            'nbPannes' => $nbDown,
+            'sa' => $sa
         ]);
     }
 
