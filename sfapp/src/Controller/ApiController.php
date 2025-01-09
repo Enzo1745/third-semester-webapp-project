@@ -36,11 +36,11 @@ class ApiController extends AbstractController
 
         // List of all the database name in the API (commented if there is a problem)
         $this->dbList = [
-            "sae34bdk1eq1", /*"sae34bdk1eq2", "sae34bdk1eq3",*/
-            "sae34bdk2eq1", "sae34bdk2eq2", "sae34bdk2eq3",
-            //"sae34bdl1eq1", "sae34bdl1eq2", "sae34bdl1eq3",
-            /*"sae34bdl2eq1", */"sae34bdl2eq2", "sae34bdl2eq3",
-            "sae34bdm1eq1", "sae34bdm1eq2", "sae34bdm1eq3",
+            /*"sae34bdk1eq1", "sae34bdk1eq2", */"sae34bdk1eq3",
+            /*"sae34bdk2eq1", "sae34bdk2eq2", */"sae34bdk2eq3",
+            /*"sae34bdl1eq1", */"sae34bdl1eq2",/* "sae34bdl1eq3",*/
+            /*"sae34bdl2eq1", "sae34bdl2eq2", */"sae34bdl2eq3",
+            /*"sae34bdm1eq1", "sae34bdm1eq2",*/ "sae34bdm1eq3",
         ];
     }
 
