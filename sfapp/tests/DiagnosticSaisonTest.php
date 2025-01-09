@@ -12,7 +12,8 @@ use App\Entity\Sa;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\NormType;
 use DateTime;
-
+use function PHPUnit\Framework\assertArrayHasKey;
+use App\Controller\RoomController;
 class DiagnosticSaisonTest extends WebTestCase
 {
     private Norm $summerNorms;
@@ -216,6 +217,43 @@ class DiagnosticSaisonTest extends WebTestCase
         $status = $diagnosticService->getDiagnosticStatus($sa, $room, $this->summerNorms, $this->winterNorms, $compliantCount);
         $this->assertEquals('red', $status);
     }
+
+    public function testAffichageWinterText()
+    {
+        $client = static::createClient();
+
+        $controller = new RoomController();
+        $date = new \DateTime('2025-01-15');
+        $crawler = $client->request('GET', '/charge/salles');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $season = $controller->getSeason($date);
+        $this->assertEquals("hiver", $season);
+
+    }
+
+    public function testAffichageSummerText()
+    {
+        $client = static::createClient();
+
+        $controller = new RoomController();
+        $date = new \DateTime('2025-06-21');
+        $crawler = $client->request('GET', '/charge/salles');
+
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+
+        $season = $controller->getSeason($date);
+        $this->assertEquals("été", $season);
+
+
+
+    }
+
+
+
+
+
 
     private function createNorm(NormSeason $season, NormType $type): Norm
     {
