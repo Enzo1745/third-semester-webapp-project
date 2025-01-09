@@ -30,7 +30,7 @@ class ConnexionController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid() && $this->CheckLoginIsvalid($username, $password, $userRepository)) {
                 $role = $userRepository->findUserRole($username);
-                var_dump($role);
+
 
                 if ($role === null) {
                     return $this->redirectToRoute('app_connexion');

@@ -134,6 +134,7 @@ class AppFixtures extends Fixture
 
         $sa1 = new Sa();
         $sa1->setId(1);
+        $sa1->setName("ESP-001");
         $sa1->setTemperature(22)->setHumidity(50)->setCO2(800)
             ->setState(SAState::Waiting)
             ->setRoom($room2);
@@ -142,6 +143,7 @@ class AppFixtures extends Fixture
 
 
         $sa2 = new Sa();
+        $sa2->setName("ESP-002");
         $sa2->setId(2);
         $sa2->setTemperature(25)->setHumidity(45)->setCO2(1200)
             ->setState(SAState::Available);
@@ -149,12 +151,14 @@ class AppFixtures extends Fixture
 
 
         $sa3 = new Sa();
+        $sa3->setName("ESP-003");
         $sa3->setId(3);
         $sa3->setState(SAState::Available);
         $manager->persist($sa3);
 
 
         $sa4 = new Sa();
+        $sa4->setName("ESP-004");
         $sa4->setId(4);
         $sa4->setState(SAState::Available);
         $sa4->setTemperature(20)->setHumidity(40)->setCO2(1000);
@@ -162,6 +166,7 @@ class AppFixtures extends Fixture
 
 
         $sa5 = new Sa();
+        $sa5->setName("ESP-005");
         $sa5->setId(5);
         $sa5->setState(SAState::Installed)
             ->setTemperature(25)->setHumidity(45)->setCO2(1200);
