@@ -5,6 +5,8 @@ namespace App\Controller;
 use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
+use App\Entity\ComfortInstruction;
+use App\Entity\ComfortInstructionRoom;
 use App\Form\SearchRoomsType;
 use App\Repository\DownRepository;
 use App\Repository\Model\SAState;
@@ -78,5 +80,27 @@ class HomeController extends AbstractController
             'norms' => $norms,
             'down' => $down,
         ]);
+    }
+
+    /**
+     * The $instructionId parameter determines which comfort instruction is applied:
+     * - 1: Open the window
+     * - 2: Open the door
+     * - 3: Turn on the heater
+     * - 4: Turn off the heater
+     */
+    public function applyComfortInstruction(int $roomId, int $instructionId, EntityManagerInterface $entityManager): void
+    {
+        // Get room and comfort instruction by their IDs
+        $room = $entityManager->getRepository(Room::class)->find($roomId);
+        $instruction = $entityManager->getRepository(ComfortInstruction::class)->find($instructionId);
+
+        // Create and associate the comfort instruction with the room
+        $comfortInstructionRoom = new ComfortInstructionRoom();
+        $comfortInstructionRoom->setRoom($room);
+        $comfortInstructionRoom->setComfortInstruction($instruction);
+
+        $entityManager->persist($comfortInstructionRoom);
+        $entityManager->flush();
     }
 }

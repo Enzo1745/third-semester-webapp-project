@@ -174,10 +174,13 @@ class AppFixtures extends Fixture
 
     private function comfortInstructionsFixtures(ObjectManager $manager) : void
     {
-        // Création des trois instructions de confort
         $comfortInstruction1 = new ComfortInstruction();
         $comfortInstruction1->setInstruction("Ouvrir la fenêtre");
         $manager->persist($comfortInstruction1);
+
+        $comfortInstruction2 = new ComfortInstruction();
+        $comfortInstruction2->setInstruction("Ouvrir la porte");
+        $manager->persist($comfortInstruction2);
 
         $comfortInstruction2 = new ComfortInstruction();
         $comfortInstruction2->setInstruction("Allumer les radiateurs");
