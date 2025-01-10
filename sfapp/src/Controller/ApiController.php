@@ -65,7 +65,7 @@ class ApiController extends AbstractController
         }
 
         // Get the actual date and the last update date in Y-m-d format (ex : 2025-06-24)
-        $actualDate = new \DateTime();
+        $actualDate = new \DateTime("tomorrow");
         $actualDate = $actualDate->format('Y-m-d');
         $lastUpdateDate = $lastUpdate->getDate()->format("Y-m-d");
 
