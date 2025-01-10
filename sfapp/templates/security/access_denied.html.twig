@@ -24,8 +24,8 @@
 
                         {# Username field #}
                         <div class="text-center flex-grow-1 mb-4">
-                            <a href="{{ path('app_home') }}" class="btn btn-danger ms-2">
-                                <i class="fas fa-home me-1"></i> Retour à la page d'accueil
+                            <a href="{{ path('app_deconnexion') }}" class="btn btn-danger ms-2">
+                                <i class="fas fa-home me-1"></i> Se deconnecter et retourner a l'accueil
                             </a>
                         </div>
                         {% if is_granted('ROLE_CHARGE') in roles %}
