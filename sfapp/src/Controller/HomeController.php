@@ -12,6 +12,7 @@ use App\Repository\DownRepository;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
 use App\Repository\TipsRepository;
+use App\Repository\ComfortInstructionRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,7 +30,8 @@ class HomeController extends AbstractController
         RoomRepository $roomRepository,
         DownRepository $downRepo,
         EntityManagerInterface $entityManager,
-        TipsRepository $tipsRepo
+        TipsRepository $tipsRepo,
+        ComfortInstructionRoomRepository $comfortInstructionRoomRepo
     ): Response
     {
         $tips = $tipsRepo->findRandTips(); // return a random tips from database
@@ -37,9 +39,8 @@ class HomeController extends AbstractController
         $form = $this->createForm(SearchRoomsType::class);
         $form->handleRequest($request);
 
-        $roomName = '';
-
         // Get selected room name
+        $roomName = '';
         if ($form->isSubmitted() && $form->isValid()) {
             $selectedRoom = $form->get('salle')->getData();
             if ($selectedRoom) {
@@ -49,10 +50,14 @@ class HomeController extends AbstractController
 
         // Get the room by room name
         $room = null;
+        $instructions = [];
         if (!empty($roomName)) {
             $room = $roomRepository->findByRoomNameWithSA($roomName);
+            if ($room) {
+                $this->giveInstructionsForRoom($room, $entityManager);
+                $instructions = $comfortInstructionRoomRepo->findBy(['room' => $room]);
+            }
         }
-        $down = null;
 
         // Determine the current season and retrieve the appropriate norms
         $currentDate = new \DateTime();
@@ -62,20 +67,18 @@ class HomeController extends AbstractController
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
-            'NormSeason' => 'été'
+            'NormSeason' => $season
         ]);
 
         // Get the room SA
         $sa = null;
+        $down = null;
         if ($room and $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
             if ($sa && $sa->getState() == SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
             }
         }
-
-        // Filter the tips based on the room's parameters and the norms
-        $comfortInstructions = $this->getComfortInstructions($sa, $norms);
 
         return $this->render('home/index.html.twig', [
             'form' => $form->createView(),
@@ -85,8 +88,31 @@ class HomeController extends AbstractController
             'origin' => 'charge',
             'norms' => $norms,
             'down' => $down,
-            'comfortInstructions' => $comfortInstructions,
+            'instructions' => $instructions,
         ]);
+    }
+
+    /**
+     * Gives tasks to the user depending on the conditions of a given room
+     */
+    private function giveInstructionsForRoom(Room $room, EntityManagerInterface $entityManager): void
+    {
+        $sa = $room->getIdSA() ? $entityManager->getRepository(Sa::class)->find($room->getIdSA()) : null;
+        $norms = $entityManager->getRepository(Norm::class)->findOneBy([
+            'NormType' => "Confort"
+        ]);
+
+        // Apply comfort instructions based on conditions
+        if ($sa->getCo2() > $norms->getCo2MaxNorm() || $sa->getHumidity() > $norms->getHumidityMaxNorm()) {
+            $this->applyComfortInstruction($room->getId(), 1, $entityManager); // Open window
+            $this->applyComfortInstruction($room->getId(), 2, $entityManager); // Open door
+        }
+
+        if ($sa->getTemperature() < $norms->getTemperatureMinNorm()) {
+            $this->applyComfortInstruction($room->getId(), 3, $entityManager); // Turn on heater
+        } elseif ($sa->getTemperature() > $norms->getTemperatureMaxNorm()) {
+            $this->applyComfortInstruction($room->getId(), 4, $entityManager); // Turn off heater
+        }
     }
 
     /**
@@ -95,45 +121,9 @@ class HomeController extends AbstractController
     private function getSeason(\DateTime $date): string
     {
         $startSummer = new \DateTime('7 April');
-        $endSummer = new \DateTime('6 October');
         $startWinter = new \DateTime('6 October');
-        $endWinter = new \DateTime('7 April');
 
-        if ($date >= $startSummer && $date <= $endSummer) {
-            return 'summer';
-        } else {
-            return 'winter';
-        }
-    }
-
-    /**
-     * Filters the tips based on the room's parameters and the norms.
-     */
-    private function getComfortInstructions($sa, $norms): array
-    {
-        $instructions = [];
-
-        if ($sa && $norms) {
-            // Example of checking room parameters and norms
-            if ($sa->getTemperature() < $norms->getTemperatureMinNorm()) {
-                $instructions[] = "Increase temperature";
-            } elseif ($sa->getTemperature() > $norms->getTemperatureMaxNorm()) {
-                $instructions[] = "Decrease temperature";
-            }
-
-            if ($sa->getHumidity() < $norms->getHumidityMinNorm()) {
-                $instructions[] = "Increase humidity";
-            } elseif ($sa->getHumidity() > $norms->getHumidityMaxNorm()) {
-                $instructions[] = "Decrease humidity";
-            }
-
-            if ($sa->getCo2() < $norms->getCo2MinNorm()) {
-                $instructions[] = "Increase ventilation";
-            } elseif ($sa->getCo2() > $norms->getCo2MaxNorm()) {
-                $instructions[] = "Reduce CO2 concentration";
-            }
-        }
-        return $instructions;
+        return ($date >= $startSummer && $date < $startWinter) ? "Été" : "Hiver";
     }
 
     /**
