@@ -25,10 +25,10 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
                     return new RedirectResponse($this->router->generate('app_room_list'));
                 }
                 if ($role == 'ROLE_TECH'){
-                    return new RedirectResponse($this->router->generate('user_index'));
+                    return new RedirectResponse($this->router->generate('app_technician_sa'));
                 }
             }
         }
-        return new RedirectResponse($this->router->generate('app_login'));
+        return new RedirectResponse($this->router->generate('app_connexion'));
     }
 }
