@@ -153,31 +153,32 @@
         </div>
 
         <!-- Tasks to do by the user -->
-        <div class="container mb-4">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white py-3">
-                    <h5 class="mb-0">Actions à faire</h5>
-                </div>
-                <div class="card-body">
-                    <ul class="list-unstyled" id="actions-list">
-                        {% for i in 1..4 %}
-                            <li class="mb-3">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <label for="message{{ i }}" class="form-check-label mb-0">
-                                        Action {{ i }}
-                                    </label>
-                                    <input type="checkbox" id="message{{ i }}" class="form-check-input action-checkbox">
-                                </div>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    <button class="btn btn-primary disabled" id="confirmButton" data-bs-toggle="modal" data-bs-target="#confirmationModal" disabled>
-                        Confirmer
-                    </button>
+        {% if instructions is not empty %}
+            <div class="container mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0">Actions à faire</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled" id="actions-list">
+                            {% for instruction in instructions %}
+                                <li class="mb-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <label for="message{{ loop.index }}" class="form-check-label mb-0">
+                                            {{ instruction.comfortInstruction.id }}
+                                        </label>
+                                        <input type="checkbox" id="message{{ loop.index }}" class="form-check-input action-checkbox">
+                                    </div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        <button class="btn btn-primary disabled" id="confirmButton" data-bs-toggle="modal" data-bs-target="#confirmationModal" disabled>
+                            Confirmer
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
+        {% endif %}
 
     <!-- Modal to confirm the tasks are done -->
     <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
@@ -197,45 +198,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Retrieve all checkboxes and the confirmation button
-        const confirmButton = document.getElementById('confirmButton');
-
-        // Function to enable/disable the button
-        function updateButtonState() {
-            // Check if any checkbox is selected
-            const anyChecked = document.querySelectorAll('.action-checkbox:checked').length > 0;
-            confirmButton.disabled = !anyChecked; // Enable or disable the button
-            confirmButton.classList.toggle('disabled', !anyChecked); // Add or remove the "disabled" class
-        }
-
-        // Add event listener to each checkbox dynamically
-        document.getElementById('actions-list').addEventListener('change', function (event) {
-            if (event.target.classList.contains('action-checkbox')) {
-                updateButtonState();
-            }
-        });
-
-        // Remove checked items when the user confirms
-        document.getElementById('confirmActions').addEventListener('click', function () {
-            const checkboxes = document.querySelectorAll('.action-checkbox:checked');
-
-            // Loop through the checked checkboxes and remove their parent list items
-            checkboxes.forEach(checkbox => {
-                const listItem = checkbox.closest('li');
-                if (listItem) {
-                    listItem.remove();
-                }
-            });
-
-            // Update the button state after removing tasks
-            updateButtonState();
-
-            // Close the modal
-            const confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
-            confirmationModal.hide();
-        });
-    </script>
-
 {% endblock %}

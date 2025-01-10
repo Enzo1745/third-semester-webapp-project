@@ -104,14 +104,14 @@ class HomeController extends AbstractController
 
         // Apply comfort instructions based on conditions
         if ($sa->getCo2() > $norms->getCo2MaxNorm() || $sa->getHumidity() > $norms->getHumidityMaxNorm()) {
-            $this->applyComfortInstruction($room->getId(), 1, $entityManager); // Open window
-            $this->applyComfortInstruction($room->getId(), 2, $entityManager); // Open door
+            $this->applyComfortInstruction($room, 1, $entityManager); // Open window
+            $this->applyComfortInstruction($room, 2, $entityManager); // Open door
         }
 
         if ($sa->getTemperature() < $norms->getTemperatureMinNorm()) {
-            $this->applyComfortInstruction($room->getId(), 3, $entityManager); // Turn on heater
+            $this->applyComfortInstruction($room, 3, $entityManager); // Turn on heater
         } elseif ($sa->getTemperature() > $norms->getTemperatureMaxNorm()) {
-            $this->applyComfortInstruction($room->getId(), 4, $entityManager); // Turn off heater
+            $this->applyComfortInstruction($room, 4, $entityManager); // Turn off heater
         }
     }
 
@@ -133,18 +133,24 @@ class HomeController extends AbstractController
      * - 3: Turn on the heater
      * - 4: Turn off the heater
      */
-    public function applyComfortInstruction(int $roomId, int $instructionId, EntityManagerInterface $entityManager): void
+    public function applyComfortInstruction(Room $room, int $instructionId, EntityManagerInterface $entityManager): void
     {
-        // Get room and comfort instruction by their IDs
-        $room = $entityManager->getRepository(Room::class)->find($roomId);
         $instruction = $entityManager->getRepository(ComfortInstruction::class)->find($instructionId);
 
-        // Create and associate the comfort instruction with the room
-        $comfortInstructionRoom = new ComfortInstructionRoom();
-        $comfortInstructionRoom->setRoom($room);
-        $comfortInstructionRoom->setComfortInstruction($instruction);
+        // Check if the instruction is already linked to the room
+        $existingInstruction = $entityManager->getRepository(ComfortInstructionRoom::class)->findOneBy([
+            'room' => $room,
+            'comfortInstruction' => $instruction
+        ]);
 
-        $entityManager->persist($comfortInstructionRoom);
-        $entityManager->flush();
+        // If not already linked, create and persist the new instruction
+        if (!$existingInstruction && $instruction) {
+            $comfortInstructionRoom = new ComfortInstructionRoom();
+            $comfortInstructionRoom->setRoom($room);
+            $comfortInstructionRoom->setComfortInstruction($instruction);
+
+            $entityManager->persist($comfortInstructionRoom);
+            $entityManager->flush();
+        }
     }
 }

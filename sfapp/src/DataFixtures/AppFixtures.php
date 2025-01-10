@@ -8,6 +8,7 @@ use App\Entity\Sa;
 use App\Entity\Tips;
 use App\Entity\User;
 use App\Entity\ComfortInstruction;
+use App\Entity\ComfortInstructionRoom;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\NormType;
 use App\Repository\Model\SAState;
@@ -170,10 +171,6 @@ class AppFixtures extends Fixture
         $room1->setSa($sa5);
         $manager->persist($sa5);
 
-    }
-
-    private function comfortInstructionsFixtures(ObjectManager $manager) : void
-    {
         $comfortInstruction1 = new ComfortInstruction();
         $comfortInstruction1->setInstruction("Ouvrir la fenêtre");
         $manager->persist($comfortInstruction1);
@@ -182,14 +179,30 @@ class AppFixtures extends Fixture
         $comfortInstruction2->setInstruction("Ouvrir la porte");
         $manager->persist($comfortInstruction2);
 
-        $comfortInstruction2 = new ComfortInstruction();
-        $comfortInstruction2->setInstruction("Allumer les radiateurs");
-        $manager->persist($comfortInstruction2);
-
         $comfortInstruction3 = new ComfortInstruction();
-        $comfortInstruction3->setInstruction("Éteindre les radiateurs");
+        $comfortInstruction3->setInstruction("Allumer les radiateurs");
         $manager->persist($comfortInstruction3);
+
+        $comfortInstruction4 = new ComfortInstruction();
+        $comfortInstruction4->setInstruction("Éteindre les radiateurs");
+        $manager->persist($comfortInstruction4);
+
+//        $comfortInstructionRoom1 = new ComfortInstructionRoom();
+//        $comfortInstructionRoom1->setRoom($room1);
+//        $comfortInstructionRoom1->setComfortInstruction($comfortInstruction4);
+//        $manager->persist($comfortInstructionRoom1);
     }
+
+//    private function comfortInstructionsFixtures(ObjectManager $manager) : void
+//    {
+//
+//    }
+
+//    private function comfortInstructionsRoomsFixtures(ObjectManager $manager) : void
+//    {
+//
+//    }
+
 
     public function load(ObjectManager $manager): void
     {
@@ -198,7 +211,6 @@ class AppFixtures extends Fixture
         $this->normFixtures($manager);
         $this->usersFixtures($manager);
         $this->roomsSAFixtures($manager);
-        $this->comfortInstructionsFixtures($manager);
 
         $manager->flush();
     }
