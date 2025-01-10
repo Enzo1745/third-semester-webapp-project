@@ -48,17 +48,6 @@ class HomeController extends AbstractController
             }
         }
 
-        // Get the room by room name
-        $room = null;
-        $instructions = [];
-        if (!empty($roomName)) {
-            $room = $roomRepository->findByRoomNameWithSA($roomName);
-            if ($room) {
-                $this->giveInstructionsForRoom($room, $entityManager);
-                $instructions = $comfortInstructionRoomRepo->findBy(['room' => $room]);
-            }
-        }
-
         // Determine the current season and retrieve the appropriate norms
         $currentDate = new \DateTime();
         $season = $this->getSeason($currentDate);
@@ -69,6 +58,17 @@ class HomeController extends AbstractController
             'NormType' => 'confort',
             'NormSeason' => $season
         ]);
+
+        // Get the room by room name
+        $room = null;
+        $instructions = [];
+        if (!empty($roomName)) {
+            $room = $roomRepository->findByRoomNameWithSA($roomName);
+            if ($room) {
+                $this->giveInstructionsForRoom($room, $norms, $entityManager);
+                $instructions = $comfortInstructionRoomRepo->findBy(['room' => $room]);
+            }
+        }
 
         // Get the room SA
         $sa = null;
@@ -95,12 +95,9 @@ class HomeController extends AbstractController
     /**
      * Gives tasks to the user depending on the conditions of a given room
      */
-    private function giveInstructionsForRoom(Room $room, EntityManagerInterface $entityManager): void
+    private function giveInstructionsForRoom(Room $room, Norm $norms, EntityManagerInterface $entityManager): void
     {
         $sa = $room->getIdSA() ? $entityManager->getRepository(Sa::class)->find($room->getIdSA()) : null;
-        $norms = $entityManager->getRepository(Norm::class)->findOneBy([
-            'NormType' => "Confort"
-        ]);
 
         // Apply comfort instructions based on conditions
         if ($sa->getCo2() > $norms->getCo2MaxNorm() || $sa->getHumidity() > $norms->getHumidityMaxNorm()) {
