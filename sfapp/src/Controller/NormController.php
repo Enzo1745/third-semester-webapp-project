@@ -65,31 +65,35 @@ class NormController extends AbstractController
     private function updateNorms(Request $request, Norm $summerNorm, Norm $winterNorm, NormRepository $normRepository, EntityManagerInterface $entityManager): void
     {
         if ($request->isMethod('POST')) {
-            $origin = $request->request->get('origin', 'comfort');
-            $errors = [];
+            $origin = $request->request->get('origin', 'comfort'); // Determine if the origin is "comfort" or another type.
+            $errors = []; // Initialize an array to collect validation errors.
 
-            // get technical limit if confort norm
+            // Retrieve technical limits for summer and winter norms if the origin is "comfort".
             $technicalSummer = $origin === 'comfort' ? $normRepository->findTechnicalLimitsBySeason(NormSeason::Summer, NormType::Technical) : null;
             $technicalWinter = $origin === 'comfort' ? $normRepository->findTechnicalLimitsBySeason(NormSeason::Winter, NormType::Technical) : null;
 
+            // If technical limits are required but not defined, display an error message and stop processing.
             if ($origin === 'comfort' && (!$technicalSummer || !$technicalWinter)) {
                 $this->addFlash('danger', 'Les normes techniques ne sont pas définies.');
                 return;
             }
 
-            // Fonction to validate  min/maxx using and not using technical limits
+            // Define a function to validate minimum and maximum values with optional technical limits.
             $validateMinMax = function ($min, $max, $label, $minLimit = null, $maxLimit = null) use (&$errors) {
+                // Check if the values respect the technical limits.
                 if (!is_null($minLimit) && !is_null($maxLimit)) {
                     if ($min < $minLimit || $max > $maxLimit) {
-                        $errors[] = "$label doit être entre $minLimit et $maxLimit.";
+                        $errors[] = "$label doit être entre $minLimit et $maxLimit."; // Add error if limits are violated.
                     }
                 }
+
+                // Ensure the minimum value is less than or equal to the maximum value.
                 if ($min > $max) {
                     $errors[] = "$label : la valeur minimale doit être inférieure ou égale à la valeur maximale.";
                 }
             };
 
-            // Validation pour l'été
+            // Validate summer norms
             if ($request->request->has('humidityMinNormSummer') && $request->request->has('humidityMaxNormSummer')) {
                 $validateMinMax(
                     $request->request->get('humidityMinNormSummer'),
@@ -120,7 +124,7 @@ class NormController extends AbstractController
                 );
             }
 
-            // Validation pour l'hiver
+            // Validate winter norms
             if ($request->request->has('humidityMinNormWinter') && $request->request->has('humidityMaxNormWinter')) {
                 $validateMinMax(
                     $request->request->get('humidityMinNormWinter'),
@@ -151,6 +155,7 @@ class NormController extends AbstractController
                 );
             }
 
+            // If there are validation errors, display them and stop  processing.
             if (!empty($errors)) {
                 foreach ($errors as $error) {
                     $this->addFlash('danger', $error);
@@ -158,7 +163,7 @@ class NormController extends AbstractController
                 return;
             }
 
-            // summer norm
+            // Update summer norms if provided in the request.
             if ($request->request->has('humidityMinNormSummer')) {
                 $summerNorm->setHumidityMinNorm($request->request->get('humidityMinNormSummer'))
                     ->setHumidityMaxNorm($request->request->get('humidityMaxNormSummer'))
@@ -168,7 +173,7 @@ class NormController extends AbstractController
                     ->setCo2MaxNorm($request->request->get('co2MaxNormSummer'));
             }
 
-            // winter norm
+            // Update winter norms if provided in the request.
             if ($request->request->has('humidityMinNormWinter')) {
                 $winterNorm->setHumidityMinNorm($request->request->get('humidityMinNormWinter'))
                     ->setHumidityMaxNorm($request->request->get('humidityMaxNormWinter'))
