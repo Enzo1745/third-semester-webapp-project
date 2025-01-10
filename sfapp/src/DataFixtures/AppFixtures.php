@@ -96,15 +96,13 @@ class AppFixtures extends Fixture
         $user1 = new User();
         $user1->setUsername('charge')
             ->setPassword(password_hash('1234', PASSWORD_BCRYPT)) //1234 mais hash  PAS TOUCHER
-            ->setRoles(['ROLE_CHARGE'])
-            ->setRole(UserRoles::Charge);
+            ->setRoles(['ROLE_CHARGE']);
         $manager->persist($user1);
 
         $user2 = new User();
         $user2->setUsername('tech')
             ->setPassword(password_hash('5678', PASSWORD_BCRYPT)) // 5678 mais hash PAS TOUCHER
-            ->setRoles(['ROLE_TECH'])
-            ->setRole(UserRoles::Technicien);
+            ->setRoles(['ROLE_TECH']);
         $manager->persist($user2);
 
 

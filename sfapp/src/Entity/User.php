@@ -35,8 +35,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var  User roles for logic
      */
-    #[ORM\Column(type: "string", enumType: UserRoles::class)]
-    private ?UserRoles $role = null;
+    //#[ORM\Column(type: "string", enumType: UserRoles::class)]
+    //private ?UserRoles $role = null;
 
     public function getId(): ?int
     {
@@ -88,22 +88,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
-
-    /*
-     * Roles for the site not the security (do not delete)
-     */
-    public function getRole(): ?UserRoles
-    {
-        return $this->role;
-    }
-
-    public function setRole(UserRoles $role): static
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
 
     /**
      * @see PasswordAuthenticatedUserInterface
