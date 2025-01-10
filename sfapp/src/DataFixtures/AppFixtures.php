@@ -170,7 +170,10 @@ class AppFixtures extends Fixture
         $sa5->setRoom($room1);
         $room1->setSa($sa5);
         $manager->persist($sa5);
+    }
 
+    private function comfortInstructionsFixtures(ObjectManager $manager) : void
+    {
         $comfortInstruction1 = new ComfortInstruction();
         $comfortInstruction1->setInstruction("Ouvrir la fenêtre");
         $manager->persist($comfortInstruction1);
@@ -186,23 +189,7 @@ class AppFixtures extends Fixture
         $comfortInstruction4 = new ComfortInstruction();
         $comfortInstruction4->setInstruction("Éteindre les radiateurs");
         $manager->persist($comfortInstruction4);
-
-//        $comfortInstructionRoom1 = new ComfortInstructionRoom();
-//        $comfortInstructionRoom1->setRoom($room1);
-//        $comfortInstructionRoom1->setComfortInstruction($comfortInstruction4);
-//        $manager->persist($comfortInstructionRoom1);
     }
-
-//    private function comfortInstructionsFixtures(ObjectManager $manager) : void
-//    {
-//
-//    }
-
-//    private function comfortInstructionsRoomsFixtures(ObjectManager $manager) : void
-//    {
-//
-//    }
-
 
     public function load(ObjectManager $manager): void
     {
@@ -211,6 +198,7 @@ class AppFixtures extends Fixture
         $this->normFixtures($manager);
         $this->usersFixtures($manager);
         $this->roomsSAFixtures($manager);
+        $this->comfortInstructionsFixtures($manager);
 
         $manager->flush();
     }

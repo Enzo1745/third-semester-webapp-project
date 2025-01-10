@@ -165,7 +165,7 @@
                                 <li class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <label for="message{{ loop.index }}" class="form-check-label mb-0">
-                                            {{ instruction.comfortInstruction.id }}
+                                            {{ instruction.comfortInstruction.instruction }}
                                         </label>
                                         <input type="checkbox" id="message{{ loop.index }}" class="form-check-input action-checkbox">
                                     </div>
@@ -180,7 +180,7 @@
             </div>
         {% endif %}
 
-    <!-- Modal to confirm the tasks are done -->
+    <!-- Confirmation Modal -->
     <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -189,13 +189,57 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Avez-vous réalisé les actions sélectionnées ?
+                    Avez-vous réalisé ces actions ?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>
-                    <button type="button" class="btn btn-primary" id="confirmActions">Oui</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="confirmModalButton">Oui, confirmer</button>
                 </div>
             </div>
         </div>
     </div>
+
+        <!-- JavaScript to enable the button when a checkbox is checked -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const checkboxes = document.querySelectorAll('.action-checkbox');
+                const confirmButton = document.getElementById('confirmButton');
+                const confirmModalButton = document.getElementById('confirmModalButton');
+                const actionList = document.getElementById('actions-list');
+                const modalElement = document.getElementById('confirmationModal');
+
+                // Function to check if any checkbox is checked
+                function toggleConfirmButton() {
+                    const isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked);
+                    confirmButton.disabled = !isChecked;
+                    confirmButton.classList.toggle('disabled', !isChecked);
+                }
+
+                // Attach the event listener to each checkbox
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', toggleConfirmButton);
+                });
+
+                confirmModalButton.addEventListener('click', function () {
+                    checkboxes.forEach(checkbox => {
+                        if (checkbox.checked) {
+                            const listItem = checkbox.closest('li');
+
+                            listItem.classList.add('text-muted');  // Make the item greyed out
+                            listItem.style.opacity = '0.6';
+
+                            const newListItem = listItem.cloneNode(true);
+                            newListItem.querySelector('input').remove(); // Remove checkbox from clone
+                            listItem.remove(); // Remove the original list item
+                            actionList.appendChild(newListItem);
+                        }
+                    });
+
+                    toggleConfirmButton();
+
+                    const modalInstance = bootstrap.Modal.getInstance(modalElement);
+                    modalInstance.hide();
+                });
+            });
+        </script>
 {% endblock %}
