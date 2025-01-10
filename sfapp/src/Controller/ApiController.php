@@ -36,10 +36,10 @@ class ApiController extends AbstractController
 
         // List of all the database name in the API (commented if there is a problem)
         $this->dbList = [
-            /*"sae34bdk1eq1", "sae34bdk1eq2", */"sae34bdk1eq3",
-            /*"sae34bdk2eq1", "sae34bdk2eq2", */"sae34bdk2eq3",
-            /*"sae34bdl1eq1", */"sae34bdl1eq2",/* "sae34bdl1eq3",*/
-            /*"sae34bdl2eq1", "sae34bdl2eq2", */"sae34bdl2eq3",
+            // /*"sae34bdk1eq1", "sae34bdk1eq2", */"sae34bdk1eq3",
+            // /*"sae34bdk2eq1", "sae34bdk2eq2", */"sae34bdk2eq3",
+            // /*"sae34bdl1eq1", */"sae34bdl1eq2",/* "sae34bdl1eq3",*/
+            // /*"sae34bdl2eq1", "sae34bdl2eq2", */"sae34bdl2eq3",
             /*"sae34bdm1eq1", "sae34bdm1eq2",*/ "sae34bdm1eq3",
         ];
     }
@@ -148,7 +148,7 @@ class ApiController extends AbstractController
             if (!$sa) {
                 $sa = new Sa();
                 $sa->setName($saName);
-                $sa->setState(SAState::Installed);
+                $sa->setState(SAState::Available);
                 $this->entityManager->persist($sa);
             }
 
@@ -166,32 +166,32 @@ class ApiController extends AbstractController
                     if (!isset($latestMeasures[$item['nom']]) || strtotime($item['dateCapture']) > strtotime($latestMeasures[$item['nom']]['dateCapture'])) {
                         $latestMeasures[$item['nom']] = $item;
                         $latestMeasures[$item['localisation']] = $item;
+                        $latestMeasures[$item['valeur']] = $item;
                     }
                 }
             }
 
             // Update the SA with the latest measure values
             foreach ($latestMeasures as $item) {
-                if ($item === 'temp') {
-                    $sa->setTemperature(floatval($item['valeur']));
-                } elseif ($item === 'hum') {
-                    $sa->setHumidity(floatval($item['valeur']));
-                } elseif ($item === 'co2') {
-                    $sa->setCO2(floatval($item['valeur']));
-                } elseif ($item === 'lum') {
-                    $sa->setLum(floatval($item['valeur']));
-                } elseif ($item === 'pres') {
+                if ($item['nom'] === 'temp') {
+                    $sa->setTemperature(intval($item['valeur']));
+                } elseif ($item['nom'] === 'hum') {
+                    $sa->setHumidity(intval($item['valeur']));
+                } elseif ($item['nom'] === 'co2') {
+                    $sa->setCO2(intval($item['valeur']));
+                } elseif ($item['nom'] === 'lum') {
+                    $sa->setLum(intval($item['valeur']));
+                } elseif ($item['nom'] === 'pres') {
                     $sa->setPres(boolval($item['valeur']));
                 }
                 $roomRepository = $this->entityManager->getRepository(Room::class);
                 $room = $roomRepository->findOneBy(['roomName' => $item['localisation']]);
 
                 $sa->setRoom($room);
+
+                $this->entityManager->persist($sa);
             }
-
-            $this->entityManager->persist($sa);
         }
-
         $this->entityManager->flush();
     }
 
