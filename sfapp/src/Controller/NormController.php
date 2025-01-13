@@ -11,9 +11,18 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+/**
+ * @brief Contoller used to manage the norms of the website
+ */
 class NormController extends AbstractController
 {
-
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @param NormRepository $normRepository
+     * @return Response
+     * @brief Managing the render of the the pert of the websit used to show and change the norms in the charge side of the site
+     */
     #[Route('/charge/salles/normes', name: 'app_norm_show')]
     public function showNorm(Request $request, EntityManagerInterface $entityManager, NormRepository $normRepository): Response
     {
@@ -34,7 +43,15 @@ class NormController extends AbstractController
         ]);
     }
 
-
+    /**
+     * @param Request $request
+     * @param Norm $summerNorm
+     * @param Norm $winterNorm
+     * @param NormRepository $normRepository
+     * @param EntityManagerInterface $entityManager
+     * @return void
+     * @brief Takes in the values of norms and changes the old norms values based on if they are valid after a check with the techical norms and send errors if they are not valid
+     */
     private function updateNorms(Request $request, Norm $summerNorm, Norm $winterNorm, NormRepository $normRepository, EntityManagerInterface $entityManager): void
     {
         if ($request->isMethod('POST')) {

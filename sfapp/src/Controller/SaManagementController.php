@@ -19,12 +19,25 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class SaManagementController extends AbstractController
 {
+    /**
+     * @return Response
+     * @brief renders the :technocen route that automaticly redirects to the main technicien (/technicien/sa) page
+     */
     #[Route('/technicien', name: 'app_technician')]
     public function technicianRedirect(): Response
     {
         return $this->redirectToRoute('app_technician_sa');
     }
 
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param SaRepository $saRepo
+     * @param RoomRepository $salleRepo
+     * @return Response
+     * @throws \Doctrine\DBAL\Exception
+     * @brief render the page on the charge part of the site that is used to associate existing SA to existing rooms
+     */
     #[Route('charge/gestion_sa/associer', name: 'app_sa_associate')]
     public function index(Request $request, EntityManagerInterface $manager, SaRepository $saRepo, RoomRepository $salleRepo): Response
     {
@@ -81,6 +94,12 @@ class SaManagementController extends AbstractController
         ]);
     }
 
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @brief renders and manage the popup that appears when clicking to "Ajouter un SA" in the website
+     */
     #[Route('technicien/sa/ajouter', name: 'app_add_sa', methods: ['POST'])]
     public function addSa(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -132,8 +151,13 @@ class SaManagementController extends AbstractController
         return $this->redirectToRoute('app_technician_sa');
     }
 
-
-
+    /**
+     * @param int $id
+     * @param SaRepository $saRepo
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @brief renders and manage the popup that appears when clicking the "dissocier" button on the /charge/gestion_sa page
+     */
     #[Route('/charge/gestion_sa/dissocier/{id}', name: 'app_sa_dissociate', methods: ['POST'])]
     public function dissociate(int $id, SaRepository $saRepo, EntityManagerInterface $entityManager): Response
     {
@@ -161,6 +185,7 @@ class SaManagementController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return Response
      * @throws \Exception
+     * @brief renders and manage the down declaration page
      */
     #[Route('/technicien/sa/panne', name: 'app_down')]
     public function addDown(DownRepository $saDownRepo, SaRepository $saRepo, Request $request, EntityManagerInterface $entityManager): Response
@@ -207,6 +232,7 @@ class SaManagementController extends AbstractController
      * @param DownRepository $downRepository
      * @param Request $request
      * @return Response
+     * @brief manage the down hystory page on the SA in the down SA section of the technicien part of the website
      */
    #[Route('/technicien/sa/panne/historique', name: 'app_history')]
     public function showhistory(DownRepository $downRepository, Request $request): Response
@@ -263,6 +289,7 @@ class SaManagementController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @param Request $request
      * @return Response
+     * @brief changes the state of the SA from down to available (meaning the SA is working again)
      */
     #[Route('/technicien/sa/panne/{id}', name: 'app_functionnal')]
     public function setFunctionnal(Sa $sa, EntityManagerInterface $entityManager, Request $request): Response

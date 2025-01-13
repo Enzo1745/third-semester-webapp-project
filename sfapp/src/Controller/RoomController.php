@@ -23,9 +23,8 @@ use App\Service\DiagnocticService;
 class RoomController extends AbstractController
 {
     /**
-     * Route: /charge
-     * Name: app_charge
-     * Description: Displays the main index page.
+     * @return Response
+     * @brief renders the main charge section page (/charge/salles) when th users goes to the /charge page
      */
     #[Route('/charge', name: 'app_charge')]
     public function index(): Response
@@ -40,7 +39,13 @@ class RoomController extends AbstractController
      * Route: /charge/salles/ajouter
      * Name: app_room_management
      * Description:
-     *              Displays a form to add a room and processes form submissions.
+     * Displays a form to add a room and processes form submissions.
+     */
+    /**
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @brief Renders the page to add a room
      */
     #[Route('/charge/salles/ajouter', name: 'app_room_management')]
     public function manage(Request $request, EntityManagerInterface $entityManager): Response
@@ -73,8 +78,14 @@ class RoomController extends AbstractController
             'formAddRoom' => $formAddRoom->createView(),
         ]);
     }
+
     /**
-     * Displays a list of rooms, filtered and/or sorted based on user's selection.
+     * @param RoomRepository $roomRepository
+     * @param DiagnocticService $diagnosticService
+     * @param NormRepository $normRepository
+     * @param Request $request
+     * @return Response
+     * @brief Render the main page of the charge part, managing the filters in it and sending the data of the rooms
      */
     #[Route('/charge/salles', name: 'app_room_list')]
     public function listRooms(
@@ -145,8 +156,10 @@ class RoomController extends AbstractController
     }
 
     /**
-    * Description: Verify if the current date is in the summer period. Return 'été' if it is, 'hiver' if not.
-    */
+     * @param \DateTime $date
+     * @return string
+     * @brief Verify if the current date is in the summer period. Return 'été' if it is, 'hiver' if not.
+     */
     public function getSeason(\DateTime $date): string
     {
         $startSummer = new \DateTime('March 20');
@@ -160,9 +173,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * Route: /charge/salles/{roomName}
-     * Name: app_room_info
-     * Description: Displays detailed information about a specific room.
+     * @param string $roomName
+     * @param RoomRepository $roomRepository
+     * @param DownRepository $downRepo
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @brief Displays detailed information about a specific room.
      */
     #[Route('/charge/salles/{roomName}', name: 'app_room_info')]
     public function roomInfo(
@@ -211,9 +227,12 @@ class RoomController extends AbstractController
     }
 
     /**
-     * Route: /technicien/salles/{roomName}
-     * Name: app_room_info_technicien
-     * Description: Displays detailed information about a specific room.
+     * @param string $roomName
+     * @param RoomRepository $roomRepository
+     * @param EntityManagerInterface $entityManager
+     * @param DownRepository $downRepo
+     * @return Response
+     * @brief Displays detailed information about a specific room.
      */
     #[Route('/technicien/salles/{roomName}', name: 'app_room_info_technicien')]
     public function roomInfoTech(
@@ -260,12 +279,11 @@ class RoomController extends AbstractController
         ]);
     }
 
-
     /**
-     * Route: /charge/salles/supprimer/{id}
-     * Name: app_room_delete
-     * Methods: POST
-     * Description: Deletes a room.
+     * @param Room|null $room
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @brief Deletes a room.
      */
     #[Route('/charge/salles/supprimer/{id}', name: 'app_room_delete', methods: ['POST'])]
     public function delete(?Room $room, EntityManagerInterface $entityManager): Response

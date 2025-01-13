@@ -18,6 +18,7 @@ class SaRoomModifyController extends AbstractController
     /**
      * @param SaRepository $saRepo
      * @return Response
+     * @brief render and manage the association validaton page in the technicien part
      */
     #[Route('/technicien/sa/associer', name: 'app_sa_room_modify')]
     public function index(SaRepository $saRepo): Response
@@ -41,6 +42,7 @@ class SaRoomModifyController extends AbstractController
      * @param SaRepository $saRepo
      * @param EntityManagerInterface $em
      * @return Response
+     * @brief manages the "changer d'association" button on the association page in the technician part
      */
     #[Route('/technicien/sa/associer/{saId}', name: 'app_sa_room_modify_accepted', methods: ['GET', 'POST'])]
     public function modifyAssociation(
@@ -106,6 +108,7 @@ class SaRoomModifyController extends AbstractController
      * @param SaRepository $saRepo
      * @param EntityManagerInterface $em
      * @return Response
+     * @brief manages the "valider" button on the association page in the technician part
      */
     #[Route('/technicien/sa/valider/{saId}', name: 'app_sa_set_functional', methods: ['POST'])]
     public function setFunctionalState(

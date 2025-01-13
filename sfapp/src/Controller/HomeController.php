@@ -15,14 +15,22 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Controller\RoomController;
+
+/**
+ * @brief The controller for the default page
+ */
 class HomeController extends AbstractController
 {
+
     /**
-     * @brief default page
+     * @param Request $request
+     * @param RoomRepository $roomRepository
+     * @param DownRepository $downRepo
+     * @param EntityManagerInterface $entityManager
+     * @param TipsRepository $tipsRepo
+     * @return Response
+     * @brief Function to render the default page, sending the tips and the data of the selected room to it
      */
-
-
     #[Route('/', name: 'app_home')]
     public function roomInfo(
         Request $request,

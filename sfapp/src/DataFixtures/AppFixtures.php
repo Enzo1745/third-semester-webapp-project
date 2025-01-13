@@ -17,6 +17,11 @@ use Doctrine\Persistence\ObjectManager;
 
 class AppFixtures extends Fixture
 {
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     * @brief The tips fixtures
+     */
 	private function tipsFixtures(ObjectManager $manager) : void
 	{
 
@@ -41,6 +46,12 @@ class AppFixtures extends Fixture
 		$manager->persist($tips5);
 
 	}
+
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     * @brief the norms fixtures
+     */
     private function normFixtures(ObjectManager $manager): void
     {
         $norm = new Norm();
@@ -90,6 +101,11 @@ class AppFixtures extends Fixture
 
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     * @brief the users fixtures
+     */
     private function usersFixtures(ObjectManager $manager): void
     {
         // Create Users
@@ -104,6 +120,11 @@ class AppFixtures extends Fixture
 
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     * @brief the rooms and SA fixtures
+     */
     private function roomsSAFixtures(ObjectManager $manager): void
     {
         // Create Room entities without SA associations
@@ -258,6 +279,11 @@ class AppFixtures extends Fixture
         $manager->persist($down6);
     }
 
+    /**
+     * @param ObjectManager $manager
+     * @return void
+     * @brief the loading of all frevious fixtures funtion into the database
+     */
     public function load(ObjectManager $manager): void
     {
 
