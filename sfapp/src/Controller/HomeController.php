@@ -8,7 +8,7 @@ use App\Entity\Sa;
 use App\Entity\ComfortInstruction;
 use App\Entity\ComfortInstructionRoom;
 use App\Form\SearchRoomsType;
-use App\Form\DoneInstructionsType;
+use App\Form\InstructionsType;
 use App\Repository\DownRepository;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
@@ -71,26 +71,26 @@ class HomeController extends AbstractController
             }
         }
 
-        $doneInstructionsForm = $this->createForm(DoneInstructionsType::class, null, [
-            'room' => $room,
+        $instructionsForm = $this->createForm(InstructionsType::class, null, [
             'instructions' => $instructions,
         ]);
-        $doneInstructionsForm->handleRequest($request);
+        $instructionsForm->handleRequest($request);
 
-        if ($doneInstructionsForm->isSubmitted() && $doneInstructionsForm->isValid()) {
-            $instructionIds = $request->request->all('instructionIds');
-            foreach ($instructionIds as $instructionId) {
-                $comfortInstructionRoom = $comfortInstructionRoomRepo->find($instructionId);
-                if ($comfortInstructionRoom) {
-                    $comfortInstructionRoom->setDoneByUserDate(new \DateTime());
+        if ($instructionsForm->isSubmitted() && $instructionsForm->isValid()) {
+            foreach ($instructionsForm->get('instructions')->getData() as $instructionId => $isConfirmed) {
+                if ($isConfirmed) {
+                    $instruction = $comfortInstructionRoomRepo->find($instructionId);
+                    if (!$instruction->getDoneByUserDate()) {
+                        $instruction->setDoneByUserDate(new \DateTime());
+                        $entityManager->persist($instruction);
+                    }
                 }
             }
             $entityManager->flush();
             return $this->redirectToRoute('app_home');
         }
 
-
-            // Get the room SA
+        // Get the room SA
         $sa = null;
         $down = null;
         if ($room and $room->getIdSA()) {
@@ -102,7 +102,7 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             'searchForm' => $searchForm->createView(),
-            'doneInstructionsForm' => $doneInstructionsForm->createView(),
+            'instructionsForm' => $instructionsForm->createView(),
             'tips' => $tips,
             'room' => $room,
             'sa' => $sa,
