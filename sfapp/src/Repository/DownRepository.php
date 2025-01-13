@@ -9,6 +9,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Down>
+ * @brief repository used to manage the Entity Down 
  */
 class DownRepository extends ServiceEntityRepository
 {

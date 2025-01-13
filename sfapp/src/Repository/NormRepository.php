@@ -10,6 +10,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Norm>
+ * @brief repository used to manage the Entity Norm
  */
 class NormRepository extends ServiceEntityRepository
 {

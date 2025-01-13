@@ -9,6 +9,7 @@ use App\Repository\Model\UserRoles;
 
 /**
  * @extends ServiceEntityRepository<User>
+ * @brief repository used to manage the Entity User
  */
 class UserRepository extends ServiceEntityRepository
 {
