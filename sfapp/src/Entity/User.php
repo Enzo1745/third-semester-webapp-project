@@ -6,7 +6,9 @@ use App\Repository\Model\UserRoles;
 use App\Repository\UtilisateurRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-// the user table
+/**
+ * @brief the user entity used to create and manage users, anso used by the firewall to manage routes and user permissions.
+ */
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 class User
 {

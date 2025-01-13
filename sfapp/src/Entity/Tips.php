@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\TipsRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @brief tips entity used to create tips
+ */
 #[ORM\Entity(repositoryClass: TipsRepository::class)]
 class Tips
 {

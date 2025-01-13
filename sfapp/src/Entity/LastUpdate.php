@@ -6,6 +6,9 @@ use App\Repository\LastUpdateRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @brief The lastUpdate entity used in the API t check if the database has data or not
+ */
 #[ORM\Entity(repositoryClass: LastUpdateRepository::class)]
 class LastUpdate
 {

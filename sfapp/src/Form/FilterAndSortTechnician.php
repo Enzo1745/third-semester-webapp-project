@@ -7,6 +7,9 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @brief the form used to filter and sort the SA in the SA lists
+ */
 class FilterAndSortTechnician extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
