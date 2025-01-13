@@ -51,16 +51,16 @@ class MeasureRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findByTypeAndSa(string $type, int $saIdInt): array
+    public function findByTypeAndSa(string $type, string $saId): array
     {
-        $saId = (string) $saIdInt;
         return $this->createQueryBuilder('m')
-            ->andWhere('m.type = :type')
+            ->select('m.value', 'm.captureDate')
+            ->andWhere("m.type = :type")
             ->andWhere('m.sa = :saId')
             ->setParameter('type', $type)
             ->setParameter('saId', $saId)
             ->orderBy('m.captureDate', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getArrayResult();
     }
 }

@@ -208,38 +208,113 @@
         </div>
     </div>
     <div class="container mt-5">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white py-3">
-                <h5 class="mb-0">Graphique des températures</h5>
-            </div>
-            <div class="card-body">
-                <canvas id="temperatureChart" width="400" height="200"></canvas>
-            </div>
-        </div>
+        <div class="container mt-4 mb-4">
+            <h4>Choisir une période</h4>
+            {{ form_start(dateForm, {'attr': {'class': 'form-horizontal'}}) }}
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white py-3">
-                <h5 class="mb-0">Graphique de l'humidité</h5>
+            <div class="form-group row">
+                <div class="col-sm">
+                    {{ form_row(dateForm.dateDebut, {'attr': {'class': 'form-control'}}) }}
+                </div>
             </div>
-            <div class="card-body">
-                <canvas id="humidityChart" width="400" height="200"></canvas>
-            </div>
-        </div>
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-header bg-primary text-white py-3">
-                <h5 class="mb-0">Graphique du CO₂</h5>
+            <div class="form-group row">
+                <div class="col-sm">
+                    {{ form_row(dateForm.dateFin, {'attr': {'class': 'form-control'}}) }}
+                </div>
+            </div>
+
+            <div class="form-group row mt-3">
+                <div class="col-sm-12">
+                    <button type="submit" class="btn btn-primary">Soumettre</button>
+                </div>
+            </div>
+
+            {{ form_end(dateForm) }}
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-header bg-primary text-white py-3 d-flex justify-content-between align-items-center">
+                <h5 class="mb-0" id="graph-title">Graphique des températures</h5>
+                <div>
+                    <button class="btn btn-outline-light me-2" id="prev-graph">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <button class="btn btn-outline-light" id="next-graph">
+                        <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
             </div>
             <div class="card-body">
-                <canvas id="co2Chart" width="400" height="200"></canvas>
+                <div id="chartTemp" class="chart-container">
+                    {{ render_chart(chartTemp) }}
+                </div>
+                <div id="chartHum" class="chart-container d-none">
+                    {{ render_chart(chartHum) }}
+                </div>
+                <div id="chartCO2" class="chart-container d-none">
+                    {{ render_chart(chartCO2) }}
+                </div>
             </div>
         </div>
     </div>
 
+    <style>
+        .chart-container {
+            display: none;
+        }
 
-    <div>
-        {{ render_chart(chartTemp) }}
-        {{ render_chart(chartHum) }}
-        {{ render_chart(chartCO2) }}
-    </div>
+        .chart-container.active {
+            display: block;
+        }
+    </style>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Liste des graphiques et leurs titres associés
+            const graphs = [
+                { id: 'chartTemp', title: 'Graphique des températures' },
+                { id: 'chartHum', title: 'Graphique de l\'humidité' },
+                { id: 'chartCO2', title: 'Graphique du CO₂' }
+            ];
+
+            let currentGraphIndex = 0; // Index du graphique actuellement affiché
+
+            // Récupérer les éléments HTML
+            const graphTitle = document.getElementById('graph-title');
+            const prevButton = document.getElementById('prev-graph');
+            const nextButton = document.getElementById('next-graph');
+
+            // Fonction pour afficher le graphique correspondant à l'index
+            const showGraph = (index) => {
+                graphs.forEach((graph, i) => {
+                    const graphElement = document.getElementById(graph.id);
+                    if (i === index) {
+                        graphElement.classList.add('active');
+                        graphElement.classList.remove('d-none');
+                    } else {
+                        graphElement.classList.remove('active');
+                        graphElement.classList.add('d-none');
+                    }
+                });
+
+                // Mettre à jour le titre
+                graphTitle.textContent = graphs[index].title;
+            };
+
+            // Gérer les clics sur les boutons Précédent et Suivant
+            prevButton.addEventListener('click', () => {
+                currentGraphIndex = (currentGraphIndex - 1 + graphs.length) % graphs.length; // Index circulaire
+                showGraph(currentGraphIndex);
+            });
+
+            nextButton.addEventListener('click', () => {
+                currentGraphIndex = (currentGraphIndex + 1) % graphs.length; // Index circulaire
+                showGraph(currentGraphIndex);
+            });
+
+            // Afficher le premier graphique au chargement
+            showGraph(currentGraphIndex);
+        });
+    </script>
+
 {% endblock %}

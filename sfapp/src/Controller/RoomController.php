@@ -7,6 +7,7 @@ use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\AddRoomType;
+use App\Form\DateCaptureType;
 use App\Form\FilterAndSort;
 use App\Form\SerchRoomASType;
 use App\Repository\MeasureRepository;
@@ -168,6 +169,7 @@ class RoomController extends AbstractController
      * Route: /charge/salles/{roomName}
      * Name: app_room_info
      * Description: Displays detailed information about a specific room.
+     * @throws \DateMalformedStringException
      */
     #[Route('/charge/salles/{roomName}', name: 'app_room_info')]
     public function roomInfo(
@@ -176,11 +178,29 @@ class RoomController extends AbstractController
         DownRepository $downRepo,
         EntityManagerInterface $entityManager,
         MeasureRepository $measureRepository, // Ajout de MeasureRepository pour roomHistory
-        ChartBuilderInterface $chartBuilder // Ajout de ChartBuilderInterface pour roomHistory
+        ChartBuilderInterface $chartBuilder, // Ajout de ChartBuilderInterface pour roomHistory
+        Request $request
     ): Response {
         // Trouver la salle par son nom
         $room = $roomRepository->findByRoomName($roomName);
         $down = null;
+
+        $dateDebut = new \DateTime("2025-01-01");
+        $dateFin = new \DateTime("2025-12-31");
+
+        $data = [
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin,
+        ];
+
+        // Création du formulaire avec le type personnalisé
+        $form = $this->createForm(DateCaptureType::class, $data);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $dateDebut = $data['dateDebut'];
+            $dateFin = $data['dateFin'];
+        }
 
         // Si la salle est introuvable, retourner un message d'erreur
         if (!$room) {
@@ -208,43 +228,129 @@ class RoomController extends AbstractController
         }
 
         // Gestion de l'historique de la salle avec les mesures et graphiques
-        $temperatureMeasures = $measureRepository->findByTypeAndSa('temp', $sa ? $sa->getId() : null);
-        $humidityMeasures = $measureRepository->findByTypeAndSa('hum', $sa ? $sa->getId() : null);
-        $co2Measures = $measureRepository->findByTypeAndSa('co2', $sa ? $sa->getId() : null);
+        $temperatureMeasures = $measureRepository->findByTypeAndSa('temp', $sa ? (string) $sa->getId() : null);
+        $humidityMeasures = $measureRepository->findByTypeAndSa('hum', $sa ? (string) $sa->getId() : null);
+        $co2Measures = $measureRepository->findByTypeAndSa('co2', $sa ? (string) $sa->getId() : null);
 
         $chartTemp = $chartBuilder->createChart(Chart::TYPE_LINE);
 
+
+        $TempLabelList = [];
+        $TempValueList = [];
+
+        $HumLabelList = [];
+        $HumValueList = [];
+
+        $Co2LabelList = [];
+        $Co2ValueList = [];
+
+        foreach ($temperatureMeasures as $measure) {
+            $TempValueList[] = $measure['value'];
+            if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
+                $TempLabelList[] = $measure['captureDate']->format('Y-m-d');
+            }
+        }
+
+        foreach ($humidityMeasures as $measure) {
+            $HumValueList[] = $measure['value'];
+            if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
+                $HumLabelList[] = $measure['captureDate']->format('Y-m-d');
+            }
+        }
+
+        foreach ($co2Measures as $measure) {
+            $Co2ValueList[] = $measure['value'];
+            if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
+                $Co2LabelList[] = $measure['captureDate']->format('Y-m-d');
+            }
+        }
+
+        /* $season = $this->getSeason($currentDate);
+
+        $tempMaxNorm = $normRepository->findOneBy(['NormSeason' => $season])->getTemperatureMaxNorm();
+        $humMaxNorm = $normRepository->findOneBy(['NormSeason' => $season])->getHumidityMaxNorm();
+        $co2MaxNorm = $normRepository->findOneBy(['NormSeason' => $season])->getCo2MaxNorm();
+        $tempMinNorm = $normRepository->findOneBy(['NormSeason' => $season])->getTemperatureMinNorm();
+        $humMinNorm = $normRepository->findOneBy(['NormSeason' => $season])->getHumidityMinNorm ();
+        $co2MinNorm = $normRepository->findOneBy(['NormSeason' => $season])->getCo2MinNorm();*/
+
+
+
         $chartTemp->setData([
+            'labels' => $TempLabelList,
             'datasets' => [
                 [
                     'label' => 'Température',
-                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                    'borderColor' => 'rgba(75, 192, 192, 1)',
-                    'data' => $temperatureMeasures,
+                    'backgroundColor' => 'rgba(255, 0, 0, 0.2)',
+                    'borderColor' => 'rgba(255, 0, 0, 1)',
+                    'data' => $TempValueList,
                 ],
             ],
+        ]);
+
+        $chartTemp->setOptions([
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Température (Celsius)',
+                    ],
+                    'min' => 10,
+                    'max' => 30,
+                ],
+            ],
+
         ]);
 
         $chartHum = $chartBuilder->createChart(Chart::TYPE_LINE);
         $chartHum->setData([
+            'labels' => $HumLabelList,
             'datasets' => [
                 [
                     'label' => 'Humidité',
-                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                    'borderColor' => 'rgba(75, 192, 192, 1)',
-                    'data' => $humidityMeasures,
+                    'backgroundColor' => 'rgba(0, 0, 255, 0.2)',
+                    'borderColor' => 'rgba(0, 0, 255, 1)',
+                    'data' => $HumValueList,
                 ],
             ],
         ]);
 
+        $chartHum->setOptions([
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Humidité (Pourcentage)',
+                    ],
+                    'min' => 0,
+                    'max' => 100,
+                ],
+            ],
+
+        ]);
+
         $chartCO2 = $chartBuilder->createChart(Chart::TYPE_LINE);
         $chartCO2->setData([
+            'labels' => $Co2LabelList,
             'datasets' => [
                 [
                     'label' => 'CO2',
-                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
-                    'borderColor' => 'rgba(75, 192, 192, 1)',
-                    'data' => $co2Measures,
+                    'backgroundColor' => 'rgba(0, 0, 0, 0.2)',
+                    'borderColor' => 'rgba(0, 0, 0, 1)',
+                    'data' => $Co2ValueList,
+                ],
+            ],
+        ]);
+
+        $chartCO2->setOptions([
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Concentration de CO2 (Parti par miliers)',
+                    ],
+                    'min' => 250,
+                    'max' => 1000,
                 ],
             ],
         ]);
@@ -259,6 +365,7 @@ class RoomController extends AbstractController
             'chartTemp' => $chartTemp,
             'chartHum' => $chartHum,
             'chartCO2' => $chartCO2,
+            'dateForm' => $form->createView(),
         ]);
     }
 
