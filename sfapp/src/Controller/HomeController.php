@@ -8,6 +8,7 @@ use App\Entity\Sa;
 use App\Entity\ComfortInstruction;
 use App\Entity\ComfortInstructionRoom;
 use App\Form\SearchRoomsType;
+use App\Form\DoneInstructionsType;
 use App\Repository\DownRepository;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
@@ -36,13 +37,13 @@ class HomeController extends AbstractController
     {
         $tips = $tipsRepo->findRandTips(); // return a random tips from database
 
-        $form = $this->createForm(SearchRoomsType::class);
-        $form->handleRequest($request);
+        $searchForm = $this->createForm(SearchRoomsType::class);
+        $searchForm->handleRequest($request);
 
         // Get selected room name
         $roomName = '';
-        if ($form->isSubmitted() && $form->isValid()) {
-            $selectedRoom = $form->get('salle')->getData();
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            $selectedRoom = $searchForm->get('salle')->getData();
             if ($selectedRoom) {
                 $roomName = $selectedRoom->getRoomName();
             }
@@ -59,7 +60,7 @@ class HomeController extends AbstractController
             'NormSeason' => $season
         ]);
 
-        // Get the room by room name
+        // Get the room by room name and its instructions
         $room = null;
         $instructions = [];
         if (!empty($roomName)) {
@@ -70,7 +71,26 @@ class HomeController extends AbstractController
             }
         }
 
-        // Get the room SA
+        $doneInstructionsForm = $this->createForm(DoneInstructionsType::class, null, [
+            'room' => $room,
+            'instructions' => $instructions,
+        ]);
+        $doneInstructionsForm->handleRequest($request);
+
+        if ($doneInstructionsForm->isSubmitted() && $doneInstructionsForm->isValid()) {
+            $instructionIds = $request->request->all('instructionIds');
+            foreach ($instructionIds as $instructionId) {
+                $comfortInstructionRoom = $comfortInstructionRoomRepo->find($instructionId);
+                if ($comfortInstructionRoom) {
+                    $comfortInstructionRoom->setDoneByUserDate(new \DateTime());
+                }
+            }
+            $entityManager->flush();
+            return $this->redirectToRoute('app_home');
+        }
+
+
+            // Get the room SA
         $sa = null;
         $down = null;
         if ($room and $room->getIdSA()) {
@@ -81,7 +101,8 @@ class HomeController extends AbstractController
         }
 
         return $this->render('home/index.html.twig', [
-            'form' => $form->createView(),
+            'searchForm' => $searchForm->createView(),
+            'doneInstructionsForm' => $doneInstructionsForm->createView(),
             'tips' => $tips,
             'room' => $room,
             'sa' => $sa,
@@ -95,7 +116,7 @@ class HomeController extends AbstractController
     /**
      * Gives tasks to the user depending on the conditions of a given room
      */
-    private function giveInstructionsForRoom(Room $room, Norm $norms, EntityManagerInterface $entityManager): void
+    public function giveInstructionsForRoom(Room $room, Norm $norms, EntityManagerInterface $entityManager): void
     {
         $sa = $room->getIdSA() ? $entityManager->getRepository(Sa::class)->find($room->getIdSA()) : null;
 
@@ -115,7 +136,7 @@ class HomeController extends AbstractController
     /**
      * Determines the current season (summer or winter).
      */
-    private function getSeason(\DateTime $date): string
+    public function getSeason(\DateTime $date): string
     {
         $startSummer = new \DateTime('7 April');
         $startWinter = new \DateTime('6 October');
