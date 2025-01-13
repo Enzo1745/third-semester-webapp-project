@@ -6,6 +6,11 @@
     <link rel="stylesheet" href="{{ asset('styles/salle_info.css') }}">
 {% endblock %}
 
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
 {% block body %}
     <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
         <div class="container d-flex justify-content-between align-items-center">
@@ -201,5 +206,40 @@
                 {% endif %}
             </div>
         </div>
+    </div>
+    <div class="container mt-5">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0">Graphique des températures</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="temperatureChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0">Graphique de l'humidité</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="humidityChart" width="400" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header bg-primary text-white py-3">
+                <h5 class="mb-0">Graphique du CO₂</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="co2Chart" width="400" height="200"></canvas>
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        {{ render_chart(chartTemp) }}
+        {{ render_chart(chartHum) }}
+        {{ render_chart(chartCO2) }}
     </div>
 {% endblock %}

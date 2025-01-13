@@ -2,12 +2,14 @@
 
 namespace App\Controller;
 
+use App\Entity\Measure;
 use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\AddRoomType;
 use App\Form\FilterAndSort;
 use App\Form\SerchRoomASType;
+use App\Repository\MeasureRepository;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
@@ -20,6 +22,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Form\FilterAndSortTechnician;
 use App\Service\DiagnocticService;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
+
 class RoomController extends AbstractController
 {
     /**
@@ -169,12 +174,15 @@ class RoomController extends AbstractController
         string $roomName,
         RoomRepository $roomRepository,
         DownRepository $downRepo,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MeasureRepository $measureRepository, // Ajout de MeasureRepository pour roomHistory
+        ChartBuilderInterface $chartBuilder // Ajout de ChartBuilderInterface pour roomHistory
     ): Response {
-        // Find a room by its name
+        // Trouver la salle par son nom
         $room = $roomRepository->findByRoomName($roomName);
         $down = null;
 
+        // Si la salle est introuvable, retourner un message d'erreur
         if (!$room) {
             return $this->render('room/not_found.html.twig', [
                 'message' => 'Salle introuvable.',
@@ -190,23 +198,67 @@ class RoomController extends AbstractController
             'NormSeason' => $season
         ]);
 
-        // Find an SA if it exists
+        // Trouver un SA si il existe
         $sa = null;
-        if ($room->getIdSA()) {
+        if ($room->getIdSa()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
             if ($sa && $sa->getState() == SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
             }
         }
 
+        // Gestion de l'historique de la salle avec les mesures et graphiques
+        $temperatureMeasures = $measureRepository->findByTypeAndSa('temp', $sa ? $sa->getId() : null);
+        $humidityMeasures = $measureRepository->findByTypeAndSa('hum', $sa ? $sa->getId() : null);
+        $co2Measures = $measureRepository->findByTypeAndSa('co2', $sa ? $sa->getId() : null);
 
+        $chartTemp = $chartBuilder->createChart(Chart::TYPE_LINE);
 
+        $chartTemp->setData([
+            'datasets' => [
+                [
+                    'label' => 'Température',
+                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
+                    'borderColor' => 'rgba(75, 192, 192, 1)',
+                    'data' => $temperatureMeasures,
+                ],
+            ],
+        ]);
+
+        $chartHum = $chartBuilder->createChart(Chart::TYPE_LINE);
+        $chartHum->setData([
+            'datasets' => [
+                [
+                    'label' => 'Humidité',
+                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
+                    'borderColor' => 'rgba(75, 192, 192, 1)',
+                    'data' => $humidityMeasures,
+                ],
+            ],
+        ]);
+
+        $chartCO2 = $chartBuilder->createChart(Chart::TYPE_LINE);
+        $chartCO2->setData([
+            'datasets' => [
+                [
+                    'label' => 'CO2',
+                    'backgroundColor' => 'rgba(75, 192, 192, 0.2)',
+                    'borderColor' => 'rgba(75, 192, 192, 1)',
+                    'data' => $co2Measures,
+                ],
+            ],
+        ]);
+
+        // Rendre la vue avec l'ajout des graphiques et l'historique
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
             'sa' => $sa,
             'origin' => 'charge',
             'norms' => $norms,
             'down' => $down,
+            'chartTemp' => $chartTemp,
+            'chartHum' => $chartHum,
+            'chartCO2' => $chartCO2,
         ]);
     }
 
@@ -295,5 +347,4 @@ class RoomController extends AbstractController
         // Redirect to the list of rooms
         return $this->redirectToRoute('app_room_list');
     }
-
 }
