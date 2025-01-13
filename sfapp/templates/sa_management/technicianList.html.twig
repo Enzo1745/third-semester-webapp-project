@@ -18,6 +18,12 @@
                     <a href="/technicien/sa/panne" class="btn btn-outline-light ms-2">
                         <i class="fas fa-plus-circle me-1"></i> Déclarer une panne
                     </a>
+
+                    <!-- Bouton qui déclenche le modal -->
+                    <button type="button" class="btn btn-outline-light ms-2" data-bs-toggle="modal" data-bs-target="#deconnexionModal">
+                        <i class="fas fa-door-open me-1"></i> Se deconnecter
+                    </button>
+
                 </div>
             </div>
         </div>
@@ -245,5 +251,27 @@
         </div>
     </div>
     <!--Fin modal ajout SA-->
+
+    <!-- Modal de déconnexion-->
+    <div class="modal fade" id="deconnexionModal" tabindex="-1" aria-labelledby="deconnexionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 class="modal-title text-danger" id="deconnexionModalLabel" >Se déconnecter?</h3>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Etes-vous sur de vouloir vous deconnecter?
+                </div>
+                <div class="modal-footer">
+                    <a href="/deconnexion" class="btn btn-danger ms-2">
+                        <i class="fas fa-door-open me-1"></i> Se deconnecter
+                    </a>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Anuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Fin modal de deconnexion-->
 
 {% endblock %}
