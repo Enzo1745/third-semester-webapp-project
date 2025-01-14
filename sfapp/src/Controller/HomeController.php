@@ -7,34 +7,47 @@ use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\SearchRoomsType;
 use App\Repository\DownRepository;
+use App\Repository\LastUpdateRepository;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
 use App\Repository\TipsRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Controller\RoomController;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 class HomeController extends AbstractController
 {
+
     /**
      * @brief default page
      */
-
-
     #[Route('/', name: 'app_home')]
     public function roomInfo(
         Request $request,
         RoomRepository $roomRepository,
         DownRepository $downRepo,
         EntityManagerInterface $entityManager,
-        TipsRepository $tipsRepo
+        TipsRepository $tipsRepo,
+        LastUpdateRepository $lastUpdateRepo,
+        ApiController $apiController,
+        RoomController $roomController,
     ): Response
     {
-        $tips = $tipsRepo->findRandTips(); // return a random tips from database
+        $apiResponse = $apiController->getDataFromApiIn2025($lastUpdateRepo);
 
-        $controller = new RoomController();
+        if ($apiResponse->getStatusCode() !== 200) {
+            return new Response('Erreur lors de la récupération des données : ' . $apiResponse->getContent(), 500);
+        }
+
+        $controller = $roomController;
+        $tips = $tipsRepo->findRandTips();
+
         $form = $this->createForm(SearchRoomsType::class);
 
         $form->handleRequest($request);
