@@ -10,15 +10,23 @@
         });
     });
 
+
+
     // Change between summer and winter value
     document.getElementById('showSummer').addEventListener('click', () => {
-        document.getElementById('normsSummer').style.display = 'block'; // show
-        document.getElementById('normsWinter').style.display = 'none'; // hide
+        document.getElementById('normsSummer').style.display = 'block'; // Afficher normes techniques d'été
+        document.getElementById('normsWinter').style.display = 'none'; // Masquer normes techniques d'hiver
+
+        document.getElementById('comfortSummer').style.display = 'block'; // Afficher normes confort d'été
+        document.getElementById('comfortWinter').style.display = 'none'; // Masquer normes confort d'hiver
     });
 
     document.getElementById('showWinter').addEventListener('click', () => {
-        document.getElementById('normsSummer').style.display = 'none'; //show
-        document.getElementById('normsWinter').style.display = 'block'; //hide
+        document.getElementById('normsSummer').style.display = 'none'; // Masquer normes techniques d'été
+        document.getElementById('normsWinter').style.display = 'block'; // Afficher normes techniques d'hiver
+
+        document.getElementById('comfortSummer').style.display = 'none'; // Masquer normes confort d'été
+        document.getElementById('comfortWinter').style.display = 'block'; // Afficher normes confort d'hiver
     });
 
 
@@ -28,9 +36,13 @@
         if (isSummerVisible) {
             document.getElementById('formSummer').style.display = 'block';
             document.getElementById('formWinter').style.display = 'none';
+
         } else {
             document.getElementById('formWinter').style.display = 'block';
             document.getElementById('formSummer').style.display = 'none';
         }
     });
+
+
+
 

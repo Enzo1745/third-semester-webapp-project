@@ -7,6 +7,8 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
                 <h1 class="h2 mb-0"><i class="fas fa-microchip me-2"></i> Systèmes d'acquisition</h1>
+
+                <!-- Conteneur pour les boutons alignés à droite -->
                 <div class="d-flex">
                     <a href="/technicien/sa/associer" class="btn btn-outline-light ms-2">
                         <i class="fas fa-plus-circle me-1"></i> Association
@@ -19,11 +21,14 @@
                         <i class="fas fa-plus-circle me-1"></i> Déclarer une panne
                     </a>
 
+                    <a href="/technicien/sa/normes" class="btn btn-outline-light ms-2">
+                        <i class="fas fa-plus-circle me-1"></i> Normes
+                    </a>
+
                     <!-- Bouton qui déclenche le modal -->
                     <button type="button" class="btn btn-outline-light ms-2" data-bs-toggle="modal" data-bs-target="#deconnexionModal">
                         <i class="fas fa-door-open me-1"></i> Se deconnecter
                     </button>
-
                 </div>
             </div>
         </div>
@@ -46,17 +51,7 @@
                                 <i class="fas fa-search text-primary me-2"></i>
                                 <h5 class="card-title mb-0">Filtres</h5>
                             </div>
-                            {{ form_row(form.filter, { 'label': false, 'attr': { 'class': 'form-select w-auto' } }) }}
-                        </div>
-                        <div class="col-sm-6 text-center">
-                            <div class="d-inline-flex align-items-center mb-2">
-                                <h5 class="card-title mb-0">Saison de normes actuelle : {{ season | capitalize }}</h5>
-                                {% if season == 'été' %}
-                                    <i class="fas fa-sun text-primary ms-2"></i>
-                                {% else %}
-                                    <i class="fas fa-snowflake text-primary ms-2"></i>
-                                {% endif %}
-                            </div>
+                            {{ form_row(form.filter, { 'label': false }) }}
                         </div>
                         <div class="col-sm-3 text-end">
                             <div class="d-inline-flex align-items-center mb-2">
@@ -251,27 +246,5 @@
         </div>
     </div>
     <!--Fin modal ajout SA-->
-
-    <!-- Modal de déconnexion-->
-    <div class="modal fade" id="deconnexionModal" tabindex="-1" aria-labelledby="deconnexionModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title text-danger" id="deconnexionModalLabel" >Se déconnecter?</h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    Etes-vous sur de vouloir vous deconnecter?
-                </div>
-                <div class="modal-footer">
-                    <a href="/deconnexion" class="btn btn-danger ms-2">
-                        <i class="fas fa-door-open me-1"></i> Se deconnecter
-                    </a>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Anuler</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Fin modal de deconnexion-->
 
 {% endblock %}
