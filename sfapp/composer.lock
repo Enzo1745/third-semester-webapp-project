@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5c5af3ff8e3a5b480cc71f7aeb6dd1bd",
+    "content-hash": "e5d27c974d4b2b22a0514cb8988cd119",
     "packages": [
         {
             "name": "composer/semver",
@@ -5052,6 +5052,75 @@
             "time": "2024-09-25T14:20:29+00:00"
         },
         {
+            "name": "symfony/stimulus-bundle",
+            "version": "v2.22.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/stimulus-bundle.git",
+                "reference": "e13034d428354023c82a1db108d40fdf6cec2d36"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/stimulus-bundle/zipball/e13034d428354023c82a1db108d40fdf6cec2d36",
+                "reference": "e13034d428354023c82a1db108d40fdf6cec2d36",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/config": "^5.4|^6.0|^7.0",
+                "symfony/dependency-injection": "^5.4|^6.0|^7.0",
+                "symfony/deprecation-contracts": "^2.0|^3.0",
+                "symfony/finder": "^5.4|^6.0|^7.0",
+                "symfony/http-kernel": "^5.4|^6.0|^7.0",
+                "twig/twig": "^2.15.3|^3.8"
+            },
+            "require-dev": {
+                "symfony/asset-mapper": "^6.3|^7.0",
+                "symfony/framework-bundle": "^5.4|^6.0|^7.0",
+                "symfony/phpunit-bridge": "^5.4|^6.0|^7.0",
+                "symfony/twig-bundle": "^5.4|^6.0|^7.0",
+                "zenstruck/browser": "^1.4"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\UX\\StimulusBundle\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Integration with your Symfony app & Stimulus!",
+            "keywords": [
+                "symfony-ux"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/stimulus-bundle/tree/v2.22.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-12-06T14:30:33+00:00"
+        },
+        {
             "name": "symfony/stopwatch",
             "version": "v6.4.13",
             "source": {
@@ -5469,6 +5538,86 @@
                 }
             ],
             "time": "2024-09-25T14:18:03+00:00"
+        },
+        {
+            "name": "symfony/ux-chartjs",
+            "version": "v2.22.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/ux-chartjs.git",
+                "reference": "6e7de01ea469840da2b7458b660b52e846e279e1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/ux-chartjs/zipball/6e7de01ea469840da2b7458b660b52e846e279e1",
+                "reference": "6e7de01ea469840da2b7458b660b52e846e279e1",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.1",
+                "symfony/config": "^5.4|^6.0|^7.0",
+                "symfony/dependency-injection": "^5.4|^6.0|^7.0",
+                "symfony/http-kernel": "^5.4|^6.0|^7.0",
+                "symfony/stimulus-bundle": "^2.9.1"
+            },
+            "conflict": {
+                "symfony/flex": "<1.13"
+            },
+            "require-dev": {
+                "symfony/framework-bundle": "^5.4|^6.0|^7.0",
+                "symfony/phpunit-bridge": "^5.4|^6.0|^7.0",
+                "symfony/twig-bundle": "^5.4|^6.0|^7.0",
+                "symfony/var-dumper": "^5.4|^6.0|^7.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "thanks": {
+                    "url": "https://github.com/symfony/ux",
+                    "name": "symfony/ux"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\UX\\Chartjs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Titouan Galopin",
+                    "email": "galopintitouan@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Chart.js integration for Symfony",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "symfony-ux"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/ux-chartjs/tree/v2.22.1"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-12-05T14:25:02+00:00"
         },
         {
             "name": "symfony/validator",
@@ -6429,6 +6578,58 @@
                 "source": "https://github.com/phar-io/version/tree/3.2.1"
             },
             "time": "2022-02-21T01:04:05+00:00"
+        },
+        {
+            "name": "php-cs-fixer/shim",
+            "version": "v3.68.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PHP-CS-Fixer/shim.git",
+                "reference": "23acc692a99304559d4c94e9f299158ecd0ed7d1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/shim/zipball/23acc692a99304559d4c94e9f299158ecd0ed7d1",
+                "reference": "23acc692a99304559d4c94e9f299158ecd0ed7d1",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-tokenizer": "*",
+                "php": "^7.4 || ^8.0"
+            },
+            "replace": {
+                "friendsofphp/php-cs-fixer": "self.version"
+            },
+            "suggest": {
+                "ext-dom": "For handling output formats in XML",
+                "ext-mbstring": "For handling non-UTF8 characters."
+            },
+            "bin": [
+                "php-cs-fixer",
+                "php-cs-fixer.phar"
+            ],
+            "type": "application",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Dariusz Rumiński",
+                    "email": "dariusz.ruminski@gmail.com"
+                }
+            ],
+            "description": "A tool to automatically fix PHP code style",
+            "support": {
+                "issues": "https://github.com/PHP-CS-Fixer/shim/issues",
+                "source": "https://github.com/PHP-CS-Fixer/shim/tree/v3.68.0"
+            },
+            "time": "2025-01-13T17:01:38+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -8017,22 +8218,23 @@
         },
         {
             "name": "symfony/maker-bundle",
-            "version": "v1.61.0",
+            "version": "v1.62.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/maker-bundle.git",
-                "reference": "a3b7f14d349f8f44ed752d4dde2263f77510cc18"
+                "reference": "0624f13b1e0ff86df6f6646c711d806d9af12629"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/a3b7f14d349f8f44ed752d4dde2263f77510cc18",
-                "reference": "a3b7f14d349f8f44ed752d4dde2263f77510cc18",
+                "url": "https://api.github.com/repos/symfony/maker-bundle/zipball/0624f13b1e0ff86df6f6646c711d806d9af12629",
+                "reference": "0624f13b1e0ff86df6f6646c711d806d9af12629",
                 "shasum": ""
             },
             "require": {
                 "doctrine/inflector": "^2.0",
                 "nikic/php-parser": "^4.18|^5.0",
                 "php": ">=8.1",
+                "php-cs-fixer/shim": "^v3.64",
                 "symfony/config": "^6.4|^7.0",
                 "symfony/console": "^6.4|^7.0",
                 "symfony/dependency-injection": "^6.4|^7.0",
@@ -8089,7 +8291,7 @@
             ],
             "support": {
                 "issues": "https://github.com/symfony/maker-bundle/issues",
-                "source": "https://github.com/symfony/maker-bundle/tree/v1.61.0"
+                "source": "https://github.com/symfony/maker-bundle/tree/v1.62.0"
             },
             "funding": [
                 {
@@ -8105,7 +8307,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-29T22:50:23+00:00"
+            "time": "2024-12-10T23:51:12+00:00"
         },
         {
             "name": "symfony/phpunit-bridge",

@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Measure;
 use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\AddRoomType;
+use App\Form\DateCaptureType;
 use App\Form\FilterAndSort;
 use App\Form\SerchRoomASType;
+use App\Repository\MeasureRepository;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
@@ -20,6 +23,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Form\FilterAndSortTechnician;
 use App\Service\DiagnocticService;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
+
 class RoomController extends AbstractController
 {
     /**
@@ -164,50 +170,199 @@ class RoomController extends AbstractController
      * Route: /charge/salles/{roomName}
      * Name: app_room_info
      * Description: Displays detailed information about a specific room.
+     * @throws \DateMalformedStringException
      */
     #[Route('/charge/salles/{roomName}', name: 'app_room_info')]
     public function roomInfo(
         string $roomName,
         RoomRepository $roomRepository,
         DownRepository $downRepo,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MeasureRepository $measureRepository, // Add MeasureRepository for roomHistory
+        ChartBuilderInterface $chartBuilder, // Add ChartBuilderInterface for roomHistory
+        Request $request
     ): Response {
-        // Find a room by its name
+        // Find the room by its name
         $room = $roomRepository->findByRoomName($roomName);
         $down = null;
 
+        // Set default date range for measures
+        $dateDebut = new \DateTime("2025-01-01");
+        $dateFin = new \DateTime("2025-12-31");
+
+        $data = [
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin,
+        ];
+
+        // Create the form with the custom type
+        $form = $this->createForm(DateCaptureType::class, $data);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $dateDebut = $data['dateDebut'];
+            $dateFin = $data['dateFin'];
+        }
+
+        // If the room is not found, return an error message
         if (!$room) {
             return $this->render('room/not_found.html.twig', [
                 'message' => 'Salle introuvable.',
             ]);
         }
 
+        // Get the current date and determine the season
         $currentDate = new \DateTime();
         $season = $this->getSeason($currentDate);
 
+        // Fetch norms based on the season
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
             'NormSeason' => $season
         ]);
 
-        // Find an SA if it exists
+        // Find the SA if it exists
         $sa = null;
-        if ($room->getIdSA()) {
+        if ($room->getIdSa()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
             if ($sa && $sa->getState() == SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
             }
         }
 
+        // Fetch measures for the room
+        $temperatureMeasures = $measureRepository->findByTypeAndSa('temp', $sa ? (string) $sa->getId() : null);
+        $humidityMeasures = $measureRepository->findByTypeAndSa('hum', $sa ? (string) $sa->getId() : null);
+        $co2Measures = $measureRepository->findByTypeAndSa('co2', $sa ? (string) $sa->getId() : null);
 
+        // Create temperature chart
+        $chartTemp = $chartBuilder->createChart(Chart::TYPE_LINE);
 
+        $TempLabelList = [];
+        $TempValueList = [];
+
+        $HumLabelList = [];
+        $HumValueList = [];
+
+        $Co2LabelList = [];
+        $Co2ValueList = [];
+
+        // Populate temperature data for the chart
+        foreach ($temperatureMeasures as $measure) {
+            $TempValueList[] = $measure['value'];
+            if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
+                $TempLabelList[] = $measure['captureDate']->format('Y-m-d');
+            }
+        }
+
+        // Populate humidity data for the chart
+        foreach ($humidityMeasures as $measure) {
+            $HumValueList[] = $measure['value'];
+            if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
+                $HumLabelList[] = $measure['captureDate']->format('Y-m-d');
+            }
+        }
+
+        // Populate CO2 data for the chart
+        foreach ($co2Measures as $measure) {
+            $Co2ValueList[] = $measure['value'];
+            if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
+                $Co2LabelList[] = $measure['captureDate']->format('Y-m-d');
+            }
+        }
+
+        // Set data and options for the temperature chart
+        $chartTemp->setData([
+            'labels' => $TempLabelList,
+            'datasets' => [
+                [
+                    'label' => 'Température',
+                    'backgroundColor' => 'rgba(255, 0, 0, 0.2)',
+                    'borderColor' => 'rgba(255, 0, 0, 1)',
+                    'data' => $TempValueList,
+                ],
+            ],
+        ]);
+
+        $chartTemp->setOptions([
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Température (Celsius)',
+                    ],
+                    'min' => 10,
+                    'max' => 30,
+                ],
+            ],
+        ]);
+
+        // Create and set data and options for the humidity chart
+        $chartHum = $chartBuilder->createChart(Chart::TYPE_LINE);
+        $chartHum->setData([
+            'labels' => $HumLabelList,
+            'datasets' => [
+                [
+                    'label' => 'Humidité',
+                    'backgroundColor' => 'rgba(0, 0, 255, 0.2)',
+                    'borderColor' => 'rgba(0, 0, 255, 1)',
+                    'data' => $HumValueList,
+                ],
+            ],
+        ]);
+
+        $chartHum->setOptions([
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Humidité (Pourcentage)',
+                    ],
+                    'min' => 0,
+                    'max' => 100,
+                ],
+            ],
+        ]);
+
+        // Create and set data and options for the CO2 chart
+        $chartCO2 = $chartBuilder->createChart(Chart::TYPE_LINE);
+        $chartCO2->setData([
+            'labels' => $Co2LabelList,
+            'datasets' => [
+                [
+                    'label' => 'CO2',
+                    'backgroundColor' => 'rgba(0, 0, 0, 0.2)',
+                    'borderColor' => 'rgba(0, 0, 0, 1)',
+                    'data' => $Co2ValueList,
+                ],
+            ],
+        ]);
+
+        $chartCO2->setOptions([
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Concentration de CO2 (Parti par miliers)',
+                    ],
+                    'min' => 250,
+                    'max' => 1000,
+                ],
+            ],
+        ]);
+
+        // Render the view with the added charts and history
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
             'sa' => $sa,
             'origin' => 'charge',
             'norms' => $norms,
             'down' => $down,
+            'chartTemp' => $chartTemp,
+            'chartHum' => $chartHum,
+            'chartCO2' => $chartCO2,
+            'dateForm' => $form->createView(),
         ]);
     }
 
@@ -296,5 +451,4 @@ class RoomController extends AbstractController
         // Redirect to the list of rooms
         return $this->redirectToRoute('app_room_list');
     }
-
 }

@@ -188,6 +188,7 @@ class ApiController extends AbstractController
                 $room = $roomRepository->findOneBy(['roomName' => $item['localisation']]);
 
                 $sa->setRoom($room);
+                $room->setIdSa($sa->getIdSa());
 
                 $this->entityManager->persist($sa);
             }
@@ -207,7 +208,7 @@ class ApiController extends AbstractController
             $measure = new Measure($item['id'], floatval($item['valeur']), $item['nom'], $dateTime, $item['description'], $sa);
             return $measure;
         }
-        else{
+        else {
             return null;
         }
     }
