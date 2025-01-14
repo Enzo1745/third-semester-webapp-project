@@ -41,7 +41,7 @@ class ApiController extends AbstractController
             // /*'sae34bdl1eq1',
             'sae34bdl1eq2', /* 'sae34bdl1eq3',*/
             'sae34bdl2eq1', 'sae34bdl2eq2', 'sae34bdl2eq3',
-            /*'sae34bdm1eq1',*/ 'sae34bdm1eq2', 'sae34bdm1eq3',
+            /*'sae34bdm1eq1','sae34bdm1eq2',*/ 'sae34bdm1eq3',
         ];
     }
 

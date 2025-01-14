@@ -413,6 +413,7 @@ class RoomController extends AbstractController
             'down' => $down,
             'norms' => $norms,
             'origin' => 'technicien',
+            'dateForm' => null,
         ]);
     }
 
