@@ -66,29 +66,30 @@ class HomeController extends AbstractController
         if (!empty($roomName)) {
             $room = $roomRepository->findByRoomNameWithSA($roomName);
             if ($room) {
+                $this->deleteInstrucionsForRoom($room, $entityManager); // Delete the instructions so that each time we get the updated instructions
                 $this->giveInstructionsForRoom($room, $norms, $entityManager);
                 $instructions = $comfortInstructionRoomRepo->findBy(['room' => $room]);
             }
         }
 
-        $instructionsForm = $this->createForm(InstructionsType::class, null, [
-            'instructions' => $instructions,
-        ]);
-        $instructionsForm->handleRequest($request);
+//        $instructionsForm = $this->createForm(InstructionsType::class, null, [
+//            'instructions' => $instructions,
+//        ]);
+//        $instructionsForm->handleRequest($request);
 
-        if ($instructionsForm->isSubmitted() && $instructionsForm->isValid()) {
-            foreach ($instructionsForm->get('instructions')->getData() as $instructionId => $isConfirmed) {
-                if ($isConfirmed) {
-                    $instruction = $comfortInstructionRoomRepo->find($instructionId);
-                    if (!$instruction->getDoneByUserDate()) {
-                        $instruction->setDoneByUserDate(new \DateTime());
-                        $entityManager->persist($instruction);
-                    }
-                }
-            }
-            $entityManager->flush();
-            return $this->redirectToRoute('app_home');
-        }
+//        if ($instructionsForm->isSubmitted() && $instructionsForm->isValid()) {
+//            foreach ($instructionsForm->get('instructions')->getData() as $instructionId => $isConfirmed) {
+//                if ($isConfirmed) {
+//                    $instruction = $comfortInstructionRoomRepo->find($instructionId);
+//                    if (!$instruction->getDoneByUserDate()) {
+//                        $instruction->setDoneByUserDate(new \DateTime());
+//                        $entityManager->persist($instruction);
+//                    }
+//                }
+//            }
+//            $entityManager->flush();
+//            return $this->redirectToRoute('app_home');
+//        }
 
         // Get the room SA
         $sa = null;
@@ -102,7 +103,7 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             'searchForm' => $searchForm->createView(),
-            'instructionsForm' => $instructionsForm->createView(),
+//            'instructionsForm' => $instructionsForm->createView(),
             'tips' => $tips,
             'room' => $room,
             'sa' => $sa,
@@ -111,6 +112,19 @@ class HomeController extends AbstractController
             'down' => $down,
             'instructions' => $instructions,
         ]);
+    }
+
+    /**
+     * Deletes tasks on a room
+     */
+    public function deleteInstrucionsForRoom(Room $room, EntityManagerInterface $entityManager): void
+    {
+        $comfortInstructionRoomRepo = $entityManager->getRepository(ComfortInstructionRoom::class);
+        $instructions = $comfortInstructionRoomRepo->findBy(['room' => $room]);
+        foreach ($instructions as $instruction) {
+            $entityManager->remove($instruction);
+        }
+        $entityManager->flush();
     }
 
     /**

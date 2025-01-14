@@ -162,28 +162,50 @@
                         <h5 class="mb-0">Actions à faire</h5>
                     </div>
                     <div class="card-body">
-                        {{ form_start(instructionsForm) }}
                         <ul class="list-unstyled" id="actions-list">
-                            {% for child in instructionsForm %}
-                                <li class="mb-3 d-flex justify-content-between align-items-center">
-                                    <label class="form-check-label mb-0">
-                                        {{ form_label(child) }}
-                                    </label>
-                                    <div class="form-check">
-                                        {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}
-                                    </div>
+                            {% for instruction in instructions %}
+                                <li class="mb-3">
+                                    <p>{{ instruction.getComfortInstruction().getInstruction() }}</p>
                                 </li>
                             {% endfor %}
                         </ul>
-                        <button type="submit" class="btn btn-primary" id="confirmButton" data-bs-toggle="modal" data-bs-target="#confirmationModal">
-                            Confirmer
-                        </button>
-                        {{ form_end(instructionsForm) }}
                     </div>
                 </div>
             </div>
         {% endif %}
     {% endif %}
+
+    <!-- Tasks to do by the user Symfony form (not used) -->
+{#    {% if instructions is not empty %}#}
+{#        {% if room %}#}
+{#            <div class="container mb-4">#}
+{#                <div class="card shadow-sm">#}
+{#                    <div class="card-header bg-primary text-white py-3">#}
+{#                        <h5 class="mb-0">Actions à faire</h5>#}
+{#                    </div>#}
+{#                    <div class="card-body">#}
+{#                        {{ form_start(instructionsForm) }}#}
+{#                        <ul class="list-unstyled" id="actions-list">#}
+{#                            {% for child in instructionsForm %}#}
+{#                                <li class="mb-3 d-flex justify-content-between align-items-center">#}
+{#                                    <label class="form-check-label mb-0">#}
+{#                                        {{ form_label(child) }}#}
+{#                                    </label>#}
+{#                                    <div class="form-check">#}
+{#                                        {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}#}
+{#                                    </div>#}
+{#                                </li>#}
+{#                            {% endfor %}#}
+{#                        </ul>#}
+{#                        <button type="submit" class="btn btn-primary" id="confirmButton" data-bs-toggle="modal" data-bs-target="#confirmationModal">#}
+{#                            Confirmer#}
+{#                        </button>#}
+{#                        {{ form_end(instructionsForm) }}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    {% endif %}#}
 
     <!-- Confirmation Modal -->
 {#    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">#}
@@ -205,32 +227,32 @@
 {#    </div>#}
 
     <!-- JavaScript to enable the button when a checkbox is checked -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const confirmButton = document.getElementById('confirmButton');
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            // const confirmModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
-            // const confirmModalButton = document.getElementById('confirmModalButton');
-            // const form = document.querySelector('form[name="instructionsForm"]');
+{#    <script>#}
+{#        document.addEventListener('DOMContentLoaded', function () {#}
+{#            const confirmButton = document.getElementById('confirmButton');#}
+{#            const checkboxes = document.querySelectorAll('input[type="checkbox"]');#}
+{#            // const confirmModal = new bootstrap.Modal(document.getElementById('confirmationModal'));#}
+{#            // const confirmModalButton = document.getElementById('confirmModalButton');#}
+{#            // const form = document.querySelector('form[name="instructionsForm"]');#}
 
-            function updateConfirmButtonState() {
-                !Array.from(checkboxes).some(checkbox => checkbox.checked) ? confirmButton.disabled = true : confirmButton.disabled = false;
-            }
+{#            function updateConfirmButtonState() {#}
+{#                !Array.from(checkboxes).some(checkbox => checkbox.checked) ? confirmButton.disabled = true : confirmButton.disabled = false;#}
+{#            }#}
 
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateConfirmButtonState);
-            });
+{#            checkboxes.forEach(checkbox => {#}
+{#                checkbox.addEventListener('change', updateConfirmButtonState);#}
+{#            });#}
 
-            // confirmButton.addEventListener('click', function () {
-            //     confirmModal.show();
-            // });
-            //
-            // confirmModalButton.addEventListener('click', function () {
-            //     form.submit();
-            // });
+{#            // confirmButton.addEventListener('click', function () {#}
+{#            //     confirmModal.show();#}
+{#            // });#}
+{#            //#}
+{#            // confirmModalButton.addEventListener('click', function () {#}
+{#            //     form.submit();#}
+{#            // });#}
 
-            // Initial check to set the button state correctly on page load
-            updateConfirmButtonState();
-        });
-    </script>
+{#            // Initial check to set the button state correctly on page load#}
+{#            updateConfirmButtonState();#}
+{#        });#}
+{#    </script>#}
 {% endblock %}
