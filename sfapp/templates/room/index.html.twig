@@ -48,7 +48,7 @@
                             <i class="fas fa-search text-primary me-2"></i>
                             <h5 class="card-title mb-0">Filtres</h5>
                         </div>
-                        {{ form_row(form.filter, { 'label': false }) }}
+                        {{ form_row(form.filter, { 'label': false, 'attr': { 'class': 'form-select w-auto' } }) }}
                     </div>
 
                     <div class="col-sm-6 text-center">
@@ -67,8 +67,8 @@
                             <i class="fas fa-sort text-primary me-2"></i>
                             <h5 class="card-title mb-0">Trier par</h5>
                         </div>
-                        <div>
-                            {{ form_row(form.trier, { 'label': false }) }}
+                        <div class="d-flex justify-content-end">
+                            {{ form_row(form.trier, { 'label': false, 'attr': { 'class': 'form-select w-auto' } }) }}
                         </div>
                     </div>
                 </div>

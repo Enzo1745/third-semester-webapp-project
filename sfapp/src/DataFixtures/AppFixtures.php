@@ -92,17 +92,16 @@ class AppFixtures extends Fixture
 
     private function usersFixtures(ObjectManager $manager): void
     {
-
         // Create Users
         $user1 = new User();
-        $user1->setUsername('charge')
-            ->setPassword(password_hash('1234', PASSWORD_BCRYPT)) //1234 mais hash  PAS TOUCHER
+        $user1->setUsername($_ENV['CHARGE_USERNAME'])
+            ->setPassword(password_hash($_ENV['CHARGE_PASSWORD'], PASSWORD_BCRYPT))
             ->setRoles(['ROLE_CHARGE']);
         $manager->persist($user1);
 
         $user2 = new User();
-        $user2->setUsername('tech')
-            ->setPassword(password_hash('5678', PASSWORD_BCRYPT)) // 5678 mais hash PAS TOUCHER
+        $user2->setUsername($_ENV['TECHNICIEN_USERNAME'])
+            ->setPassword(password_hash($_ENV['TECHNICIEN_PASSWORD'], PASSWORD_BCRYPT))
             ->setRoles(['ROLE_TECH']);
         $manager->persist($user2);
 
