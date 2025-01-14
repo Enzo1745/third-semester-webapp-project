@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Controller\RoomController;
 use App\Service\DiagnocticService;
 use App\Entity\Norm;
 use App\Entity\Room;
@@ -11,22 +12,25 @@ use App\Entity\ComfortInstructionRoom;
 use App\Form\SearchRoomsType;
 use App\Form\InstructionsType;
 use App\Repository\DownRepository;
+use App\Repository\LastUpdateRepository;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
 use App\Repository\TipsRepository;
 use App\Repository\ComfortInstructionRoomRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
+
 class HomeController extends AbstractController
 {
     /**
      * @brief default page
      */
-
-
     #[Route('/', name: 'app_home')]
     public function roomInfo(
         Request $request,
@@ -36,23 +40,44 @@ class HomeController extends AbstractController
         TipsRepository $tipsRepo,
         ComfortInstructionRoomRepository $comfortInstructionRoomRepo,
         DiagnocticService $diagnosticService,
+        LastUpdateRepository $lastUpdateRepo,
+        ApiController $apiController,
+        RoomController $roomController,
     ): Response
     {
+        $apiResponse = $apiController->getDataFromApiIn2025($lastUpdateRepo);
+
+        if ($apiResponse->getStatusCode() !== 200) {
+            return new Response('Erreur lors de la récupération des données : ' . $apiResponse->getContent(), 500);
+        }
+
         $tips = $tipsRepo->findRandTips(); // return a random tips from database
 
         $searchForm = $this->createForm(SearchRoomsType::class);
         $searchForm->handleRequest($request);
 
-        // Get selected room name
+        $controller = $roomController;
+        $form = $this->createForm(SearchRoomsType::class);
+
+        $form->handleRequest($request);
+
         $roomName = '';
-        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
-            $selectedRoom = $searchForm->get('salle')->getData();
+
+        // Get selected room name
+        if ($form->isSubmitted() && $form->isValid()) {
+            $selectedRoom = $form->get('salle')->getData();
             if ($selectedRoom) {
                 $roomName = $selectedRoom->getRoomName();
             }
         }
 
-        // Determine the current season and retrieve the appropriate norms
+        // Get the room from the room name
+        $room = null;
+        if (!empty($roomName)) {
+            $room = $roomRepository->findByRoomNameWithSA($roomName);
+        }
+        $down = null;
+
         $currentDate = new \DateTime();
         $season = $diagnosticService->getSeason($currentDate);
 
