@@ -36,11 +36,12 @@ class ApiController extends AbstractController
 
         // List of all the database name in the API (commented if there is a problem)
         $this->dbList = [
-            // /*"sae34bdk1eq1", "sae34bdk1eq2", */"sae34bdk1eq3",
-            // /*"sae34bdk2eq1", "sae34bdk2eq2", */"sae34bdk2eq3",
-            // /*"sae34bdl1eq1", */"sae34bdl1eq2",/* "sae34bdl1eq3",*/
-            // /*"sae34bdl2eq1", "sae34bdl2eq2", */"sae34bdl2eq3",
-            /*"sae34bdm1eq1", "sae34bdm1eq2",*/ "sae34bdm1eq3",
+            /*'sae34bdk1eq1', /*'sae34bdk1eq2', */'sae34bdk1eq3',
+            /*'sae34bdk2eq1', */'sae34bdk2eq2', 'sae34bdk2eq3',
+            // /*'sae34bdl1eq1',
+            'sae34bdl1eq2', /* 'sae34bdl1eq3',*/
+            'sae34bdl2eq1', 'sae34bdl2eq2', 'sae34bdl2eq3',
+            /*'sae34bdm1eq1',*/ 'sae34bdm1eq2', 'sae34bdm1eq3',
         ];
     }
 
@@ -102,7 +103,6 @@ class ApiController extends AbstractController
                 $this->entityManager->persist($lastUpdate);
                 $this->entityManager->flush();
 
-                return new Response('Données récupérées et stockées avec succès');
             } catch (\Exception $e) {
                 $this->logger->error('Erreur lors de la récupération des données: ' . $e->getMessage());
                 return new Response('Erreur lors de la récupération des données: ' . $e->getMessage(), 500);
@@ -113,7 +113,7 @@ class ApiController extends AbstractController
             } catch (ServerExceptionInterface $e) {
             }
         }
-        return new Response('Données non récupérées.');
+        return new Response('Données récupérées et stockées avec succès');
     }
 
     /**
@@ -188,6 +188,7 @@ class ApiController extends AbstractController
                 $room = $roomRepository->findOneBy(['roomName' => $item['localisation']]);
 
                 $sa->setRoom($room);
+                $room->setIdSa($sa->getId());
 
                 $this->entityManager->persist($sa);
             }
