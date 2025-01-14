@@ -177,14 +177,15 @@ class RoomController extends AbstractController
         RoomRepository $roomRepository,
         DownRepository $downRepo,
         EntityManagerInterface $entityManager,
-        MeasureRepository $measureRepository, // Ajout de MeasureRepository pour roomHistory
-        ChartBuilderInterface $chartBuilder, // Ajout de ChartBuilderInterface pour roomHistory
+        MeasureRepository $measureRepository, // Add MeasureRepository for roomHistory
+        ChartBuilderInterface $chartBuilder, // Add ChartBuilderInterface for roomHistory
         Request $request
     ): Response {
-        // Trouver la salle par son nom
+        // Find the room by its name
         $room = $roomRepository->findByRoomName($roomName);
         $down = null;
 
+        // Set default date range for measures
         $dateDebut = new \DateTime("2025-01-01");
         $dateFin = new \DateTime("2025-12-31");
 
@@ -193,7 +194,7 @@ class RoomController extends AbstractController
             'dateFin' => $dateFin,
         ];
 
-        // Création du formulaire avec le type personnalisé
+        // Create the form with the custom type
         $form = $this->createForm(DateCaptureType::class, $data);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -202,23 +203,25 @@ class RoomController extends AbstractController
             $dateFin = $data['dateFin'];
         }
 
-        // Si la salle est introuvable, retourner un message d'erreur
+        // If the room is not found, return an error message
         if (!$room) {
             return $this->render('room/not_found.html.twig', [
                 'message' => 'Salle introuvable.',
             ]);
         }
 
+        // Get the current date and determine the season
         $currentDate = new \DateTime();
         $season = $this->getSeason($currentDate);
 
+        // Fetch norms based on the season
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
             'NormSeason' => $season
         ]);
 
-        // Trouver un SA si il existe
+        // Find the SA if it exists
         $sa = null;
         if ($room->getIdSa()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
@@ -227,13 +230,13 @@ class RoomController extends AbstractController
             }
         }
 
-        // Gestion de l'historique de la salle avec les mesures et graphiques
+        // Fetch measures for the room
         $temperatureMeasures = $measureRepository->findByTypeAndSa('temp', $sa ? (string) $sa->getId() : null);
         $humidityMeasures = $measureRepository->findByTypeAndSa('hum', $sa ? (string) $sa->getId() : null);
         $co2Measures = $measureRepository->findByTypeAndSa('co2', $sa ? (string) $sa->getId() : null);
 
+        // Create temperature chart
         $chartTemp = $chartBuilder->createChart(Chart::TYPE_LINE);
-
 
         $TempLabelList = [];
         $TempValueList = [];
@@ -244,6 +247,7 @@ class RoomController extends AbstractController
         $Co2LabelList = [];
         $Co2ValueList = [];
 
+        // Populate temperature data for the chart
         foreach ($temperatureMeasures as $measure) {
             $TempValueList[] = $measure['value'];
             if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
@@ -251,6 +255,7 @@ class RoomController extends AbstractController
             }
         }
 
+        // Populate humidity data for the chart
         foreach ($humidityMeasures as $measure) {
             $HumValueList[] = $measure['value'];
             if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
@@ -258,6 +263,7 @@ class RoomController extends AbstractController
             }
         }
 
+        // Populate CO2 data for the chart
         foreach ($co2Measures as $measure) {
             $Co2ValueList[] = $measure['value'];
             if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
@@ -265,17 +271,7 @@ class RoomController extends AbstractController
             }
         }
 
-        /* $season = $this->getSeason($currentDate);
-
-        $tempMaxNorm = $normRepository->findOneBy(['NormSeason' => $season])->getTemperatureMaxNorm();
-        $humMaxNorm = $normRepository->findOneBy(['NormSeason' => $season])->getHumidityMaxNorm();
-        $co2MaxNorm = $normRepository->findOneBy(['NormSeason' => $season])->getCo2MaxNorm();
-        $tempMinNorm = $normRepository->findOneBy(['NormSeason' => $season])->getTemperatureMinNorm();
-        $humMinNorm = $normRepository->findOneBy(['NormSeason' => $season])->getHumidityMinNorm ();
-        $co2MinNorm = $normRepository->findOneBy(['NormSeason' => $season])->getCo2MinNorm();*/
-
-
-
+        // Set data and options for the temperature chart
         $chartTemp->setData([
             'labels' => $TempLabelList,
             'datasets' => [
@@ -299,9 +295,9 @@ class RoomController extends AbstractController
                     'max' => 30,
                 ],
             ],
-
         ]);
 
+        // Create and set data and options for the humidity chart
         $chartHum = $chartBuilder->createChart(Chart::TYPE_LINE);
         $chartHum->setData([
             'labels' => $HumLabelList,
@@ -326,9 +322,9 @@ class RoomController extends AbstractController
                     'max' => 100,
                 ],
             ],
-
         ]);
 
+        // Create and set data and options for the CO2 chart
         $chartCO2 = $chartBuilder->createChart(Chart::TYPE_LINE);
         $chartCO2->setData([
             'labels' => $Co2LabelList,
@@ -355,7 +351,7 @@ class RoomController extends AbstractController
             ],
         ]);
 
-        // Rendre la vue avec l'ajout des graphiques et l'historique
+        // Render the view with the added charts and history
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
             'sa' => $sa,
