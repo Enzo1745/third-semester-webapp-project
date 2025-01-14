@@ -96,7 +96,7 @@ class RoomController extends AbstractController
 
         //Verify the current date
         $currentDate = new \DateTime();
-        $season = $this->getSeason($currentDate);
+        $season = $diagnosticService->getSeason($currentDate);
 
         // filter tri choice
         $filterChoice = $form->get('filter')->getData();
@@ -152,21 +152,6 @@ class RoomController extends AbstractController
     }
 
     /**
-    * Description: Verify if the current date is in the summer period. Return 'été' if it is, 'hiver' if not.
-    */
-    public function getSeason(\DateTime $date): string
-    {
-        $startSummer = new \DateTime('March 20');
-        $endSummer = new \DateTime('September 22');
-
-        if ($date >= $startSummer && $date <= $endSummer) {
-            return 'été';
-        }
-
-        return 'hiver';
-    }
-
-    /**
      * Route: /charge/salles/{roomName}
      * Name: app_room_info
      * Description: Displays detailed information about a specific room.
@@ -180,7 +165,8 @@ class RoomController extends AbstractController
         EntityManagerInterface $entityManager,
         MeasureRepository $measureRepository, // Add MeasureRepository for roomHistory
         ChartBuilderInterface $chartBuilder, // Add ChartBuilderInterface for roomHistory
-        Request $request
+        Request $request,
+        DiagnocticService $diagnosticService,
     ): Response {
         // Find the room by its name
         $room = $roomRepository->findByRoomName($roomName);
@@ -213,7 +199,7 @@ class RoomController extends AbstractController
 
         // Get the current date and determine the season
         $currentDate = new \DateTime();
-        $season = $this->getSeason($currentDate);
+        $season = $diagnosticService->getSeason($currentDate);
 
         // Fetch norms based on the season
         $normRepository = $entityManager->getRepository(Norm::class);
@@ -376,7 +362,8 @@ class RoomController extends AbstractController
         string $roomName,
         RoomRepository $roomRepository,
         EntityManagerInterface $entityManager,
-        DownRepository $downRepo
+        DownRepository $downRepo,
+        DiagnocticService $diagnosticService,
     ): Response {
         // get room name
         $room = $roomRepository->findByRoomName($roomName);
@@ -388,7 +375,7 @@ class RoomController extends AbstractController
 
 
         $currentDate = new \DateTime();
-        $season = $this->getSeason($currentDate);
+        $season = $diagnosticService->getSeason($currentDate);
 
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([

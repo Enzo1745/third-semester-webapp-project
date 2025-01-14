@@ -63,7 +63,7 @@ class SaListController extends AbstractController
 
         //Verify the current date
         $currentDate = new \DateTime();
-        $season = $this->getSeason($currentDate);
+        $season = $diagnosticService->getSeason($currentDate);
 
         // Retrieve filter choice from the form
         $choice = $form->get('filter')->getData();
@@ -114,22 +114,6 @@ class SaListController extends AbstractController
             'season' => $season,
         ]);
     }
-
-    /**
-     * Description: Verify if the current date is in the summer period. Return 'été' if it is, 'hiver' if not.
-     */
-    private function getSeason(\DateTime $date): string
-    {
-        $startSummer = new \DateTime('March 20');
-        $endSummer = new \DateTime('September 22');
-
-        if ($date >= $startSummer && $date <= $endSummer) {
-            return 'été';
-        }
-
-        return 'hiver';
-    }
-
 
     /**
      * @brief Function to delete a system acquisition

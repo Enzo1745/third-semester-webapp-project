@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Service\DiagnocticService;
 use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
@@ -33,7 +34,8 @@ class HomeController extends AbstractController
         DownRepository $downRepo,
         EntityManagerInterface $entityManager,
         TipsRepository $tipsRepo,
-        ComfortInstructionRoomRepository $comfortInstructionRoomRepo
+        ComfortInstructionRoomRepository $comfortInstructionRoomRepo,
+        DiagnocticService $diagnosticService,
     ): Response
     {
         $tips = $tipsRepo->findRandTips(); // return a random tips from database
@@ -52,7 +54,7 @@ class HomeController extends AbstractController
 
         // Determine the current season and retrieve the appropriate norms
         $currentDate = new \DateTime();
-        $season = $this->getSeason($currentDate);
+        $season = $diagnosticService->getSeason($currentDate);
 
         // Get the norms
         $normRepository = $entityManager->getRepository(Norm::class);
@@ -146,17 +148,6 @@ class HomeController extends AbstractController
         } elseif ($sa->getTemperature() > $norms->getTemperatureMaxNorm()) {
             $this->applyComfortInstruction($room, 4, $entityManager); // Turn off heater
         }
-    }
-
-    /**
-     * Determines the current season (summer or winter).
-     */
-    public function getSeason(\DateTime $date): string
-    {
-        $startSummer = new \DateTime('7 April');
-        $startWinter = new \DateTime('6 October');
-
-        return ($date >= $startSummer && $date < $startWinter) ? "Été" : "Hiver";
     }
 
     /**

@@ -62,7 +62,16 @@ class DiagnocticService
             0       => 'red',
             default => 'yellow',
         };
+    }
 
+    /**
+     * Description: Verify if the current date is in the summer period. Return 'été' if it is, 'Hiver' if not.
+     */
+    public function getSeason(\DateTime $date): string
+    {
+        $startSummer = new \DateTime('7 April');
+        $startWinter = new \DateTime('6 October');
 
+        return ($date >= $startSummer && $date < $startWinter) ? "Été" : "Hiver";
     }
 }
