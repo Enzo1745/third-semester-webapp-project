@@ -111,17 +111,17 @@ class AppFixtures extends Fixture
     private function roomsSAFixtures(ObjectManager $manager): void
     {
         // Create Room entities without SA associations
-        $room1 = new Room();
+        /* $room1 = new Room();
         $room1->setRoomName("D205")->setNbWindows(4)->setNbRadiator(2);
 
         $room2 = new Room();
-        $room2->setRoomName("D206")->setNbWindows(4)->setNbRadiator(1);
+        $room2->setRoomName("D206")->setNbWindows(4)->setNbRadiator(1); */
 
         $room3 = new Room();
         $room3->setRoomName("D207")->setNbWindows(4)->setNbRadiator(2);
 
-        $room4 = new Room();
-        $room4->setRoomName("D204")->setNbWindows(6)->setNbRadiator(3);
+        // $room4 = new Room();
+        // $room4->setRoomName("D204")->setNbWindows(6)->setNbRadiator(3);
 
         $room5 = new Room();
         $room5->setRoomName("D203")->setNbWindows(4)->setNbRadiator(2);
@@ -129,14 +129,14 @@ class AppFixtures extends Fixture
         $room6 = new Room();
         $room6->setRoomName("D303")->setNbWindows(4)->setNbRadiator(3);
 
-        $room7 = new Room();
-        $room7->setRoomName("D304")->setNbWindows(4)->setNbRadiator(2);
+        // $room7 = new Room();
+        // $room7->setRoomName("D304")->setNbWindows(4)->setNbRadiator(2);
 
         $room8 = new Room();
         $room8->setRoomName("C101")->setNbWindows(4)->setNbRadiator(2);
 
-        $room9 = new Room();
-        $room9->setRoomName("D109")->setNbWindows(2)->setNbRadiator(1);
+        // $room9 = new Room();
+        // $room9->setRoomName("D109")->setNbWindows(2)->setNbRadiator(1);
 
         $room10 = new Room();
         $room10->setRoomName("Secrétariat")->setNbWindows(2)->setNbRadiator(1);
@@ -147,18 +147,18 @@ class AppFixtures extends Fixture
         $room12 = new Room();
         $room12->setRoomName("D002")->setNbWindows(8)->setNbRadiator(6);
 
-        $room13 = new Room();
-        $room13->setRoomName("D004")->setNbWindows(4)->setNbRadiator(3);
+        // $room13 = new Room();
+        // $room13->setRoomName("D004")->setNbWindows(4)->setNbRadiator(3);
 
-        $room14 = new Room();
-        $room14->setRoomName("C004")->setNbWindows(6)->setNbRadiator(4);
+        // $room14 = new Room();
+        // $room14->setRoomName("C004")->setNbWindows(6)->setNbRadiator(4);
 
         $room15 = new Room();
         $room15->setRoomName("C007")->setNbWindows(6)->setNbRadiator(2);
 
         // Create SA entities
 
-        $sa1 = new Sa();
+        /* $sa1 = new Sa();
         $sa1->setName("ESP-004");
         $sa1->setTemperature(null)->setHumidity(null)->setCO2(null)
             ->setState(SAState::Installed)
@@ -175,7 +175,7 @@ class AppFixtures extends Fixture
             ->setRoom($room2);
         $room2->setIdSa($sa2->getId());
         $manager->persist($sa2);
-        $manager->persist($room2);
+        $manager->persist($room2);*/
 
         $sa3 = new Sa();
         $sa3->setName("ESP-006");
@@ -186,14 +186,14 @@ class AppFixtures extends Fixture
         $manager->persist($sa3);
         $manager->persist($room3);
 
-        $sa4 = new Sa();
+        /*$sa4 = new Sa();
         $sa4->setName("ESP-014");
         $sa4->setTemperature(null)->setHumidity(null)->setCO2(null)
             ->setState(SAState::Installed)
             ->setRoom($room4);
         $room4->setIdSa($sa4->getId());
         $manager->persist($sa4);
-        $manager->persist($room4);
+        $manager->persist($room4);*/
 
         $sa5 = new Sa();
         $sa5->setName("ESP-012");
@@ -213,14 +213,14 @@ class AppFixtures extends Fixture
         $manager->persist($sa6);
         $manager->persist($room6);
 
-        $sa7 = new Sa();
+        /*$sa7 = new Sa();
         $sa7->setName("ESP-011");
         $sa7->setTemperature(null)->setHumidity(null)->setCO2(null)
             ->setState(SAState::Installed)
             ->setRoom($room7);
         $room7->setIdSa($sa7->getId());
         $manager->persist($sa7);
-        $manager->persist($room7);
+        $manager->persist($room7);*/
 
         $sa8 = new Sa();
         $sa8->setName("ESP-007");
@@ -231,14 +231,14 @@ class AppFixtures extends Fixture
         $manager->persist($sa8);
         $manager->persist($room8);
 
-        $sa9 = new Sa();
+        /*$sa9 = new Sa();
         $sa9->setName("ESP-024");
         $sa9->setTemperature(null)->setHumidity(null)->setCO2(null)
             ->setState(SAState::Down) /////////////////////////////////////////////////////////////////////////:
             ->setRoom($room9);
         $room9->setIdSa($sa9->getId());
         $manager->persist($sa9);
-        $manager->persist($room9);
+        $manager->persist($room9);*/
 
         $sa10= new Sa();
         $sa10->setName("ESP-026");
@@ -267,7 +267,7 @@ class AppFixtures extends Fixture
         $manager->persist($sa12);
         $manager->persist($room12);
 
-        $sa13 = new Sa();
+        /*$sa13 = new Sa();
         $sa13->setName("ESP-020");
         $sa13->setTemperature(null)->setHumidity(null)->setCO2(null)
             ->setState(SAState::Installed)
@@ -283,7 +283,7 @@ class AppFixtures extends Fixture
             ->setRoom($room14);
         $room14->setIdSa($sa14->getId());
         $manager->persist($sa14);
-        $manager->persist($room14);
+        $manager->persist($room14);*/
 
         $sa15 = new Sa();
         $sa15->setName("ESP-022");
@@ -296,7 +296,7 @@ class AppFixtures extends Fixture
 
         //Temporary down fixture
         // SA 1
-        $down1 = new Down();
+        /*$down1 = new Down();
         $down1->setId(1);
         $down1->setSa($sa2);
         $down1->setReason("Problème de données pour l'{$sa2->getName()}");
@@ -305,10 +305,10 @@ class AppFixtures extends Fixture
         $down1->setCO2(true);
         $down1->setMicrocontroller(true);
         $down1->setDate(new \DateTime('2024-12-01 08:00:00'));
-        $manager->persist($down1);
+        $manager->persist($down1);*/
 
         // SA 2
-        $down2 = new Down();
+        /*$down2 = new Down();
         $down2->setId(2);
         $down2->setSa($sa2);
         $down2->setReason("Raison 1 pour SA 2");
@@ -317,9 +317,9 @@ class AppFixtures extends Fixture
         $down2->setCO2(false);
         $down2->setMicrocontroller(true);
         $down2->setDate(new \DateTime('2024-12-05 14:30:00'));
-        $manager->persist($down2);
+        $manager->persist($down2);*/
 
-        $down3 = new Down();
+        /*$down3 = new Down();
         $down3->setId(3);
         $down3->setSa($sa2);
         $down3->setReason("Raison 2 pour SA 2");
@@ -328,10 +328,10 @@ class AppFixtures extends Fixture
         $down3->setCO2(true);
         $down3->setMicrocontroller(false);
         $down3->setDate(new \DateTime('2024-12-10 11:45:00'));
-        $manager->persist($down3);
+        $manager->persist($down3);*/
 
         // SA 4
-        $down4 = new Down();
+        /*$down4 = new Down();
         $down4->setId(4);
         $down4->setSa($sa4);
         $down4->setReason("Raison 1 pour SA 4");
@@ -340,7 +340,7 @@ class AppFixtures extends Fixture
         $down4->setCO2(true);
         $down4->setMicrocontroller(true);
         $down4->setDate(new \DateTime('2024-12-15 09:20:00'));
-        $manager->persist($down4);
+        $manager->persist($down4);*/
 
         // SA 5
         $down5 = new Down();

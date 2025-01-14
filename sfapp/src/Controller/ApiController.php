@@ -187,8 +187,10 @@ class ApiController extends AbstractController
                 $roomRepository = $this->entityManager->getRepository(Room::class);
                 $room = $roomRepository->findOneBy(['roomName' => $item['localisation']]);
 
-                $sa->setRoom($room);
-                $room->setIdSa($sa->getId());
+                if ($room) {
+                    $sa->setRoom($room);
+                    $room->setIdSa($sa->getId());
+                }
 
                 $this->entityManager->persist($sa);
             }
