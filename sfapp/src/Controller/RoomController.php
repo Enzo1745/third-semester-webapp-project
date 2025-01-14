@@ -236,9 +236,15 @@ class RoomController extends AbstractController
         }
 
         // Fetch measures for the room
-        $temperatureMeasures = $measureRepository->findByTypeAndSa('temp', $sa ? (string) $sa->getId() : null);
-        $humidityMeasures = $measureRepository->findByTypeAndSa('hum', $sa ? (string) $sa->getId() : null);
-        $co2Measures = $measureRepository->findByTypeAndSa('co2', $sa ? (string) $sa->getId() : null);
+        if ($sa) {
+            $temperatureMeasures = $measureRepository->findByTypeAndSa('temp', (string) $sa->getId());
+            $humidityMeasures = $measureRepository->findByTypeAndSa('hum', (string) $sa->getId());
+            $co2Measures = $measureRepository->findByTypeAndSa('co2', (string) $sa->getId());
+        } else {
+            $temperatureMeasures = [];
+            $humidityMeasures = [];
+            $co2Measures = [];
+        }
 
         // Create temperature chart
         $chartTemp = $chartBuilder->createChart(Chart::TYPE_LINE);
