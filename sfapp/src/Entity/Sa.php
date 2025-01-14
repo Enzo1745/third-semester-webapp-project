@@ -8,10 +8,10 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: SaRepository::class)]
 /**
- * @ORM\Table(name="sa", uniqueConstraints={@ORM\UniqueConstraint(name="sa_name_unique", columns={"name"})})
-*/
+ * @brief the Sa entity used to create the SAs and link them to the rooms
+ */
+#[ORM\Entity(repositoryClass: SaRepository::class)]
 class Sa
 {
     #[ORM\Id]

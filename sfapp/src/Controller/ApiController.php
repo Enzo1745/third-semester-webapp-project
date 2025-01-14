@@ -21,6 +21,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\LastUpdate;
 use function Symfony\Component\Clock\now;
 
+/**
+ * @brief The controller for the API that allows us to comunicate with the SA
+ */
 class ApiController extends AbstractController
 {
     private $client;
@@ -28,6 +31,12 @@ class ApiController extends AbstractController
     private $entityManager;
     private $dbList;
 
+    /**
+     * @param HttpClientInterface $client
+     * @param LoggerInterface $logger
+     * @param EntityManagerInterface $entityManager
+     * @brief The API constructor
+     */
     public function __construct(HttpClientInterface $client, LoggerInterface $logger, EntityManagerInterface $entityManager)
     {
         $this->client = $client;
@@ -198,6 +207,13 @@ class ApiController extends AbstractController
         $this->entityManager->flush();
     }
 
+    /**
+     * @param array $item
+     * @param Sa $sa
+     * @return Measure|null
+     * @throws \Exception
+     * @brief Create a new mesure if there is none for the current date and time and if there is one that exist, updates it
+     */
     private function updateOrCreateMeasure(array $item, Sa $sa)
     {
         // Check if a measure with the same type and capture date already exists

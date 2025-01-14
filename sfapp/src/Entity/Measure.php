@@ -7,6 +7,9 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Entity\Sa;
 
+/**
+ * @brief the mesure entity used to store data from the API
+ */
 #[ORM\Entity(repositoryClass: MeasureRepository::class)]
 class Measure
 {

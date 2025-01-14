@@ -8,6 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<LastUpdate>
+ * @brief repository used to manage the Entity LastUpdate
  */
 class LastUpdateRepository extends ServiceEntityRepository
 {

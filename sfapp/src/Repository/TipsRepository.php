@@ -8,6 +8,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Tips>
+ * @brief repository used to manage the Entity Tips
  */
 class TipsRepository extends ServiceEntityRepository
 {

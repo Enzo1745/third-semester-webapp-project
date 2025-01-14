@@ -9,6 +9,7 @@ use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * @extends ServiceEntityRepository<Room>
+ * @brief repository used to manage the Entity Room
  */
 class RoomRepository extends ServiceEntityRepository
 {

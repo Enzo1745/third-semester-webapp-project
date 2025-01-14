@@ -11,6 +11,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Doctrine\ORM\EntityRepository;
 
+/**
+ * @brief the form used to select rooms in the home page
+ */
 class SearchRoomsType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

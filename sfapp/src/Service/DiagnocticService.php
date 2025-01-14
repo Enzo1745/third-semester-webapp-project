@@ -8,8 +8,20 @@ use App\Entity\Norm;
 use App\Repository\Model\SAState;
 use DateTime;
 
+/**
+ * @brief Service used to manage the diagnostic of the SAs
+ */
 class DiagnocticService
 {
+    /**
+     * @param Sa|null $sa
+     * @param Room|null $room
+     * @param Norm $summerNorms
+     * @param Norm $winterNorms
+     * @param int|null $compliantCount
+     * @return string
+     * @brief fnction to manage the SA diagnostic, used to render a colored circle based on if the room in wth the SA is in is good or not
+     */
     public function getDiagnosticStatus(?Sa $sa,?Room $room, Norm $summerNorms, Norm $winterNorms, ?int $compliantCount = null): string
     {
         //check status

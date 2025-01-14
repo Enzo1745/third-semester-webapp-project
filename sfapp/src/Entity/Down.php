@@ -6,6 +6,9 @@ use App\Repository\DownRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @brief the down entity used to manage the dwn SA and their history
+ */
 #[ORM\Entity(repositoryClass: DownRepository::class)]
 class Down
 {

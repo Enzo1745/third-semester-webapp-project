@@ -13,6 +13,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
+/**
+ * @brief the form used to declare the down state of the SA
+ */
 class SaDownType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

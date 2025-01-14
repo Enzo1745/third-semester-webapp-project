@@ -27,7 +27,8 @@ class SaListController extends AbstractController
      * @brief Function to return the list of sa in the web page
      * @param Request $request
      * @param SaRepository $saRepo
-     * @return Response -> return the web page with the list of all sa
+     * @return Response
+     * @brief return the web page with the list of all sa
      */
     #[Route('/charge/gestion_sa', name: 'app_sa_management')]
     public function listSA(Request $request, SaRepository $saRepo): Response
@@ -45,7 +46,8 @@ class SaListController extends AbstractController
      * @param SaRepository $saRepo
      * @param EntityManagerInterface $entityManager
      * @param NormRepository $normRepository
-     * @return Response Returns the web page with the SA list and diagnostics
+     * @return Response
+     * @brief Returns the web page with the SA list and diagnostics
      */
     #[Route('/technicien/sa', name: 'app_technician_sa')]
     public function techListSa(
@@ -116,11 +118,11 @@ class SaListController extends AbstractController
     }
 
     /**
-     * @brief Function to delete a system acquisition
      * @param int $id The ID of the system acquisition to delete
      * @param SaRepository $saRepo The repository to access the system acquisition data
-     * @param EntityManagerInterface $entityManager The EntityManager to manage persistence operations
-     * @return Response The response that redirects to the list of system acquisitions
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @brief Function to delete a system acquisition
      */
     #[Route('/technicien/sa/delete/{id}', name: 'app_sa_delete', methods: ['POST'])]
     public function deleteSa(int $id, SaRepository $saRepo, EntityManagerInterface $entityManager): Response

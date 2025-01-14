@@ -10,6 +10,7 @@ use App\Service\DiagnocticService;
 
 /**
  * @extends ServiceEntityRepository<Sa>
+ * @brief repository used to manage the Entity SA
  */
 class SaRepository extends ServiceEntityRepository
 {

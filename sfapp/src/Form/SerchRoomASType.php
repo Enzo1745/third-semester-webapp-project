@@ -10,6 +10,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @brief form used to select rooms based on if they have been linked to an SA or not
+ */
 class SerchRoomASType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

@@ -9,6 +9,7 @@ use App\Entity\Sa;
 
 /**
  * @extends ServiceEntityRepository<Measure>
+ * @brief repository used to manage the Entity Measure
  */
 class MeasureRepository extends ServiceEntityRepository
 {

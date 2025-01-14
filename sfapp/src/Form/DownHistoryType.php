@@ -12,6 +12,9 @@ use Symfony\Component\Form\Extension\Core\Type\WeekType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @brief the form used to filter the results in he SA history
+ */
 class DownHistoryType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
