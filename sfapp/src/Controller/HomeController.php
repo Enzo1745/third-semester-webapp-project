@@ -66,7 +66,7 @@ class HomeController extends AbstractController
         if (!empty($roomName)) {
             $room = $roomRepository->findByRoomNameWithSA($roomName);
             if ($room) {
-                $this->deleteInstrucionsForRoom($room, $entityManager); // Delete the instructions so that each time we get the updated instructions
+                $this->deleteInstructionsForRoom($room, $entityManager); // Delete the instructions so that each time we get the updated instructions
                 $this->giveInstructionsForRoom($room, $norms, $entityManager);
                 $instructions = $comfortInstructionRoomRepo->findBy(['room' => $room]);
             }
@@ -117,7 +117,7 @@ class HomeController extends AbstractController
     /**
      * Deletes tasks on a room
      */
-    public function deleteInstrucionsForRoom(Room $room, EntityManagerInterface $entityManager): void
+    public function deleteInstructionsForRoom(Room $room, EntityManagerInterface $entityManager): void
     {
         $comfortInstructionRoomRepo = $entityManager->getRepository(ComfortInstructionRoom::class);
         $instructions = $comfortInstructionRoomRepo->findBy(['room' => $room]);
