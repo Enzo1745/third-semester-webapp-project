@@ -2,6 +2,8 @@
 
 namespace App\Form;
 
+use App\Entity\ComfortInstruction;
+use App\Entity\ComfortInstructionRoom;
 use App\Entity\Room;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -20,7 +22,7 @@ class SearchRoomsType extends AbstractType
                 'placeholder' => 'Sélectionner une salle',
                 'label' => 'Choisir une salle :',
                 'required' => true,
-                'query_builder' => function (EntityRepository $er) { // Selects the room that have at least one working data collector
+                'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('r')
                         ->innerJoin('r.sa', 's')
                         ->andWhere('s.Temperature IS NOT NULL')

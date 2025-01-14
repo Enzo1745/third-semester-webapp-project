@@ -8,6 +8,7 @@ use App\Entity\Room;
 use App\Entity\Sa;
 use App\Entity\Tips;
 use App\Entity\User;
+use App\Entity\ComfortInstruction;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\NormType;
 use App\Repository\Model\SAState;
@@ -377,12 +378,32 @@ class AppFixtures extends Fixture
         $manager->persist($down6);
     }
 
+    private function comfortInstructionsFixtures(ObjectManager $manager) : void
+    {
+        $comfortInstruction1 = new ComfortInstruction();
+        $comfortInstruction1->setInstruction("Ouvrir la fenêtre");
+        $manager->persist($comfortInstruction1);
+
+        $comfortInstruction2 = new ComfortInstruction();
+        $comfortInstruction2->setInstruction("Ouvrir la porte");
+        $manager->persist($comfortInstruction2);
+
+        $comfortInstruction3 = new ComfortInstruction();
+        $comfortInstruction3->setInstruction("Allumer les radiateurs");
+        $manager->persist($comfortInstruction3);
+
+        $comfortInstruction4 = new ComfortInstruction();
+        $comfortInstruction4->setInstruction("Éteindre les radiateurs");
+        $manager->persist($comfortInstruction4);
+    }
+
     public function load(ObjectManager $manager): void
     {
 		$this->tipsFixtures($manager);
         $this->normFixtures($manager);
         $this->usersFixtures($manager);
         $this->roomsSAFixtures($manager);
+        $this->comfortInstructionsFixtures($manager);
 
         $manager->flush();
     }

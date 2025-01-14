@@ -35,13 +35,14 @@
             <div class="card-header d-flex flex-column bg-primary bg-gradient text-white py-3">
                 <h5 class="mb-0">Informations de la salle</h5>
                 <div class="card-body mt-2 ms-0 p-0">
-                    {{ form_start(form) }}
+                    {{ form_start(searchForm) }}
                     <div class="d-flex justify-content-start align-items-start">
-                        {{ form_row(form.salle, {'attr': {'class': 'form-select w-auto m-1'}}) }}
+                        {{ form_row(searchForm.salle, {'attr': {'class': 'm-1'}}) }}
                     </div>
-                    {{ form_end(form) }}
+                    {{ form_end(searchForm) }}
                 </div>
             </div>
+
             <div class="card-body">
                 {% if room is not null %}
                     <div class="row mb-4">
@@ -57,7 +58,7 @@
                         <div class="col-md-4 mb-3">
                             <div class="card text-center">
                                 <div class="card-body">
-                                    <i class="fas fa-fire fa-2x text-primary mb-2"></i>
+                                    <i class="fas fa-radiator fa-2x text-primary mb-2"></i>
                                     <h5 class="card-title">Nombre de radiateurs</h5>
                                     <p class="card-text value">{{ room.nbRadiator|default('N/A') }}</p>
                                 </div>
@@ -201,10 +202,112 @@
                 {% else %}
                     <div class="text-center py-4">
                         <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
-                        <p class="text-muted">Aucune salle selectionnée.</p>
+                        <p class="text-muted">Aucune salle sélectionnée.</p>
                     </div>
                 {% endif %}
             </div>
         </div>
-    </div>
+
+    <!-- Tasks to do by the user -->
+    {% if instructions is not empty %}
+        {% if room %}
+            <div class="container mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0">Actions à faire</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled" id="actions-list">
+                            {% for instruction in instructions %}
+                                <li class="mb-3">
+                                    <p>{{ instruction.getComfortInstruction().getInstruction() }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <!-- Tasks to do by the user Symfony form (not used) -->
+{#    {% if instructions is not empty %}#}
+{#        {% if room %}#}
+{#            <div class="container mb-4">#}
+{#                <div class="card shadow-sm">#}
+{#                    <div class="card-header bg-primary text-white py-3">#}
+{#                        <h5 class="mb-0">Actions à faire</h5>#}
+{#                    </div>#}
+{#                    <div class="card-body">#}
+{#                        {{ form_start(instructionsForm) }}#}
+{#                        <ul class="list-unstyled" id="actions-list">#}
+{#                            {% for child in instructionsForm %}#}
+{#                                <li class="mb-3 d-flex justify-content-between align-items-center">#}
+{#                                    <label class="form-check-label mb-0">#}
+{#                                        {{ form_label(child) }}#}
+{#                                    </label>#}
+{#                                    <div class="form-check">#}
+{#                                        {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}#}
+{#                                    </div>#}
+{#                                </li>#}
+{#                            {% endfor %}#}
+{#                        </ul>#}
+{#                        <button type="submit" class="btn btn-primary" id="confirmButton" data-bs-toggle="modal" data-bs-target="#confirmationModal">#}
+{#                            Confirmer#}
+{#                        </button>#}
+{#                        {{ form_end(instructionsForm) }}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    {% endif %}#}
+
+    <!-- Confirmation Modal -->
+{#    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">#}
+{#        <div class="modal-dialog">#}
+{#            <div class="modal-content">#}
+{#                <div class="modal-header">#}
+{#                    <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>#}
+{#                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#                </div>#}
+{#                <div class="modal-body">#}
+{#                    Avez-vous réalisé ces actions ?#}
+{#                </div>#}
+{#                <div class="modal-footer">#}
+{#                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>#}
+{#                    <button type="button" class="btn btn-primary" id="confirmModalButton">Oui, confirmer</button>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
+    <!-- JavaScript to enable the button when a checkbox is checked -->
+{#    <script>#}
+{#        document.addEventListener('DOMContentLoaded', function () {#}
+{#            const confirmButton = document.getElementById('confirmButton');#}
+{#            const checkboxes = document.querySelectorAll('input[type="checkbox"]');#}
+{#            // const confirmModal = new bootstrap.Modal(document.getElementById('confirmationModal'));#}
+{#            // const confirmModalButton = document.getElementById('confirmModalButton');#}
+{#            // const form = document.querySelector('form[name="instructionsForm"]');#}
+
+{#            function updateConfirmButtonState() {#}
+{#                !Array.from(checkboxes).some(checkbox => checkbox.checked) ? confirmButton.disabled = true : confirmButton.disabled = false;#}
+{#            }#}
+
+{#            checkboxes.forEach(checkbox => {#}
+{#                checkbox.addEventListener('change', updateConfirmButtonState);#}
+{#            });#}
+
+{#            // confirmButton.addEventListener('click', function () {#}
+{#            //     confirmModal.show();#}
+{#            // });#}
+{#            //#}
+{#            // confirmModalButton.addEventListener('click', function () {#}
+{#            //     form.submit();#}
+{#            // });#}
+
+{#            // Initial check to set the button state correctly on page load#}
+{#            updateConfirmButtonState();#}
+{#        });#}
+{#    </script>#}
 {% endblock %}
