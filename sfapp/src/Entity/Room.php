@@ -31,6 +31,7 @@ class Room
     #[ORM\Column]
     private ?int $NbWindows = null;
 
+
     private ?string $diagnosticStatus = null;
 
     public function getDiagnosticStatus(): ?string

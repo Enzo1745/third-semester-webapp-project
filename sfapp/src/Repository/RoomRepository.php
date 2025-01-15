@@ -123,14 +123,11 @@ class RoomRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function sortRoomsByState(array $rooms, int $choice): array
+    public function sortRooms(array $rooms, int $choice): array
     {
         $orderDiaRedFirst = ['red', 'yellow', 'green', 'grey'];
-        $orderDiaGreenFirst = ['green', 'yellow', 'red', 'grey'];
 
-        usort($rooms, function($roomA, $roomB) use ($rooms, $choice, $orderDiaGreenFirst, $orderDiaRedFirst) {
-
-
+        usort($rooms, function($roomA, $roomB) use ($rooms, $choice, $orderDiaRedFirst) {
 
 
                 // Diagnostic

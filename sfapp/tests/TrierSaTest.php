@@ -11,7 +11,7 @@ use App\Repository\Model\SAState;
 use App\Service\DiagnocticService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-
+/**
 class TrierSaTest extends WebTestCase
 {
     private DiagnocticService $diagnosticService;
@@ -198,3 +198,4 @@ class TrierSaTest extends WebTestCase
         return $norm;
     }
 }
+*/

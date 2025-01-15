@@ -38,13 +38,8 @@ class SaRepository extends ServiceEntityRepository
     }
 
 
-    public function sortByState(array $saList,int $choice,
-                                NormRepository $normRepository,
-                                DiagnocticService $diagnosticService
-                                ): array
+    public function sortByState(array $saList,int $choice,): array
     {
-
-
         if ($choice === 1) {
             $order = [
                 SAState::Down->value,
@@ -52,13 +47,11 @@ class SaRepository extends ServiceEntityRepository
                 SAState::Available->value,
                 SAState::Installed->value,
             ];
-
             usort($saList, function($a, $b) use ($order) {
                 return array_search($a->getState()->value, $order)
                     <=> array_search($b->getState()->value, $order);
             });
         }
-
         elseif ($choice === 2) {
             $order = [
                  'red',
@@ -66,19 +59,11 @@ class SaRepository extends ServiceEntityRepository
                 'green',
                 'grey'
             ];
-
-
-
             usort($saList, function($a, $b) use ($order) {
                 return array_search($a->getDiagnosticStatus(), $order)
                     <=> array_search($b->getDiagnosticStatus(), $order);
             });
-
-
         }
-
-
-
         return $saList;
     }
 

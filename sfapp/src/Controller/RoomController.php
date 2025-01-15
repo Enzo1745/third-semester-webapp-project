@@ -145,7 +145,7 @@ class RoomController extends AbstractController
                 default => 0,
             };
 
-            $rooms = $roomRepository->sortRoomsByState($rooms, $choice);
+            $rooms = $roomRepository->sortRooms($rooms, $choice);
         }
 
         // Prepare data for the template
@@ -406,7 +406,7 @@ class RoomController extends AbstractController
 
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
-            'NormType' => 'confort',
+            'NormType' => 'technique',
             'NormSeason' =>  $season
         ]);
 

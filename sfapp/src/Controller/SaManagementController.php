@@ -56,9 +56,9 @@ class SaManagementController extends AbstractController
             if ($sa->getState() === SAState::Available && $sa->getRoom()) {
                 $sa->setState(SAState::Waiting);
                 $room = $sa->getRoom();
-                $room->setIdSa($sa->getId()); // Ajoutez cette ligne
+                $room->setIdSa($sa->getId());
                 $manager->persist($sa);
-                $manager->persist($room); // Ajoutez cette ligne
+                $manager->persist($room);
                 $manager->flush();
             }
         }

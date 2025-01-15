@@ -81,8 +81,9 @@ class DiagnocticService
      */
     public function getSeason(\DateTime $date): string
     {
-        $startSummer = new \DateTime('7 April');
-        $startWinter = new \DateTime('6 October');
+        $year = $date->format('Y');
+        $startSummer = new \DateTime("7 April $year");
+        $startWinter = new \DateTime("6 October $year");
 
         return ($date >= $startSummer && $date < $startWinter) ? "Été" : "Hiver";
     }

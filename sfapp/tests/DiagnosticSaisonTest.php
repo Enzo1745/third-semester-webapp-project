@@ -2,9 +2,9 @@
 
 namespace App\Tests;
 
+use App\Entity\User;
 use App\Repository\Model\SAState;
 use App\Service\DiagnocticService;
-use ContainerVUHUmf6\get_Maker_AutoCommand_MakeSerializerNormalizer_LazyService;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\Norm;
 use App\Entity\Room;
@@ -19,8 +19,25 @@ class DiagnosticSaisonTest extends WebTestCase
     private Norm $summerNorms;
     private Norm $winterNorms;
 
+    private $client;
+    private $entityManager;
     protected function setUp(): void
     {
+
+        $this->client = static::createClient();
+        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
+
+        $existingUser = $this->entityManager->getRepository(User::class)->findOneBy(['username' => 'charge_user']);
+        if (!$existingUser) {
+            $userCharge = new User();
+            $userCharge->setUsername('charge_user')
+                ->setPassword(password_hash('password123', PASSWORD_BCRYPT))
+                ->setRoles(['ROLE_CHARGE']);
+            $this->entityManager->persist($userCharge);
+            $this->entityManager->flush();
+        }
+        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
+
         $this->summerNorms = new Norm();
         $this->summerNorms->setHumidityMinNorm(30)
             ->setHumidityMaxNorm(70)
@@ -40,7 +57,10 @@ class DiagnosticSaisonTest extends WebTestCase
             ->setCo2MaxNorm(1600)
             ->setNormSeason(NormSeason::Winter)
             ->setNormType(NormType::Comfort);
+
+
     }
+
 
     /**
      * @uses externally calculate the compliant count to be able to change the season type
@@ -220,31 +240,47 @@ class DiagnosticSaisonTest extends WebTestCase
 
     public function testAffichageWinterText()
     {
-        $client = static::createClient();
+        $diagnosticService = new DiagnocticService();
+        $this->client->request('POST', '/connexion', [
+            'username' => 'charge_user',
+            'password' => 'password123',
+        ]);
+        $this->assertResponseRedirects('/charge/salles');
+        $this->client->followRedirect();
 
-        $controller = new RoomController();
+        // Requête vers la route sécurisée
+        $crawler = $this->client->request('GET', '/charge/salles');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+
         $date = new \DateTime('2025-01-15');
-        $crawler = $client->request('GET', '/charge/salles');
+        $season = $diagnosticService->getSeason($date);
+        $this->assertEquals('Hiver', $season);
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
-
-        $season = $controller->getSeason($date);
-        $this->assertEquals("hiver", $season);
+        // Vérifiez l'affichage correct sur la page
+        $this->assertSelectorTextContains('#summerText', 'Saison de normes actuelle : Hiver');
 
     }
 
+
     public function testAffichageSummerText()
     {
-        $client = static::createClient();
+        $diagnosticService = new DiagnocticService();
+        $this->client->request('POST', '/connexion', [
+            'username' => 'charge_user',
+            'password' => 'password123',
+        ]);
+        $this->assertResponseRedirects('/charge/salles');
+        $this->client->followRedirect();
 
-        $controller = new RoomController();
-        $date = new \DateTime('2025-06-21');
-        $crawler = $client->request('GET', '/charge/salles');
+        // Requête vers la route sécurisée
+        $crawler = $this->client->request('GET', '/charge/salles');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
 
-        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $date = new \DateTime('2025-08-21');
+        $season = $diagnosticService->getSeason($date);
+        $this->assertEquals('Été', $season);
 
-        $season = $controller->getSeason($date);
-        $this->assertEquals("été", $season);
+
 
 
 
