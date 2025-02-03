@@ -1,3 +1,4 @@
+import './bootstrap.js';
 /*
  * Welcome to your app's main JavaScript file!
  *
@@ -13,4 +14,17 @@ document.addEventListener('DOMContentLoaded', function () {
         new bootstrap.Tooltip(tooltipTriggerEl);
     });
 });
+
+
+
+document.addEventListener('DOMContentLoaded', function () {
+var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+    var popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl, {
+            html: true,
+            trigger: 'hover'
+        });
+    });
+});
+
 

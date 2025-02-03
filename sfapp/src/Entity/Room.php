@@ -5,6 +5,9 @@ namespace App\Entity;
 use App\Repository\RoomRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @brief the Room entity used to create rooms and link them to the SAs
+ */
 #[ORM\Entity(repositoryClass: RoomRepository::class)]
 class Room
 {
@@ -27,6 +30,20 @@ class Room
 
     #[ORM\Column]
     private ?int $NbWindows = null;
+
+
+    private ?string $diagnosticStatus = null;
+
+    public function getDiagnosticStatus(): ?string
+    {
+        return $this->diagnosticStatus;
+    }
+
+    public function setDiagnosticStatus(?string $diagnosticStatus): self
+    {
+        $this->diagnosticStatus = $diagnosticStatus;
+        return $this;
+    }
 
     public function getId(): ?int
     {

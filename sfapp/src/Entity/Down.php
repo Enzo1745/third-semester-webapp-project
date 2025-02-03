@@ -6,6 +6,9 @@ use App\Repository\DownRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @brief the down entity used to manage the dwn SA and their history
+ */
 #[ORM\Entity(repositoryClass: DownRepository::class)]
 class Down
 {
@@ -39,6 +42,12 @@ class Down
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function setId(?int $id): self
+    {
+        $this->id = $id;
+        return $this;
     }
 
     public function getReason(): ?string

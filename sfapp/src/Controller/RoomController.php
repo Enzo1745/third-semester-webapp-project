@@ -2,11 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Measure;
 use App\Entity\Norm;
 use App\Entity\Room;
 use App\Entity\Sa;
 use App\Form\AddRoomType;
+use App\Form\DateCaptureType;
+use App\Form\FilterAndSort;
 use App\Form\SerchRoomASType;
+use App\Repository\MeasureRepository;
 use App\Repository\Model\NormSeason;
 use App\Repository\Model\SAState;
 use App\Repository\RoomRepository;
@@ -17,10 +21,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Form\FilterAndSortTechnician;
+use App\Service\DiagnocticService;
+use Symfony\UX\Chartjs\Builder\ChartBuilderInterface;
+use Symfony\UX\Chartjs\Model\Chart;
 
 class RoomController extends AbstractController
 {
     /**
+     * @return Response
+     * @brief renders the main charge section page (/charge/salles) when th users goes to the /charge page
      * Route: /charge
      * Name: app_charge
      * Description: Displays the main index page.
@@ -38,7 +48,11 @@ class RoomController extends AbstractController
      * Route: /charge/salles/ajouter
      * Name: app_room_management
      * Description:
-     *              Displays a form to add a room and processes form submissions.
+     * Displays a form to add a room and processes form submissions.
+     * @param Request $request
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @brief Renders the page to add a room
      */
     #[Route('/charge/salles/ajouter', name: 'app_room_management')]
     public function manage(Request $request, EntityManagerInterface $entityManager): Response
@@ -73,46 +87,79 @@ class RoomController extends AbstractController
     }
 
     /**
-     * Route: /charge/salles
-     * Name: app_room_list
-     * Description: Displays a list of all rooms.
+     * @param RoomRepository $roomRepository
+     * @param DiagnocticService $diagnosticService
+     * @param NormRepository $normRepository
+     * @param Request $request
+     * @return Response
+     * @brief Render the main page of the charge part, managing the filters in it and sending the data of the rooms
      */
     #[Route('/charge/salles', name: 'app_room_list')]
-    public function listRooms(RoomRepository $roomRepository, NormRepository $normRepository, Request $request, EntityManagerInterface $entityManager): Response
-    {
-        // Fetch all rooms ordered by room number
+    public function listRooms(
+        RoomRepository $roomRepository,
+        DiagnocticService $diagnosticService,
+        NormRepository $normRepository,
+        Request $request
+    ): Response {
+        $this->denyAccessUnlessGranted('ROLE_CHARGE');
 
-        $form = $this->createForm( SerchRoomASType::class);
+        $form = $this->createForm(FilterAndSort::class);
         $form->handleRequest($request);
 
-        //getting the active filter
-        $choice = $form->get('filter')->getData();
+        //Verify the current date
+        $currentDate = new \DateTime();
+        $season = $diagnosticService->getSeason($currentDate);
 
-        // changing the content of the list depending on the selected filter
-        if ($choice === 'RoomsWithAS') {
-            $rooms = $roomRepository->findAllWithIdSa();
-        }
-        else if ($choice === 'RoomsWithoutAS') {
-            $rooms = $roomRepository->findAllWithoutIdSa();
-        }
-        else{
-            $rooms = $roomRepository->findAllOrderedByRoomNumber();
-        }
+        // filter tri choice
+        $filterChoice = $form->get('filter')->getData();
+        $sortChoice   = $form->get('trier')->getData();
 
-        // Creates the diagnostic and gives a status to each room
-        $roomsWithDiagnostics = [];
+        // room filter
+        $rooms = match ($filterChoice) {
+            'withSA' => $roomRepository->findAllWithIdSa(),
+            'withoutSA' => $roomRepository->findAllWithoutIdSa(),
+            default => $roomRepository->findAllOrderedByRoomName(),
+        };
+
+        $summerNorms = $normRepository->findOneBy([
+            'NormType'   => 'confort',
+            'NormSeason' => 'été'
+        ]);
+
+        $winterNorms = $normRepository->findOneBy([
+            'NormType'   => 'confort',
+            'NormSeason' => 'hiver'
+        ]);
+
+        // add diagnostic status to room
         foreach ($rooms as $room) {
-            $diagnosticStatus = $this->getDiagnosticStatus($room, $entityManager, $normRepository);
-            $roomsWithDiagnostics[] = [
-                'room' => $room,
-                'diagnosticStatus' => $diagnosticStatus
-            ];
+            $sa = $room->getSa();
+            $diagnosticColor = $diagnosticService->getDiagnosticStatus($sa, $room, $summerNorms, $winterNorms);
+            $room->setDiagnosticStatus($diagnosticColor);
         }
 
-        // Render the list of rooms
+        // sort
+        if (in_array($sortChoice, ['Dia'])) {
+            $choice = match ($sortChoice) {
+                'Dia' => 1,
+                default => 0,
+            };
+
+            $rooms = $roomRepository->sortRooms($rooms, $choice);
+        }
+
+        // Prepare data for the template
+        $roomsWithDiagnostics = array_map(function(Room $room) {
+            return [
+                'room'             => $room,
+                'diagnosticStatus' => $room->getDiagnosticStatus(),
+            ];
+        }, $rooms);
+
         return $this->render('room/index.html.twig', [
-            'form' => $form->createView(),
+            'form'  => $form->createView(),
             'rooms' => $roomsWithDiagnostics,
+            'season' => $season,
         ]);
     }
 
@@ -120,98 +167,276 @@ class RoomController extends AbstractController
      * Route: /charge/salles/{roomName}
      * Name: app_room_info
      * Description: Displays detailed information about a specific room.
+     * @throws \DateMalformedStringException
+     * @param string $roomName
+     * @param RoomRepository $roomRepository
+     * @param DownRepository $downRepo
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @brief Displays detailed information about a specific room.
      */
     #[Route('/charge/salles/{roomName}', name: 'app_room_info')]
     public function roomInfo(
         string $roomName,
         RoomRepository $roomRepository,
         DownRepository $downRepo,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        MeasureRepository $measureRepository, // Add MeasureRepository for roomHistory
+        ChartBuilderInterface $chartBuilder, // Add ChartBuilderInterface for roomHistory
+        Request $request,
+        DiagnocticService $diagnosticService,
     ): Response {
         // Find a room by its name
         $room = $roomRepository->findByRoomName($roomName);
         $down = null;
 
+        // Set default date range for measures
+        $dateDebut = new \DateTime("2025-01-01");
+        $dateFin = new \DateTime("2025-12-31");
+
+        $data = [
+            'dateDebut' => $dateDebut,
+            'dateFin' => $dateFin,
+        ];
+
+        // Create the form with the custom type
+        $form = $this->createForm(DateCaptureType::class, $data);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $data = $form->getData();
+            $dateDebut = $data['dateDebut'];
+            $dateFin = $data['dateFin'];
+        }
+
+        // If the room is not found, return an error message
         if (!$room) {
             return $this->render('room/not_found.html.twig', [
                 'message' => 'Salle introuvable.',
             ]);
         }
 
+        // Get the current date and determine the season
+        $currentDate = new \DateTime();
+        $season = $diagnosticService->getSeason($currentDate);
+
+        // Fetch norms based on the season
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
             'NormType' => 'confort',
-            'NormSeason' => 'été'
+            'NormSeason' => $season
         ]);
 
-        // Find an SA if it exists
+        // Find the SA if it exists
         $sa = null;
-        if ($room->getIdSA()) {
+        if ($room->getIdSa()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
             if ($sa && $sa->getState() == SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
             }
         }
 
+        // Fetch measures for the room
+        if ($sa) {
+            $temperatureMeasures = $measureRepository->findByTypeAndSa('temp', (string) $sa->getId());
+            $humidityMeasures = $measureRepository->findByTypeAndSa('hum', (string) $sa->getId());
+            $co2Measures = $measureRepository->findByTypeAndSa('co2', (string) $sa->getId());
+        } else {
+            $temperatureMeasures = [];
+            $humidityMeasures = [];
+            $co2Measures = [];
+        }
 
+        // Create temperature chart
+        $chartTemp = $chartBuilder->createChart(Chart::TYPE_LINE);
 
+        $TempLabelList = [];
+        $TempValueList = [];
+
+        $HumLabelList = [];
+        $HumValueList = [];
+
+        $Co2LabelList = [];
+        $Co2ValueList = [];
+
+        // Populate temperature data for the chart
+        foreach ($temperatureMeasures as $measure) {
+            $TempValueList[] = $measure['value'];
+            if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
+                $TempLabelList[] = $measure['captureDate']->format('Y-m-d');
+            }
+        }
+
+        // Populate humidity data for the chart
+        foreach ($humidityMeasures as $measure) {
+            $HumValueList[] = $measure['value'];
+            if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
+                $HumLabelList[] = $measure['captureDate']->format('Y-m-d');
+            }
+        }
+
+        // Populate CO2 data for the chart
+        foreach ($co2Measures as $measure) {
+            $Co2ValueList[] = $measure['value'];
+            if ($measure['captureDate'] >= $dateDebut && $measure['captureDate'] < $dateFin) {
+                $Co2LabelList[] = $measure['captureDate']->format('Y-m-d');
+            }
+        }
+
+        // Set data and options for the temperature chart
+        $chartTemp->setData([
+            'labels' => $TempLabelList,
+            'datasets' => [
+                [
+                    'label' => 'Température',
+                    'backgroundColor' => 'rgba(255, 0, 0, 0.2)',
+                    'borderColor' => 'rgba(255, 0, 0, 1)',
+                    'data' => $TempValueList,
+                ],
+            ],
+        ]);
+
+        $chartTemp->setOptions([
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Température (Celsius)',
+                    ],
+                    'min' => 10,
+                    'max' => 30,
+                ],
+            ],
+        ]);
+
+        // Create and set data and options for the humidity chart
+        $chartHum = $chartBuilder->createChart(Chart::TYPE_LINE);
+        $chartHum->setData([
+            'labels' => $HumLabelList,
+            'datasets' => [
+                [
+                    'label' => 'Humidité',
+                    'backgroundColor' => 'rgba(0, 0, 255, 0.2)',
+                    'borderColor' => 'rgba(0, 0, 255, 1)',
+                    'data' => $HumValueList,
+                ],
+            ],
+        ]);
+
+        $chartHum->setOptions([
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Humidité (Pourcentage)',
+                    ],
+                    'min' => 0,
+                    'max' => 100,
+                ],
+            ],
+        ]);
+
+        // Create and set data and options for the CO2 chart
+        $chartCO2 = $chartBuilder->createChart(Chart::TYPE_LINE);
+        $chartCO2->setData([
+            'labels' => $Co2LabelList,
+            'datasets' => [
+                [
+                    'label' => 'CO2',
+                    'backgroundColor' => 'rgba(0, 0, 0, 0.2)',
+                    'borderColor' => 'rgba(0, 0, 0, 1)',
+                    'data' => $Co2ValueList,
+                ],
+            ],
+        ]);
+
+        $chartCO2->setOptions([
+            'scales' => [
+                'y' => [
+                    'title' => [
+                        'display' => true,
+                        'text' => 'Concentration de CO2 (Parti par miliers)',
+                    ],
+                    'min' => 250,
+                    'max' => 1000,
+                ],
+            ],
+        ]);
+
+        // Render the view with the added charts and history
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
             'sa' => $sa,
             'origin' => 'charge',
             'norms' => $norms,
             'down' => $down,
+            'chartTemp' => $chartTemp,
+            'chartHum' => $chartHum,
+            'chartCO2' => $chartCO2,
+            'dateForm' => $form->createView(),
         ]);
     }
 
+    /**
+     * @param string $roomName
+     * @param RoomRepository $roomRepository
+     * @param EntityManagerInterface $entityManager
+     * @param DownRepository $downRepo
+     * @return Response
+     * @brief Displays detailed information about a specific room.
+     */
     #[Route('/technicien/salles/{roomName}', name: 'app_room_info_technicien')]
     public function roomInfoTech(
         string $roomName,
         RoomRepository $roomRepository,
         EntityManagerInterface $entityManager,
-        DownRepository $downRepo
+        DownRepository $downRepo,
+        DiagnocticService $diagnosticService,
     ): Response {
-        // 1. Récupération de la salle par son nom
+        // get room name
         $room = $roomRepository->findByRoomName($roomName);
 
-        // 2. Initialisation des variables par défaut
+
         $sa = null;
         $down = null;
         $norms = null;
 
-        // 3. Récupération des normes de type 'confort' pour la saison 'été'
+
+        $currentDate = new \DateTime();
+        $season = $diagnosticService->getSeason($currentDate);
+
         $normRepository = $entityManager->getRepository(Norm::class);
         $norms = $normRepository->findOneBy([
-            'NormType' => 'confort',
-            'NormSeason' => 'été'
+            'NormType' => 'technique',
+            'NormSeason' =>  $season
         ]);
 
-        // 4. Vérification de l'existence d'une SA associée à la salle
+        // 4. check if a sa is associate with room
         if ($room && $room->getIdSA()) {
             $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
 
-            // Si l'état de la SA est 'En panne', récupérer les détails de la panne
+            // if sa down get details
             if ($sa && $sa->getState() === SAState::Down) {
                 $down = $downRepo->findOneBy(['sa' => $sa]);
             }
         }
 
-        // 5. Passage des données au template
+
         return $this->render('room/room_info.html.twig', [
             'room' => $room,
             'sa' => $sa,
             'down' => $down,
-            'norms' => $norms, // Normes récupérées
+            'norms' => $norms,
             'origin' => 'technicien',
+            'dateForm' => null,
         ]);
     }
 
 
     /**
-     * Route: /charge/salles/supprimer/{id}
-     * Name: app_room_delete
-     * Methods: POST
-     * Description: Deletes a room.
+     * @param Room|null $room
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     * @brief Deletes a room.
      */
     #[Route('/charge/salles/supprimer/{id}', name: 'app_room_delete', methods: ['POST'])]
     public function delete(?Room $room, EntityManagerInterface $entityManager): Response
@@ -242,50 +467,4 @@ class RoomController extends AbstractController
         return $this->redirectToRoute('app_room_list');
     }
 
-    public function getDiagnosticStatus(Room $room, EntityManagerInterface $entityManager, NormRepository $normRepository): string
-    {
-        $this->normRepository = $normRepository;
-
-        // Fetch the norms for summer season
-        $summerNorms = $this->normRepository->findOneBy(['NormSeason' => NormSeason::Summer]);
-
-        $sa = null;
-        if ($room->getIdSA()) {
-            $sa = $entityManager->getRepository(Sa::class)->find($room->getIdSA());
-        }
-        if (!$sa or $sa->getCO2() == null or $sa->getTemperature() == null or $sa->getHumidity() == null or $sa->getState() == SAState::Waiting) {
-            return 'grey';  // No functional SA found for the room, so no diagnostic
-        }
-
-
-
-
-        $temperatureCompliant = $sa->getTemperature() >= $summerNorms->getTemperatureMinNorm() &&
-            $sa->getTemperature() <= $summerNorms->getTemperatureMaxNorm();
-        $humidityCompliant = $sa->getHumidity() >= $summerNorms->getHumidityMinNorm() &&
-            $sa->getHumidity() <= $summerNorms->getHumidityMaxNorm();
-        $co2Compliant = $sa->getCO2() >= $summerNorms->getCo2MinNorm() &&
-            $sa->getCO2() <= $summerNorms->getCo2MaxNorm();
-
-        // Determine the diagnostic status
-        $compliantCount = 0;
-        if ($temperatureCompliant) {
-            $compliantCount++;
-        }
-        if ($humidityCompliant) {
-            $compliantCount++;
-        }
-        if ($co2Compliant) {
-            $compliantCount++;
-        }
-
-        // Logic for diagnostic color
-        if ($compliantCount === 3) {
-            return 'green';
-        } elseif ($compliantCount === 0) {
-            return 'red';
-        } else {
-            return 'yellow';
-        }
-    }
 }

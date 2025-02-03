@@ -7,6 +7,9 @@ use App\Repository\Model\NormType;
 use App\Repository\NormRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @breif the Norm entity used to create the technical and confort norms
+ */
 #[ORM\Entity(repositoryClass: NormRepository::class)]
 class Norm
 {

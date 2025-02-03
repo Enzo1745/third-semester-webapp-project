@@ -6,10 +6,7 @@
     <div class="container-fluid bg-primary bg-gradient text-white py-4 mb-4 shadow">
         <div class="container">
             <div class="d-flex justify-content-between align-items-center">
-                <!-- Logo et titre -->
                 <h1 class="h2 mb-0"><i class="fas fa-microchip me-2"></i> Systèmes d'acquisition</h1>
-
-                <!-- Bouton Retour -->
                 <a href="{{ path('app_technician_sa') }}" class="btn btn-outline-light ms-2">
                     <i class="fas fa-arrow-left me-1"></i> Retour
                 </a>
@@ -19,17 +16,36 @@
 
 
     <div class="container">
-        <!-- Table des systèmes d'acquisition -->
         <div class="card shadow-sm">
             <div class="card-body p-0">
                 <div class="table-responsive">
                     <table class="table table-hover mb-0">
                         <thead class="bg-primary text-white">
                         <tr>
-                            <th>Système d'acquisition</th>
-                            <th>Salle associée</th>
-                            <th>Action</th>
-                            <th>Etat</th>
+                            <th class="text-center">Système d'acquisition</th>
+                            <th class="text-center">Salle associée</th>
+                            <th class="text-center">Action</th>
+                            <th class="text-center">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="fas fa-heartbeat me-2"></i>État
+                                    <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-white border-0"
+                                            type="button"
+                                            data-bs-toggle="popover"
+                                            data-bs-placement="right"
+                                            data-bs-content="
+                                                            <div style='text-align: left;'>
+                                                                <strong>Explication des couleurs :</strong><br>
+                                                                <span class='text-secondary'><strong>Disponible :</strong> Le SA est fonctionnel mais n'est pas associée a une salle.</span><br>
+                                                                <span class='text-success'><strong>Installé :</strong> Le SA fontionne et est associé a une salle</span><br>
+                                                                <span class='risky-text'><strong>En attente :</strong> Le SA est associé mais un technicien doit valider son association.</span><br>
+                                                                <span class='text-danger'><strong>En panne :</strong> Le SA est en panne</span>
+                                                            </div>"
+                                            data-bs-html="true"
+                                            style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
+                                        <i class="fas fa-question text-primary"></i>
+                                    </button>
+                                </div>
+                            </th>
                             <th class="text-center">Valider</th>
                         </tr>
                         </thead>
@@ -41,15 +57,15 @@
                         {% else %}
                             {% for sa in saList %}
                                 <tr>
-                                    <td>{{ sa.id }}</td>
-                                    <td>
+                                    <td class="text-center">{{ sa.id }}</td>
+                                    <td class="text-center">
                                         {% if sa.room is not null %}
                                             {{ sa.room.roomName }}
                                         {% else %}
                                             <span class="text-muted">Aucune</span>
                                         {% endif %}
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         {% if sa.state.value in ['En panne', 'En attente'] and sa.room is not null%}
                                             <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#changeRoomModal{{ sa.id }}">
                                                 Changer l'association
@@ -59,7 +75,7 @@
                                         
                                     </td>
 
-                                    <td>
+                                    <td class="text-center">
                                         <p class="card-text value state
                                                     {% if sa.state.value == 'Installé' %}
                                                         good-text

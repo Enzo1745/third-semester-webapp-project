@@ -13,6 +13,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 
+/**
+ * @brief the form used to declare the down state of the SA
+ */
 class SaDownType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -21,7 +24,7 @@ class SaDownType extends AbstractType
             ->add('sa', EntityType::class, [
                 'class' => Sa::class,
                 'label' => 'SA',
-                'choice_label' => 'id',
+                'choice_label' => 'name',
                 'query_builder' => function (SaRepository $er) {
                     return $er->createQueryBuilder('s')
                         ->where('s.state = :state')

@@ -1,0 +1,17 @@
+{
+  "name": "but-info2-a-sae3-docker-stack",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://forge.iut-larochelle.fr/2024-2025-but-info2-a-sae34/m1/m13/but-info2-a-sae3-docker-stack.git"
+  },
+  "private": true,
+  "dependencies": {
+    "chartjs-plugin-annotation": "^3.1.0"
+  }
+}

@@ -11,6 +11,9 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
+/**
+ * @brief form used by the charge to link SA and rooms
+ */
 class SaManagementType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void

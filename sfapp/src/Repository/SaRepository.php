@@ -6,9 +6,11 @@ use App\Entity\Sa;
 use App\Repository\Model\SAState;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Service\DiagnocticService;
 
 /**
  * @extends ServiceEntityRepository<Sa>
+ * @brief repository used to manage the Entity SA
  */
 class SaRepository extends ServiceEntityRepository
 {
@@ -34,6 +36,55 @@ class SaRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+
+    public function sortByState(array $saList,int $choice,): array
+    {
+        if ($choice === 1) {
+            $order = [
+                SAState::Down->value,
+                SAState::Waiting->value,
+                SAState::Available->value,
+                SAState::Installed->value,
+            ];
+            usort($saList, function($a, $b) use ($order) {
+                return array_search($a->getState()->value, $order)
+                    <=> array_search($b->getState()->value, $order);
+            });
+        }
+        elseif ($choice === 2) {
+            $order = [
+                 'red',
+                'yellow',
+                'green',
+                'grey'
+            ];
+            usort($saList, function($a, $b) use ($order) {
+                return array_search($a->getDiagnosticStatus(), $order)
+                    <=> array_search($b->getDiagnosticStatus(), $order);
+            });
+        }
+        return $saList;
+    }
+
+    public function findAllSortedByName(): array
+    {
+        return $this->createQueryBuilder('s')
+            ->orderBy('s.name', 'ASC') // Tri ascendant par name
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
     //    /**

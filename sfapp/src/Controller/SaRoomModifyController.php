@@ -18,6 +18,7 @@ class SaRoomModifyController extends AbstractController
     /**
      * @param SaRepository $saRepo
      * @return Response
+     * @brief render and manage the association validaton page in the technicien part
      */
     #[Route('/technicien/sa/associer', name: 'app_sa_room_modify')]
     public function index(SaRepository $saRepo): Response
@@ -41,6 +42,7 @@ class SaRoomModifyController extends AbstractController
      * @param SaRepository $saRepo
      * @param EntityManagerInterface $em
      * @return Response
+     * @brief manages the "changer d'association" button on the association page in the technician part
      */
     #[Route('/technicien/sa/associer/{saId}', name: 'app_sa_room_modify_accepted', methods: ['GET', 'POST'])]
     public function modifyAssociation(
@@ -73,11 +75,11 @@ class SaRoomModifyController extends AbstractController
             $currentRoom = $currentSa->getRoom();
             if ($currentRoom) {
                 // Reset the current room and set the current SA to 'Available'
-                $currentRoom->setIdSa(null);
+                $currentRoom->setSa(null);
                 if ($currentSa->getState() != SAState::Down) {
                     $currentSa->setState(SAState::Available);
                 }
-                $currentRoom->setSa(null);
+
                 $em->persist($currentRoom);
             }
 
@@ -85,7 +87,6 @@ class SaRoomModifyController extends AbstractController
             $selectedSa->setRoom($currentRoom);
             $selectedSa->setState(SAState::Waiting);
             $currentRoom->setSa($selectedSa);
-            $currentRoom->setIdSa($selectedSa->getId());
 
             // Save the changes to the database
             $em->flush();
@@ -106,6 +107,7 @@ class SaRoomModifyController extends AbstractController
      * @param SaRepository $saRepo
      * @param EntityManagerInterface $em
      * @return Response
+     * @brief manages the "valider" button on the association page in the technician part
      */
     #[Route('/technicien/sa/valider/{saId}', name: 'app_sa_set_functional', methods: ['POST'])]
     public function setFunctionalState(

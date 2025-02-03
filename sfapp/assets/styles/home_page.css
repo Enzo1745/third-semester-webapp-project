@@ -1,0 +1,41 @@
+/* Custom styles to enhance Bootstrap */
+
+
+/* Button animations */
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+/* Card styling */
+.card {
+    border-radius: 0.5rem;
+    border: none;
+}
+
+.card-header {
+    border-top-left-radius: 0.5rem !important;
+    border-top-right-radius: 0.5rem !important;
+}
+
+/* Custom shadow effect */
+.shadow-sm {
+    box-shadow: 0 .125rem .25rem rgba(0,0,0,.075) !important;
+}
+
+/* Icon colors and animations */
+.fas {
+    transition: transform 0.2s ease;
+}
+
+.btn:hover .fas {
+    transform: scale(1.1);
+}
+
+/* Empty state styling */
+.text-muted .fas {
+    opacity: 0.5;
+}

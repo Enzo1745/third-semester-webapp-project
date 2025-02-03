@@ -1,0 +1,313 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Page d'accueil{% endblock %}
+
+{% block stylesheets %}
+    <link rel="stylesheet" href="{{ asset('styles/home_page.css') }}">
+{% endblock %}
+
+{% block body %}
+    <header class="bg-primary bg-gradient text-white py-4 mb-4 shadow">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="h2 mb-0 fw-bold">
+                <i class="fas fa-home me-2"></i> Page d'accueil
+            </h1>
+            <div>
+                <a href="{{ path('app_connexion') }}" class="btn btn-outline-light">
+                    <i class="fas fa-user me-1"></i> Se connecter
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container d-flex flex-column justify-content-start align-items-center py-4" style="min-height: 100vh;">
+        <div class="card shadow-sm mb-4 w-100" style="max-width: 1500px;">
+            <div class="card-header d-flex justify-content-center align-items-center py-3 bg-primary bg-gradient text-white">
+                <h1 class="fw-bold mb-0" style="font-size: 2rem;">Bienvenue sur la page d'accueil</h1>
+            </div>
+            <div class="card-body text-center">
+                <h2>TIPS : {{ tips }}</h2>
+                <p class="lead text-muted">Cette page vous permet d'accéder aux données collectées dans les salles.</p>
+            </div>
+        </div>
+
+        <div class="card shadow-sm w-100" style="max-width: 1500px;">
+            <div class="card-header d-flex flex-column bg-primary bg-gradient text-white py-3">
+                <h5 class="mb-0">Informations de la salle</h5>
+                <div class="card-body mt-2 ms-0 p-0">
+                    {{ form_start(searchForm) }}
+                    <div class="d-flex justify-content-start align-items-start">
+                        {{ form_row(searchForm.salle, {'attr': {'class': 'm-1'}}) }}
+                    </div>
+                    {{ form_end(searchForm) }}
+                </div>
+            </div>
+
+            <div class="card-body">
+                {% if room is not null %}
+                    <div class="row mb-4">
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-door-open fa-2x text-primary mb-2"></i>
+                                    <h5 class="card-title">Numéro de la salle</h5>
+                                    <p class="card-text value">{{ room.roomName }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-radiator fa-2x text-primary mb-2"></i>
+                                    <h5 class="card-title">Nombre de radiateurs</h5>
+                                    <p class="card-text value">{{ room.nbRadiator|default('N/A') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="card text-center">
+                                <div class="card-body">
+                                    <i class="fas fa-window-maximize fa-2x text-primary mb-2"></i>
+                                    <h5 class="card-title">Nombre de fenêtres</h5>
+                                    <p class="card-text value">{{ room.nbWindows|default('N/A') }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if sa is null %}
+                        <div class="text-center py-4 text-muted">
+                            <i class="fas fa-exclamation-circle fa-2x mb-3"></i>
+                            <p>Aucune donnée disponible pour cette salle.</p>
+                        </div>
+                    {% elseif sa.state.value == 'En attente' %}
+                        <div class="text-center">
+                            <i class="fas fa-clock fa-2x mb-3"></i>
+                            <p>Le système d'acquisition est en attente d'activation.</p>
+                        </div>
+                    {% else %}
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-thermometer-half fa-2x text-primary mb-2"></i>
+                                        <div class="d-flex flex-row justify-content-center">
+                                            <h5 class="card-title">Température</h5>
+                                            <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-primary bg-gradient border-0"
+                                                    type="button"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-placement="right"
+                                                    data-bs-content="
+                                                        <div style='text-align: left;'>
+                                                            <strong>Temperature :</strong><br>
+                                                            <span>La température est exprimée en °C</span><br>
+                                                            <span>Elle prend comme couleur:</span><br>
+                                                            <span class='good-text'><strong>Vert </strong>si les normes sont respectées</span><br>
+                                                            <span class='danger-text'><strong>Rouge </strong>si les normes ne sont pas respectées</span>
+                                                        </div>"
+                                                    data-bs-html="true"
+                                                    style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
+                                                <i class="fas fa-question text-white"></i>
+                                            </button>
+                                        </div>
+                                        <p class="card-text value temp fs-3
+                                            {% if norms is not null and sa.temperature >= norms.temperatureMinNorm and sa.temperature <= norms.temperatureMaxNorm %}
+                                                good-text
+                                            {% else %}
+                                                danger-text
+                                            {% endif %}">
+                                            {{ sa.temperature|default('N/A') }}°C
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-tint fa-2x text-primary mb-2"></i>
+                                        <div class="d-flex flex-row justify-content-center">
+                                            <h5 class="card-title">Humidité</h5>
+                                            <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-primary bg-gradient border-0"
+                                                    type="button"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-placement="right"
+                                                    data-bs-content="
+                                                        <div style='text-align: left;'>
+                                                            <strong>Humidité :</strong><br>
+                                                            <span>L'humidité' est exprimée en %</span><br>
+                                                            <span>Elle prend comme couleur:</span><br>
+                                                            <span class='good-text'><strong>Vert </strong>si les normes sont respectées</span><br>
+                                                            <span class='danger-text'><strong>Rouge </strong>si les normes ne sont pas respectées</span>
+                                                        </div>"
+                                                    data-bs-html="true"
+                                                    style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
+                                                <i class="fas fa-question text-white"></i>
+                                            </button>
+                                        </div>
+                                        <p class="card-text value humidity fs-3
+                                            {% if norms is not null and sa.humidity >= norms.humidityMinNorm and sa.humidity <= norms.humidityMaxNorm %}
+                                                good-text
+                                            {% else %}
+                                                danger-text
+                                            {% endif %}">
+                                            {{ sa.humidity|default('N/A') }}%
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <i class="fas fa-cloud fa-2x text-primary mb-2"></i>
+                                        <div class="d-flex flex-row justify-content-center">
+                                            <h5 class="card-title">CO<sup>2</sup></h5>
+                                            <button class="btn btn-sm btn-info ms-2 d-flex align-items-center justify-content-center bg-primary bg-gradient border-0"
+                                                    type="button"
+                                                    data-bs-toggle="popover"
+                                                    data-bs-placement="right"
+                                                    data-bs-content="
+                                                        <div style='text-align: left;'>
+                                                            <strong>CO<sup>2</sup> :</strong><br>
+                                                            <span>Le CO<sup>2</sup> est exprimée en ppm</span><br>
+                                                            <span>Le ppm (parti par miliers) est une unité de mesure utilisée pour exprimer des concentrations très faibles de gazs.</span><br>
+                                                            <span>Il prend comme couleur:</span><br>
+                                                            <span class='good-text'><strong>Vert </strong>si les normes sont respectées</span><br>
+                                                            <span class='danger-text'><strong>Rouge </strong>si les normes ne sont pas respectées</span>
+                                                        </div>"
+                                                    data-bs-html="true"
+                                                    style="width: 25px; height: 25px; border-radius: 50%; cursor: pointer; display: inline-flex;">
+                                                <i class="fas fa-question text-white"></i>
+                                            </button>
+                                        </div>
+                                        <p class="card-text value co2 fs-3
+                                            {% if norms is not null and sa.CO2 >= norms.co2MinNorm and sa.CO2 <= norms.co2MaxNorm %}
+                                                good-text
+                                            {% else %}
+                                                danger-text
+                                            {% endif %}">
+                                            {{ sa.CO2|default('N/A') }} ppm
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if down is not null %}
+                        <div class="alert alert-warning mt-4">
+                            <h5 class="alert-heading">Panne en cours</h5>
+                            <p>{{ down.reason }}</p>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-times-circle fa-3x text-danger mb-3"></i>
+                        <p class="text-muted">Aucune salle sélectionnée.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+    <!-- Tasks to do by the user -->
+    {% if instructions is not empty %}
+        {% if room %}
+            <div class="container mb-4">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0">Actions à faire</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled" id="actions-list">
+                            {% for instruction in instructions %}
+                                <li class="mb-3">
+                                    <p>{{ instruction.getComfortInstruction().getInstruction() }}</p>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <!-- Tasks to do by the user Symfony form (not used) -->
+{#    {% if instructions is not empty %}#}
+{#        {% if room %}#}
+{#            <div class="container mb-4">#}
+{#                <div class="card shadow-sm">#}
+{#                    <div class="card-header bg-primary text-white py-3">#}
+{#                        <h5 class="mb-0">Actions à faire</h5>#}
+{#                    </div>#}
+{#                    <div class="card-body">#}
+{#                        {{ form_start(instructionsForm) }}#}
+{#                        <ul class="list-unstyled" id="actions-list">#}
+{#                            {% for child in instructionsForm %}#}
+{#                                <li class="mb-3 d-flex justify-content-between align-items-center">#}
+{#                                    <label class="form-check-label mb-0">#}
+{#                                        {{ form_label(child) }}#}
+{#                                    </label>#}
+{#                                    <div class="form-check">#}
+{#                                        {{ form_widget(child, {'attr': {'class': 'form-check-input'}}) }}#}
+{#                                    </div>#}
+{#                                </li>#}
+{#                            {% endfor %}#}
+{#                        </ul>#}
+{#                        <button type="submit" class="btn btn-primary" id="confirmButton" data-bs-toggle="modal" data-bs-target="#confirmationModal">#}
+{#                            Confirmer#}
+{#                        </button>#}
+{#                        {{ form_end(instructionsForm) }}#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        {% endif %}#}
+{#    {% endif %}#}
+
+    <!-- Confirmation Modal -->
+{#    <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">#}
+{#        <div class="modal-dialog">#}
+{#            <div class="modal-content">#}
+{#                <div class="modal-header">#}
+{#                    <h5 class="modal-title" id="confirmationModalLabel">Confirmation</h5>#}
+{#                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>#}
+{#                </div>#}
+{#                <div class="modal-body">#}
+{#                    Avez-vous réalisé ces actions ?#}
+{#                </div>#}
+{#                <div class="modal-footer">#}
+{#                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Non</button>#}
+{#                    <button type="button" class="btn btn-primary" id="confirmModalButton">Oui, confirmer</button>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#    </div>#}
+
+    <!-- JavaScript to enable the button when a checkbox is checked -->
+{#    <script>#}
+{#        document.addEventListener('DOMContentLoaded', function () {#}
+{#            const confirmButton = document.getElementById('confirmButton');#}
+{#            const checkboxes = document.querySelectorAll('input[type="checkbox"]');#}
+{#            // const confirmModal = new bootstrap.Modal(document.getElementById('confirmationModal'));#}
+{#            // const confirmModalButton = document.getElementById('confirmModalButton');#}
+{#            // const form = document.querySelector('form[name="instructionsForm"]');#}
+
+{#            function updateConfirmButtonState() {#}
+{#                !Array.from(checkboxes).some(checkbox => checkbox.checked) ? confirmButton.disabled = true : confirmButton.disabled = false;#}
+{#            }#}
+
+{#            checkboxes.forEach(checkbox => {#}
+{#                checkbox.addEventListener('change', updateConfirmButtonState);#}
+{#            });#}
+
+{#            // confirmButton.addEventListener('click', function () {#}
+{#            //     confirmModal.show();#}
+{#            // });#}
+{#            //#}
+{#            // confirmModalButton.addEventListener('click', function () {#}
+{#            //     form.submit();#}
+{#            // });#}
+
+{#            // Initial check to set the button state correctly on page load#}
+{#            updateConfirmButtonState();#}
+{#        });#}
+{#    </script>#}
+{% endblock %}

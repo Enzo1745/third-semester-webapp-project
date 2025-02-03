@@ -13,13 +13,20 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\UserRepository;
 
-
+/**
+ * @brief Controller managing the connexion part of the website
+ */
 class ConnexionController extends AbstractController
 {
 
-    // Connection page controller
+    /**
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return Response
+     * @brief Managing the login of the website
+     */
     #[Route('/connexion', name: 'app_connexion')]
-    public function index(Request $request, EntityManagerInterface $manager, UserRepository $userRepository): Response
+    public function index(Request $request, UserRepository $userRepository): Response
     {
         $form = $this->createForm(ConnectionType::class);
         $form->handleRequest($request);
@@ -30,7 +37,7 @@ class ConnexionController extends AbstractController
         if ($form->isSubmitted()) {
             if ($form->isValid() && $this->CheckLoginIsvalid($username, $password, $userRepository)) {
                 $role = $userRepository->findUserRole($username);
-                var_dump($role);
+
 
                 if ($role === null) {
                     return $this->redirectToRoute('app_connexion');
@@ -51,6 +58,13 @@ class ConnexionController extends AbstractController
         ]);
     }
 
+    /**
+     * @param $username
+     * @param $password
+     * @param UserRepository $userRepository
+     * @return bool
+     * @brief check if a login is valid : checking if the username exists and if the password is the right one
+     */
     private function CheckLoginIsvalid($username, $password, UserRepository $userRepository): bool
     {
         if (empty($username) && empty($password)) {
